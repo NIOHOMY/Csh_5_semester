@@ -3,6 +3,8 @@
 // add-migration "AddCourseTeacherName"
 // Remove-Migration
 // update-database
+using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,33 +21,36 @@ namespace ConsoleApp1
         {
             _context = context;
         }
-        
-        public void addStudent(Student student)
+
+        public void AddStudent(Student student)
         {
             _context.Students.Add(student);
             _context.SaveChanges();
         }
-        public void removeStudent(string studentName)
-        {
-            _context.Students.Remove(_context.Students
-                             .Where(p=>p.Name
-                             .Equals(studentName))
-                             .FirstOrDefault());// от null 
-            _context.SaveChanges();
 
-        }
-        public void editStudent(Student student)
+        public void RemoveStudent(Student student)
         {
-            _context.Entry(student).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            var studentToRemove = _context.Students.FirstOrDefault(s => s.StudentId == student.StudentId);
+            if (studentToRemove != null)
+            {
+                _context.Students.Remove(studentToRemove);
+                _context.SaveChanges();
+            }
+        }
+
+        public void EditStudent(Student student)
+        {
+            _context.Entry(student).State = EntityState.Modified;
             _context.SaveChanges();
         }
-        /*public void removeStudent(Student student)
+
+        public List<Student> GetAllStudents()
         {
-            _context.Students.Remove(student);
-        }*/
-        public /*IEnumerable*/List<Student> GetAllStudents()
+            return _context.Students.ToList();
+        }
+        public List<Group> GetAllGroups()
         {
-            return _context.Students.ToList<Student>();
+            return _context.Groups.ToList();
         }
 
     }

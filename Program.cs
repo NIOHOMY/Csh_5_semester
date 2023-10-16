@@ -7,76 +7,67 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-StudentDBStorage studentDBStorage = new StudentDBStorage(new StudentContext());
-Direction d1 = new Direction { DirectionName = "FIIT" };
-Group g1 = new Group { GroupName = "61", Direction = d1 };
-Student s1 = new Student
-{
-    Name = "Tom",
-    Age = "10",
-    Group = g1,
-
-};
-Student s2 = new Student
-{
-    Name = "Tom2",
-    Age = "11",
-    Group = g1,
-};
-studentDBStorage.addStudent(s1);
-studentDBStorage.addStudent(s2);
-
-List<Student> studentList = studentDBStorage.GetAllStudents();
-foreach (Student student in studentList)
-{
-    Console.WriteLine(student.Name);
-}
-
-studentDBStorage.removeStudent("Tom2");
-studentList = studentDBStorage.GetAllStudents();
-foreach (Student student in studentList)
-{
-    Console.WriteLine(student.Name);
-}
-studentList = studentDBStorage.GetAllStudents();
-foreach (Student student in studentList)
-{
-    Console.WriteLine(student.Name);
-    student.Name = "Bob";
-    studentDBStorage.editStudent(student);
-}
-
-/*using (StudentContext db = new StudentContext())
-{
-    Direction d1 = new Direction { DirectionName = "FIIT"};
-    Direction d2 = new Direction { DirectionName = "PMI"};
-
-    Group g1 = new Group { GroupName = "61", Direction = d1};
-    Group g2 = new Group { GroupName = "62", Direction = d2};
-
-    Course c1 = new Course { CourseName = "мат анализ" };
-    Course c2 = new Course { CourseName = "физика" };
-
-    Student s1 = new Student { Name = "Tom", Age = "10", Group = g1, Courses = new List<Course> { c1,c2} };
-    Student s2 = new Student { Name = "Alice", Age = "100", Group = g2, Courses = new List<Course> { c1 } };
-
-
-    db.Students.AddRange(s1, s2);
-    db.Groups.AddRange(g1, g2);
-    db.Directions.AddRange(d1, d2);
-    db.Courses.AddRange(c1, c2);
-    db.SaveChanges();
-
-
-}
-*/
-/*namespace ConsoleApp1
+namespace ConsoleApp1
 {
     class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
-            
+            Console.OutputEncoding = Encoding.UTF8;
+            using var context = new StudentContext();
+            /*
+            string[] groupNames = { "ФИИТ", "МОАИС", "ПМИ" };
+            List<Group> groups = new List<Group>();
+
+            for (int i = 0; i < groupNames.Length; i++)
+            {
+                Group group = new Group
+                {
+                    GroupName = groupNames[i]
+                };
+                groups.Add(group);
+            }
+            foreach (var group in groups)
+            {
+                context.Groups.Add(group);
+            }
+            context.SaveChanges();
+            */
+            var storage = new StudentDBStorage(context);
+            var controller = new StudentController(storage);
+
+
+            while (true)
+            {
+                controller.PrintStudentsByGroups();
+                Console.WriteLine("Меню:");
+                Console.WriteLine("1. Добавить студента");
+                Console.WriteLine("2. Удалить студента");
+                Console.WriteLine("3. Вывести список студентов по группам");
+                Console.WriteLine("4. Выход");
+
+                Console.Write("Введите номер операции: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        controller.AddStudent();
+                        break;
+                    case "2":
+                        controller.RemoveStudent();
+                        break;
+                    case "3":
+                        controller.PrintStudentsByGroups();
+                        break;
+                    case "4":
+                        return;
+                    default:
+                        Console.WriteLine("Неверный выбор. Повторите ввод.");
+                        break;
+                }
+            }
         }
     }
-}*/
+}
+

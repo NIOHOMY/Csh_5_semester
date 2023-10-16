@@ -10,6 +10,7 @@ namespace ConsoleApp1.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            /*
             migrationBuilder.CreateTable(
                 name: "Courses",
                 columns: table => new
@@ -63,7 +64,7 @@ namespace ConsoleApp1.Migrations
                     StudentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Age = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Age = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Birthday = table.Column<int>(type: "int", nullable: false),
                     GroupId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -118,11 +119,13 @@ namespace ConsoleApp1.Migrations
                 name: "IX_Students_GroupId",
                 table: "Students",
                 column: "GroupId");
+            */
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            /*
             migrationBuilder.DropTable(
                 name: "CourseStudent");
 
@@ -137,6 +140,7 @@ namespace ConsoleApp1.Migrations
 
             migrationBuilder.DropTable(
                 name: "Groups");
+             */
         }
     }
 }

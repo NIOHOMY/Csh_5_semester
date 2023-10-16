@@ -9,15 +9,12 @@ namespace ConsoleApp1
 {
     public class Group
     {
-        [Key]
         public int GroupId { get; set; }
-
         [Required]
         [MaxLength(50)]
         public string? GroupName { get; set; }
 
         public List<Student> Students { get; set; } = new();
         public Direction? Direction { get; set; }
-
     }
 }

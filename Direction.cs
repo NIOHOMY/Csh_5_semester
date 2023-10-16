@@ -9,13 +9,12 @@ namespace ConsoleApp1
 {
     public class Direction
     {
-        [Key]
         public int DirectionId { get; set; }
-        [Required] 
+        [Required]
         [MaxLength(50)]
         public string? DirectionName { get; set; }
 
         public int? GroupId { get; set; }
-        public Group? Group { get; set; } // свзяь направления с группой
+        public Group? Group { get; set; }
     }
 }

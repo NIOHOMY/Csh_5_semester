@@ -23,8 +23,10 @@ namespace ConsoleApp1
         }
         public StudentContext()
         {
-            //Database.EnsureDeleted();
-            //Database.EnsureCreated();
+            /*
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
+            */
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

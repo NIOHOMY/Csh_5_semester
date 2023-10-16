@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ConsoleApp1.Migrations
 {
     [DbContext(typeof(StudentContext))]
-    [Migration("20231011091956_InitMigration")]
+    [Migration("20231016185930_InitMigration")]
     partial class InitMigration
     {
         /// <inheritdoc />
@@ -96,7 +96,6 @@ namespace ConsoleApp1.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
 
                     b.Property<string>("Age")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Birthday")
