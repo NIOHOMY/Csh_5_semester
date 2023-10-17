@@ -1,5 +1,4 @@
 ﻿using ConsoleApp1;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,20 +33,20 @@ namespace ConsoleApp1
             context.SaveChanges();
             */
             var storage = new StudentDBStorage(context);
-            var controller = new StudentController(storage);
+            var controller = new StudentMenuController(storage);
 
 
             while (true)
             {
                 controller.PrintStudentsByGroups();
-                Console.WriteLine("Меню:");
-                Console.WriteLine("1. Добавить студента");
-                Console.WriteLine("2. Удалить студента");
-                Console.WriteLine("3. Вывести список студентов по группам");
-                Console.WriteLine("4. Выход");
+                Console.WriteLine(" Меню:");
+                Console.WriteLine(" 1. Добавить студента");
+                Console.WriteLine(" 2. Удалить студента");
+                Console.WriteLine(" 3. Вывести список студентов по группам");
+                Console.WriteLine(" 4. Выход");
 
-                Console.Write("Введите номер операции: ");
-                string choice = Console.ReadLine();
+                Console.Write(" Введите номер операции: ");
+                string? choice = Console.ReadLine();
 
                 switch (choice)
                 {
@@ -63,7 +62,7 @@ namespace ConsoleApp1
                     case "4":
                         return;
                     default:
-                        Console.WriteLine("Неверный выбор. Повторите ввод.");
+                        Console.WriteLine(" ! Неверный выбор. Повторите ввод.");
                         break;
                 }
             }
