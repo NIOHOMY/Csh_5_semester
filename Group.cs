@@ -15,6 +15,5 @@ namespace ConsoleApp1
         public string? GroupName { get; set; }
 
         public List<Student> Students { get; set; } = new();
-        public Direction? Direction { get; set; }
     }
 }

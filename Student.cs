@@ -17,6 +17,5 @@ namespace ConsoleApp1
         public int GroupId { get; set; }
         public Group? Group { get; set; }
 
-        public List<Course> Courses { get; set; } = new();
     }
 }
