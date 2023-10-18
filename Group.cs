@@ -10,7 +10,7 @@ namespace ConsoleApp1
     public class Group
     {
         public int GroupId { get; set; }
-        [Required]
+        [Required(ErrorMessage = " ! Обязательное поле название группы")]
         [MaxLength(50)]
         public string? GroupName { get; set; }
 

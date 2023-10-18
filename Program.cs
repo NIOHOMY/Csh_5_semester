@@ -5,6 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// парсер/структуру студента            +
+// начатльные данные
+// функции работы с бд добавить в dbstorage     +
+// выводить для удаления не пустые группы       +
+// раскидать по файлам, добавить сообщение об ошибке в []   +
+// Model - dataclasses DAL - для работы с бд
+// добавить try catch
 
 namespace ConsoleApp1
 {

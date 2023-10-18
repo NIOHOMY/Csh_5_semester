@@ -4,6 +4,7 @@
 // Remove-Migration
 // update-database
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client.Extensions.Msal;
 
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,9 @@ namespace ConsoleApp1
         {
             return _context.Groups.ToList();
         }
-
+        public List<Student> GetStudentsByGroup(int groupId)
+        {
+            return GetAllStudents().Where(s => s.GroupId == groupId).ToList();
+        }
     }
 }

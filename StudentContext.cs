@@ -29,9 +29,7 @@ namespace ConsoleApp1
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //для ограничений модели
-            modelBuilder.Entity<Student>()
-                .Property(x => x.Name)
-                .HasMaxLength(50);
+            
         }
     }
 }

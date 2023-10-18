@@ -15,10 +15,7 @@ namespace ConsoleApp1
             _storage = storage;
         }
 
-        public List<Student> GetStudentsByGroup(int groupId)
-        {
-            return _storage.GetAllStudents().Where(s => s.GroupId == groupId).ToList();
-        }
+        
 
         public void AddStudent()
         {
@@ -29,32 +26,55 @@ namespace ConsoleApp1
                 string? name = Console.ReadLine();
                 if (name != null && name != "")
                 {
-                    var student = new Student
-                    {
-                        Name = name,
-                        GroupId = groupId.Value
-                    };
-                    _storage.AddStudent(student);
+                    string[] nameParts = name.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+                    if (nameParts.Length == 3) {
+                        string? _Firstname = nameParts[1];
+                        string? _Lastname = nameParts[0];
+                        string? _Surname = string.Join(" ", nameParts.Skip(2));
+                        if(_Firstname != null && _Firstname != "" &&
+                            _Lastname != null && _Lastname != "" &&
+                            _Surname != null && _Surname != ""
+                            )
+                        {
+                            var student = new Student
+                            {
+                                Firstname = _Firstname,
+                                Lastname = _Lastname,
+                                Surname = _Surname,
+                                GroupId = groupId.Value
+                            };
+                            _storage.AddStudent(student);
 
-                    Console.WriteLine(" * Студент успешно добавлен.");
+                            Console.WriteLine(" * Студент успешно добавлен.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine(" ! Имя фамилия и отчество студента не могут быть пустым.");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine(" ! Имя студента не может быть пустым.");
+                    Console.WriteLine(" ! ФИО студента не может быть пустым.");
                 }
             }
         }
 
         public void RemoveStudent()
         {
-            int? groupId = ChooseGroup();
+            int? groupId = ChooseGroup(true);
             if (groupId != null)
             {
                 Console.WriteLine("Выберите номер студента:");
-                var students = GetStudentsByGroup(groupId.Value);
+                var students = _storage.GetStudentsByGroup(groupId.Value);
+                if (students.Count == 0) 
+                {
+                    Console.WriteLine(" ! Список студентов пуст.");
+                    return;
+                }
                 foreach (var _student in students)
                 {
-                    Console.WriteLine($" {_student.StudentId} - {_student.Name}");
+                    Console.WriteLine($" {_student.StudentId} - {_student.Lastname} {_student.Firstname} {_student.Surname}");
                 }
 
                 int? studentId = ConsoleGetNumberOf("студента");
@@ -83,35 +103,58 @@ namespace ConsoleApp1
             foreach (var group in groups)
             {
                 Console.WriteLine($" {group.GroupName} ({group.Students.Count})");
-                List<Student> students = GetStudentsByGroup(group.GroupId);
-                foreach (var student in students.OrderBy(s => s.Name))
+                List<Student> students = _storage.GetStudentsByGroup(group.GroupId);
+                foreach (var student in students.OrderBy(s => s.Lastname))
                 {
-                    Console.WriteLine(' '+student.Name);
+                    Console.WriteLine($" {student.Lastname} {student.Firstname} {student.Surname}");
                 }
             }
             Console.WriteLine(' ');
         }
 
-        private int? ChooseGroup()
+        private int? ChooseGroup(bool notEmpty = false)
         {
-            Console.WriteLine("Выберете номер группы:");
             var groups = _storage.GetAllGroups();
-            foreach (var _group in groups)
+            bool checkNotAllGroupsEmpty = notEmpty;
+            if (notEmpty == true)
             {
-                Console.WriteLine($"{_group.GroupId} - {_group.GroupName}");
+                foreach (var _group in groups)
+                {
+                    if(checkNotAllGroupsEmpty == true && _group.Students.Count!=0)
+                    {
+                        checkNotAllGroupsEmpty = false;
+                    }
+                }
             }
-            int? groupId = ConsoleGetNumberOf("группы");
-            if (groupId==null)
+            if(checkNotAllGroupsEmpty == false)
             {
+                Console.WriteLine("Выберете номер группы:");
+                foreach (var _group in groups)
+                {
+                    if ((notEmpty == true && _group.Students.Count != 0 )||(notEmpty == false))
+                    {
+                        Console.WriteLine($"{_group.GroupId} - {_group.GroupName}");
+                    }
+                }
+                int? groupId = ConsoleGetNumberOf("группы");
+                if (groupId==null)
+                {
+                    return null;
+                }
+                var group = groups.FirstOrDefault(g => g.GroupId == groupId);
+                if (group == null)
+                {
+                    Console.WriteLine(" ! Группа не найдена.");
+                    return null;
+                }
+                return groupId;
+
+            }
+            else
+            {
+                Console.WriteLine(" ! Все группы пусты.");
                 return null;
             }
-            var group = groups.FirstOrDefault(g => g.GroupId == groupId);
-            if (group == null)
-            {
-                Console.WriteLine(" ! Группа не найдена.");
-                return null;
-            }
-            return groupId;
         }
         private int? ConsoleGetNumberOf(string obj)
         {
