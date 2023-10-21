@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,10 +17,19 @@ namespace ConsoleApp1.DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;
+            try
+            {
+                optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;
                                         Database = StrudentDB; 
                                         Trusted_Connection = true");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred while configuring the database: {ex.Message}");
+                Console.WriteLine($"An error occurred while configuring the database: {ex.Message}");
+            }
         }
+
         public StudentContext()
         {
             /*
@@ -27,16 +37,25 @@ namespace ConsoleApp1.DAL
             Database.EnsureCreated();
             */
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Group>().HasData(
-            new Group { GroupId = 1, GroupName = "ФИИТ" },
-            new Group { GroupId = 2, GroupName = "МОАИС" },
-            new Group { GroupId = 3, GroupName = "ПМИ" }
-            );
+            try
+            {
+                modelBuilder.Entity<Group>().HasData(
+                    new Group { GroupId = 1, GroupName = "ФИИТ" },
+                    new Group { GroupId = 2, GroupName = "МОАИС" },
+                    new Group { GroupId = 3, GroupName = "ПМИ" }
+                );
 
-            base.OnModelCreating(modelBuilder);
-
+                base.OnModelCreating(modelBuilder);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred while configuring the model: {ex.Message}");
+                Console.WriteLine($"An error occurred while configuring the model: {ex.Message}");
+            }
         }
     }
+
 }

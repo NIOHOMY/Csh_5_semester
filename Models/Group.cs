@@ -10,7 +10,8 @@ namespace ConsoleApp1.Models
     public class Group
     {
         public int GroupId { get; set; }
-        [Required(ErrorMessage = " ! Обязательное поле название группы")]
+
+        [Required(ErrorMessage = "Название группы является обязательным полем!")]
         [MaxLength(50)]
         public string? GroupName { get; set; }
 

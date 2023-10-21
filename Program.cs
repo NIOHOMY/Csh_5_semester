@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 // парсер/структуру студента            +
 // начатльные данные
@@ -25,38 +26,46 @@ namespace ConsoleApp1
             var storage = new StudentDBStorage(context);
             var controller = new StudentMenuController(storage);
 
-
-            while (true)
+            try
             {
-                controller.PrintStudentsByGroups();
-                Console.WriteLine(" Меню:");
-                Console.WriteLine(" 1. Добавить студента");
-                Console.WriteLine(" 2. Удалить студента");
-                Console.WriteLine(" 3. Вывести список студентов по группам");
-                Console.WriteLine(" 4. Выход");
-
-                Console.Write(" Введите номер операции: ");
-                string? choice = Console.ReadLine();
-
-                switch (choice)
+                while (true)
                 {
-                    case "1":
-                        controller.AddStudent();
-                        break;
-                    case "2":
-                        controller.RemoveStudent();
-                        break;
-                    case "3":
-                        controller.PrintStudentsByGroups();
-                        break;
-                    case "4":
-                        return;
-                    default:
-                        Console.WriteLine(" ! Неверный выбор. Повторите ввод.");
-                        break;
+                    controller.PrintStudentsByGroups();
+                    Console.WriteLine(" Меню:");
+                    Console.WriteLine(" 1. Добавить студента");
+                    Console.WriteLine(" 2. Удалить студента");
+                    Console.WriteLine(" 3. Вывести список студентов по группам");
+                    Console.WriteLine(" 4. Выход");
+
+                    Console.Write(" Введите номер операции: ");
+                    string? choice = Console.ReadLine();
+
+                    switch (choice)
+                    {
+                        case "1":
+                            controller.AddStudent();
+                            break;
+                        case "2":
+                            controller.RemoveStudent();
+                            break;
+                        case "3":
+                            controller.PrintStudentsByGroups();
+                            break;
+                        case "4":
+                            return;
+                        default:
+                            Console.WriteLine(" ! Неверный выбор. Повторите ввод.");
+                            break;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($" ! Error: {ex.Message}");
+                Debug.WriteLine($" ! Error: {ex.Message}");
             }
         }
     }
+
 }
 

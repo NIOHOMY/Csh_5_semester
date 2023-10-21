@@ -9,6 +9,7 @@ using Microsoft.Identity.Client.Extensions.Msal;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,37 +27,91 @@ namespace ConsoleApp1.DAL
 
         public void AddStudent(Student student)
         {
-            _context.Students.Add(student);
-            _context.SaveChanges();
+            try
+            {
+                _context.Students.Add(student);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred while adding a student: {ex.Message}");
+                Console.WriteLine($"An error occurred while adding a student: {ex.Message}");
+            }
         }
 
         public void RemoveStudent(Student student)
         {
-            var studentToRemove = _context.Students.FirstOrDefault(s => s.StudentId == student.StudentId);
-            if (studentToRemove != null)
+            try
             {
-                _context.Students.Remove(studentToRemove);
-                _context.SaveChanges();
+                var studentToRemove = _context.Students.FirstOrDefault(s => s.StudentId == student.StudentId);
+                if (studentToRemove != null)
+                {
+                    _context.Students.Remove(studentToRemove);
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred while removing a student: {ex.Message}");
+                Console.WriteLine($"An error occurred while removing a student: {ex.Message}");
             }
         }
 
         public void EditStudent(Student student)
         {
-            _context.Entry(student).State = EntityState.Modified;
-            _context.SaveChanges();
+            try
+            {
+                _context.Entry(student).State = EntityState.Modified;
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred while editing a student: {ex.Message}");
+                Console.WriteLine($"An error occurred while editing a student: {ex.Message}");
+            }
         }
 
         public List<Student> GetAllStudents()
         {
-            return _context.Students.ToList();
+            try
+            {
+                return _context.Students.ToList();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred while getting all students: {ex.Message}");
+                Console.WriteLine($"An error occurred while getting all students: {ex.Message}");
+                return new List<Student>();
+            }
         }
+
         public List<Group> GetAllGroups()
         {
-            return _context.Groups.ToList();
+            try
+            {
+                return _context.Groups.ToList();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred while getting all groups: {ex.Message}");
+                Console.WriteLine($"An error occurred while getting all groups: {ex.Message}");
+                return new List<Group>();
+            }
         }
+
         public List<Student> GetStudentsByGroup(int groupId)
         {
-            return GetAllStudents().Where(s => s.GroupId == groupId).ToList();
+            try
+            {
+                return GetAllStudents().Where(s => s.GroupId == groupId).ToList();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred while getting students by group: {ex.Message}");
+                Console.WriteLine($"An error occurred while getting students by group: {ex.Message}");
+                return new List<Student>();
+            }
         }
     }
+
 }
