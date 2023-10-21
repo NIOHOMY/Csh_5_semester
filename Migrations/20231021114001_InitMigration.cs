@@ -2,14 +2,16 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ConsoleApp1.Migrations
 {
     /// <inheritdoc />
     public partial class InitMigration : Migration
     {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder) { }/*
-        {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {/*
             migrationBuilder.CreateTable(
                 name: "Groups",
                 columns: table => new
@@ -29,7 +31,9 @@ namespace ConsoleApp1.Migrations
                 {
                     StudentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Firstname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Lastname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Age = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Birthday = table.Column<int>(type: "int", nullable: false),
                     GroupId = table.Column<int>(type: "int", nullable: false)
@@ -45,20 +49,30 @@ namespace ConsoleApp1.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Groups",
+                columns: new[] { "GroupId", "GroupName" },
+                values: new object[,]
+                {
+                    { 1, "ФИИТ" },
+                    { 2, "МОАИС" },
+                    { 3, "ПМИ" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Students_GroupId",
                 table: "Students",
                 column: "GroupId");
-        }*/
+        */}
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            /*migrationBuilder.DropTable(
+        {/*
+            migrationBuilder.DropTable(
                 name: "Students");
 
             migrationBuilder.DropTable(
-                name: "Groups");*/
-        }
+                name: "Groups");
+        */}
     }
 }

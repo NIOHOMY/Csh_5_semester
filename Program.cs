@@ -1,4 +1,5 @@
-﻿using ConsoleApp1;
+﻿using ConsoleApp1.Models;
+using ConsoleApp1.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 // функции работы с бд добавить в dbstorage     +
 // выводить для удаления не пустые группы       +
 // раскидать по файлам, добавить сообщение об ошибке в []   +
-// Model - dataclasses DAL - для работы с бд
+// Model - dataclasses DAL - для работы с бд    +
 // добавить try catch
 
 namespace ConsoleApp1
@@ -21,24 +22,6 @@ namespace ConsoleApp1
         {
             Console.OutputEncoding = Encoding.UTF8;
             using var context = new StudentContext();
-            /*
-            string[] groupNames = { "ФИИТ", "МОАИС", "ПМИ" };
-            List<Group> groups = new List<Group>();
-
-            for (int i = 0; i < groupNames.Length; i++)
-            {
-                Group group = new Group
-                {
-                    GroupName = groupNames[i]
-                };
-                groups.Add(group);
-            }
-            foreach (var group in groups)
-            {
-                context.Groups.Add(group);
-            }
-            context.SaveChanges();
-            */
             var storage = new StudentDBStorage(context);
             var controller = new StudentMenuController(storage);
 

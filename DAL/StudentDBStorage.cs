@@ -3,6 +3,7 @@
 // add-migration "AddCourseTeacherName"
 // Remove-Migration
 // update-database
+using ConsoleApp1.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client.Extensions.Msal;
 
@@ -12,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1
+namespace ConsoleApp1.DAL
 {
     public class StudentDBStorage
     {

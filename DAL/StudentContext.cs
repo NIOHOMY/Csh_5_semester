@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ConsoleApp1.Models;
+using Microsoft.EntityFrameworkCore;
 
 using System;
 using System.Collections.Generic;
@@ -6,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1
+namespace ConsoleApp1.DAL
 {
-    public class StudentContext: DbContext
+    public class StudentContext : DbContext
     {
         public DbSet<Student> Students { get; set; } = null!;
         public DbSet<Group> Groups { get; set; } = null!;
@@ -28,8 +29,14 @@ namespace ConsoleApp1
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //для ограничений модели
-            
+            modelBuilder.Entity<Group>().HasData(
+            new Group { GroupId = 1, GroupName = "ФИИТ" },
+            new Group { GroupId = 2, GroupName = "МОАИС" },
+            new Group { GroupId = 3, GroupName = "ПМИ" }
+            );
+
+            base.OnModelCreating(modelBuilder);
+
         }
     }
 }

@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
-namespace ConsoleApp1
+
+namespace ConsoleApp1.Models
 {
     public class Student
     {
