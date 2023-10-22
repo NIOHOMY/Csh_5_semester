@@ -23,7 +23,7 @@ class Program
 
             var controller = new LibraryController(databaseManager);
 
-            controller.Run();
+            controller.Start();
 
             context.Dispose();
             

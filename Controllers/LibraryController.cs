@@ -7,379 +7,415 @@ using System.Threading.Tasks;
 using LibraryManagementSystem.DAL;
 using LibraryManagementSystem.Models;
 
+using Microsoft.EntityFrameworkCore;
+
+
+/*
+Menu:
+1. Создание
+    1. Создать издательство
+    2. Создать автора
+    3. Создать читателя
+2. Управление издательствами
+    (список издательств на выбор)
+    1. Выпустить книгу
+        (список авторов на выбор)
+3. Управление читателями
+    (список читателей на выбор)
+    1. Запросить выдачу
+        (добавляем книги в выдачу из списка доступных книг)
+
+*/
+
 namespace LibraryManagementSystem.Controllers
 {
-
     public class LibraryController
     {
         private readonly DatabaseManager _databaseManager;
+        private bool _exitRequested;
 
         public LibraryController(DatabaseManager databaseManager)
         {
             _databaseManager = databaseManager;
+            _exitRequested = false;
         }
 
-        public void Run()
+        public void Start()
         {
-            bool exit = false;
-
-            while (!exit)
+            while (!_exitRequested)
             {
-                PrintMenu();
-                int choice = GetChoice();
-
-                switch (choice)
-                {
-                    case 1:
-                        AddAuthor();
-                        break;
-                    case 2:
-                        AddBook();
-                        break;
-                    case 3:
-                        AddIssue();
-                        break;
-                    case 4:
-                        AddIssueBook();
-                        break;
-                    case 5:
-                        AddPublisher();
-                        break;
-                    case 6:
-                        AddReader();
-                        break;
-                    case 7:
-                        GetAllAuthors();
-                        break;
-                    case 8:
-                        GetAllBooks();
-                        break;
-                    case 9:
-                        GetAllIssues();
-                        break;
-                    case 10:
-                        GetAllIssueBooks();
-                        break;
-                    case 11:
-                        GetAllPublishers();
-                        break;
-                    case 12:
-                        GetAllReaders();
-                        break;
-                    case 13:
-                        DeleteAuthor();
-                        break;
-                    case 14:
-                        DeleteBook();
-                        break;
-                    case 15:
-                        DeleteIssue();
-                        break;
-                    case 16:
-                        DeleteIssueBook();
-                        break;
-                    case 17:
-                        DeletePublisher();
-                        break;
-                    case 18:
-                        DeleteReader();
-                        break;
-                    case 19:
-                        exit = true;
-                        break;
-                    default:
-                        Console.WriteLine("Invalid choice. Please try again.");
-                        break;
-                }
+                MainMenu();
             }
         }
 
-        private void PrintMenu()
+        public void MainMenu()
         {
-            Console.WriteLine("Выберите действие:");
-            Console.WriteLine("1. Добавить автора");
-            Console.WriteLine("2. Добавить книгу");
-            Console.WriteLine("3. Добавить выдачу");
-            Console.WriteLine("4. Добавить экземпляр книги в выдачу");
-            Console.WriteLine("5. Добавить издателя");
-            Console.WriteLine("6. Добавить читателя");
-            Console.WriteLine("7. Просмотреть всех авторов");
-            Console.WriteLine("8. Просмотреть все книги");
-            Console.WriteLine("9. Просмотреть все выдачи");
-            Console.WriteLine("10. Просмотреть все экземпляры книг в выдаче");
-            Console.WriteLine("11. Просмотреть всех издателей");
-            Console.WriteLine("12. Просмотреть всех читателей");
-            Console.WriteLine("13. Удалить автора");
-            Console.WriteLine("14. Удалить книгу");
-            Console.WriteLine("15. Удалить выдачу");
-            Console.WriteLine("16. Удалить экземпляр книги в выдаче");
-            Console.WriteLine("17. Удалить издателя");
-            Console.WriteLine("18. Удалить читателя");
-            Console.WriteLine("19. Выход");
-        }
+            Console.WriteLine("Меню:");
+            Console.WriteLine("1. Создание");
+            Console.WriteLine("2. Управление издательствами");
+            Console.WriteLine("3. Управление читателями");
+            Console.WriteLine("4. Посмотреть все выдачи");
+            Console.WriteLine("5. Удалить выдачу");
+            Console.WriteLine("0. Выйти");
 
-        private int GetChoice()
-        {
             int choice;
-            while (!int.TryParse(Console.ReadLine(), out choice))
+            while (!int.TryParse(Console.ReadLine(), out choice) || choice < 0 || choice > 5)
             {
-                Console.WriteLine("Invalid input. Please enter a number.");
+                Console.WriteLine("Неверный выбор. Пожалуйста, введите число от 0 до 3.");
             }
-            return choice;
+
+            switch (choice)
+            {
+                case 1:
+                    CreateMenu();
+                    break;
+                case 2:
+                    PublishersMenu();
+                    break;
+                case 3:
+                    ReadersMenu();
+                    break;
+                case 4:
+                    PrintAllIssues();
+                    break;
+                case 5:
+                    DeleteIssue();
+                    break;
+                case 0:
+                    _exitRequested = true;
+                    break;
+                default:
+                    break;
+            }
         }
 
-        private void AddAuthor()
+        public void CreateMenu()
+        {
+            Console.WriteLine("Меню создания:");
+            Console.WriteLine("1. Создать издательство");
+            Console.WriteLine("2. Создать автора");
+            Console.WriteLine("3. Создать читателя");
+            Console.WriteLine("0. Назад");
+
+            int choice;
+            while (!int.TryParse(Console.ReadLine(), out choice) || choice < 0 || choice > 3)
+            {
+                Console.WriteLine("Неверный выбор. Пожалуйста, введите число от 0 до 3.");
+            }
+
+            switch (choice)
+            {
+                case 1:
+                    CreatePublisher();
+                    break;
+                case 2:
+                    CreateAuthor();
+                    break;
+                case 3:
+                    CreateReader();
+                    break;
+                case 0:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void PublishersMenu()
+        {
+            Console.WriteLine("Меню управления издательствами:");
+            Console.WriteLine("0. Назад");
+
+            var publishers = _databaseManager.GetAllPublishers();
+            for (int i = 0; i < publishers.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {publishers[i].NameOfPublisher}");
+            }
+
+            int choice;
+            while (!int.TryParse(Console.ReadLine(), out choice) || choice < 0 || choice > publishers.Count)
+            {
+                Console.WriteLine($"Неверный выбор. Пожалуйста, введите число от 0 до {publishers.Count}.");
+            }
+
+            if (choice == 0)
+            {
+                return;
+            }
+
+            var selectedPublisher = publishers[choice - 1];
+
+            Console.WriteLine("1. Выпустить книгу");
+            Console.WriteLine("0. Назад");
+
+            while (!int.TryParse(Console.ReadLine(), out choice) || choice < 0 || choice > 1)
+            {
+                Console.WriteLine("Неверный выбор. Пожалуйста, введите 0 или 1.");
+            }
+
+            if (choice == 0)
+            {
+                return;
+            }
+
+            PublishBook(selectedPublisher);
+        }
+
+        public void ReadersMenu()
+        {
+            Console.WriteLine("Меню управления читателями:");
+            Console.WriteLine("0. Назад");
+
+            var readers = _databaseManager.GetAllReaders();
+            for (int i = 0; i < readers.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {readers[i].FullName}");
+            }
+
+            int choice;
+            while (!int.TryParse(Console.ReadLine(), out choice) || choice < 0 || choice > readers.Count)
+            {
+                Console.WriteLine($"Неверный выбор. Пожалуйста, введите число от 0 до {readers.Count}.");
+            }
+
+            if (choice == 0)
+            {
+                return;
+            }
+
+            var selectedReader = readers[choice - 1];
+
+            Console.WriteLine("1. Запросить выдачу");
+            Console.WriteLine("0. Назад");
+
+            while (!int.TryParse(Console.ReadLine(), out choice) || choice < 0 || choice > 1)
+            {
+                Console.WriteLine("Неверный выбор. Пожалуйста, введите 0 или 1.");
+            }
+
+            if (choice == 0)
+            {
+                return;
+            }
+
+            RequestIssue(selectedReader);
+        }
+
+        public void CreatePublisher()
+        {
+            Console.WriteLine("Введите название издательства:");
+            string name = Console.ReadLine();
+
+            Console.WriteLine("Введите город издательства:");
+            string city = Console.ReadLine();
+
+            // Создание объекта Publisher и сохранение в базе данных
+            var publisher = new Publisher
+            {
+                NameOfPublisher = name,
+                City = city
+            };
+            _databaseManager.AddPublisher(publisher);
+
+            Console.WriteLine("Издательство успешно создано!");
+        }
+
+        public void CreateAuthor()
         {
             Console.WriteLine("Введите имя автора:");
             string name = Console.ReadLine();
 
-            Author author = new Author
+            // Создание объекта Author и сохранение в базе данных
+            var author = new Author
             {
                 Name = name
             };
-
             _databaseManager.AddAuthor(author);
-            Console.WriteLine("Автор успешно добавлен.");
+
+            Console.WriteLine("Автор успешно создан!");
         }
 
-        private void AddBook()
+        public void CreateReader()
         {
-            Console.WriteLine("Введите название книги:");
-            string title = Console.ReadLine();
-
-            Console.WriteLine("Введите ID первого автора:");
-            int firstAuthorId = GetChoice();
-
-            Console.WriteLine("Введите год публикации:");
-            int yearOfPublication = GetChoice();
-
-            Console.WriteLine("Введите цену:");
-            decimal price = decimal.Parse(Console.ReadLine());
-
-            Console.WriteLine("Введите количество экземпляров:");
-            int numberOfExamples = GetChoice();
-
-            Console.WriteLine("Введите ID издателя:");
-            int publisherId = GetChoice();
-
-            Book book = new Book
-            {
-                Title = title,
-                FirstAuthorId = firstAuthorId,
-                YearOfPublication = yearOfPublication,
-                Price = price,
-                NumberOfExamples = numberOfExamples,
-                PublisherId = publisherId
-            };
-
-            _databaseManager.AddBook(book);
-            Console.WriteLine("Книга успешно добавлена.");
-        }
-
-        private void AddIssue()
-        {
-            Console.WriteLine("Введите дату выдачи (yyyy-MM-dd):");
-            DateTime issueDate = DateTime.Parse(Console.ReadLine());
-
-            Console.WriteLine("Введите дату возврата (yyyy-MM-dd):");
-            DateTime returnDate = DateTime.Parse(Console.ReadLine());
-
-            Console.WriteLine("Введите ID читателя:");
-            int readerId = GetChoice();
-
-            Issue issue = new Issue
-            {
-                IssueDate = issueDate,
-                ReturnDate = returnDate,
-                ReaderId = readerId
-            };
-
-            _databaseManager.AddIssue(issue);
-            Console.WriteLine("Выдача успешно добавлена.");
-        }
-
-        private void AddIssueBook()
-        {
-            Console.WriteLine("Введите ID книги:");
-            int bookId = GetChoice();
-
-            Console.WriteLine("Введите ID выдачи:");
-            int issueId = GetChoice();
-
-            IssueBook issueBook = new IssueBook
-            {
-                BookId = bookId,
-                IssueId = issueId
-            };
-
-            _databaseManager.AddIssueBook(issueBook);
-            Console.WriteLine("Экземпляр книги успешно добавлен в выдачу.");
-        }
-
-        private void AddPublisher()
-        {
-            Console.WriteLine("Введите название издателя:");
-            string nameOfPublisher = Console.ReadLine();
-
-            Console.WriteLine("Введите город издателя:");
-            string city = Console.ReadLine();
-
-            Publisher publisher = new Publisher
-            {
-                NameOfPublisher = nameOfPublisher,
-                City = city
-            };
-
-            _databaseManager.AddPublisher(publisher);
-            Console.WriteLine("Издатель успешно добавлен.");
-        }
-
-        private void AddReader()
-        {
-            Console.WriteLine("Введите ФИО читателя:");
+            Console.WriteLine("Введите полное имя читателя:");
             string fullName = Console.ReadLine();
 
-            Console.WriteLine("Введите адрес:");
+            Console.WriteLine("Введите адрес читателя:");
             string address = Console.ReadLine();
 
-            Console.WriteLine("Введите номер телефона:");
+            Console.WriteLine("Введите номер телефона читателя:");
             string phoneNumber = Console.ReadLine();
 
-            Reader reader = new Reader
+            // Создание объекта Reader и сохранение в базе данных
+            var reader = new Reader
             {
                 FullName = fullName,
                 Address = address,
                 PhoneNumber = phoneNumber
             };
-
             _databaseManager.AddReader(reader);
-            Console.WriteLine("Читатель успешно добавлен.");
+
+            Console.WriteLine("Читатель успешно создан!");
         }
 
-        private void GetAllAuthors()
+        public void PublishBook(Publisher publisher)
         {
+            Console.WriteLine("Список доступных авторов:");
+
             var authors = _databaseManager.GetAllAuthors();
-            Console.WriteLine("Список всех авторов:");
-
-            foreach (var author in authors)
+            for (int i = 0; i < authors.Count; i++)
             {
-                Console.WriteLine($"ID: {author.AuthorId}, Имя: {author.Name}");
+                Console.WriteLine($"{i + 1}. {authors[i].Name}");
             }
+
+            int choice;
+            while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > authors.Count)
+            {
+                Console.WriteLine($"Неверный выбор. Пожалуйста, введите число от 1 до {authors.Count}.");
+            }
+
+            var selectedAuthor = authors[choice - 1];
+
+            Console.WriteLine("Введите название книги:");
+            string title = Console.ReadLine();
+
+            Console.WriteLine("Введите год публикации:");
+            int yearOfPublication;
+            while (!int.TryParse(Console.ReadLine(), out yearOfPublication))
+            {
+                Console.WriteLine("Некорректный ввод. Пожалуйста, введите корректный год публикации.");
+            }
+
+            Console.WriteLine("Введите цену книги:");
+            decimal price;
+            while (!decimal.TryParse(Console.ReadLine(), out price))
+            {
+                Console.WriteLine("Некорректный ввод. Пожалуйста, введите корректную цену книги.");
+            }
+
+            Console.WriteLine("Введите количество экземпляров книги:");
+            int numberOfExamples;
+            while (!int.TryParse(Console.ReadLine(), out numberOfExamples))
+            {
+                Console.WriteLine("Некорректный ввод. Пожалуйста, введите корректное количество экземпляров книги.");
+            }
+
+            // Создание объекта Book и сохранение в базе данных
+            var book = new Book
+            {
+                Title = title,
+                YearOfPublication = yearOfPublication,
+                Price = price,
+                NumberOfExamples = numberOfExamples,
+                PublisherId = publisher.PublisherId,
+                FirstAuthorId = selectedAuthor.AuthorId
+            };
+            _databaseManager.AddBook(book);
+
+            Console.WriteLine("Книга успешно выпущена!");
         }
 
-        private void GetAllBooks()
+        public void RequestIssue(Reader reader)
         {
-            var books = _databaseManager.GetAllBooks();
-            Console.WriteLine("Список всех книг:");
+            Console.WriteLine("Список доступных книг:");
 
-            foreach (var book in books)
+            var books = _databaseManager.GetAllBooks();
+            for (int i = 0; i < books.Count; i++)
             {
-                Console.WriteLine($"ID: {book.BookId}, Название: {book.Title}, " +
-                    $"Первый автор: {book.FirstAuthor.Name}, Год публикации: {book.YearOfPublication}, " +
-                    $"Цена: {book.Price}, Количество экземпляров: {book.NumberOfExamples}, " +
-                    $"Издатель: {book.Publisher.NameOfPublisher}");
+                Console.WriteLine($"{i + 1}. {books[i].Title}");
             }
+
+            Console.WriteLine("Введите номера книг, которые вы хотите добавить в выдачу (разделенные запятой):");
+            var bookChoices = new List<int>();
+            string input = Console.ReadLine();
+            foreach (var choice in input.Split(','))
+            {
+                if (int.TryParse(choice.Trim(), out int bookChoice) && bookChoice >= 1 && bookChoice <= books.Count)
+                {
+                    bookChoices.Add(bookChoice);
+                }
+            }
+
+            if (bookChoices.Count == 0)
+            {
+                Console.WriteLine("Неверный выбор книг. Оформление выдачи отменено.");
+                return;
+            }
+
+            Console.WriteLine("Введите дату выдачи в формате dd.MM.yyyy:");
+            DateTime issueDate;
+            while (!DateTime.TryParseExact(Console.ReadLine(), "dd.MM.yyyy", null,
+                System.Globalization.DateTimeStyles.None, out issueDate))
+            {
+                Console.WriteLine("Некорректный ввод. Пожалуйста, введите корректную дату выдачи в формате dd.MM.yyyy.");
+            }
+
+            Console.WriteLine("Введите дату возврата в формате dd.MM.yyyy:");
+            DateTime returnDate;
+            while (!DateTime.TryParseExact(Console.ReadLine(), "dd.MM.yyyy", null,
+                System.Globalization.DateTimeStyles.None, out returnDate))
+            {
+                Console.WriteLine("Некорректный ввод. Пожалуйста, введите корректную дату возврата в формате dd.MM.yyyy.");
+            }
+
+            // Создание объекта Issue и сохранение в базе данных
+            var issue = new Issue
+            {
+                IssueDate = issueDate,
+                ReturnDate = returnDate,
+                ReaderId = reader.ReaderId
+            };
+            _databaseManager.AddIssue(issue);
+
+            foreach (var bookChoice in bookChoices)
+            {
+                var selectedBook = books[bookChoice - 1];
+
+                // Создание объекта IssueBook и сохранение в базе данных
+                var issueBook = new IssueBook
+                {
+                    BookId = selectedBook.BookId,
+                    IssueId = issue.IssueId
+                };
+                _databaseManager.AddIssueBook(issueBook);
+            }
+
+            Console.WriteLine("Выдача успешно оформлена!");
         }
 
-        private void GetAllIssues()
+        public void PrintAllIssues()
         {
             var issues = _databaseManager.GetAllIssues();
-            Console.WriteLine("Список всех выдач:");
 
             foreach (var issue in issues)
             {
-                Console.WriteLine($"ID: {issue.IssueId}, Дата выдачи: {issue.IssueDate}, " +
-                    $"Дата возврата: {issue.ReturnDate}, Читатель: {issue.Reader.FullName}");
+                Console.WriteLine($"Выдача #{issue.IssueId}");
+                Console.WriteLine($"Дата выдачи: {issue.IssueDate.ToString("dd.MM.yyyy")}");
+                Console.WriteLine($"Дата возврата: {issue.ReturnDate.ToString("dd.MM.yyyy")}");
+                Console.WriteLine("Список книг:");
+
+                var issueBooks = _databaseManager.GetIssueBooksByIssueId(issue.IssueId);
+                foreach (var issueBook in issueBooks)
+                {
+                    var book = _databaseManager.GetBookById(issueBook.BookId);
+                    Console.WriteLine($"{book.Title}");
+                }
+
+                Console.WriteLine("--------------------");
             }
         }
-
-        private void GetAllIssueBooks()
+        public void DeleteIssue()
         {
-            var issueBooks = _databaseManager.GetAllIssueBooks();
-            Console.WriteLine("Список всех экземпляров книг в выдаче:");
-
-            foreach (var issueBook in issueBooks)
+            Console.WriteLine("Введите ID выдачи, которую вы хотите удалить:");
+            PrintAllIssues();
+            int _issueId;
+            if (!int.TryParse(Console.ReadLine(), out _issueId))
             {
-                Console.WriteLine($"ID: {issueBook.Id}, Книга: {issueBook.Book.Title}, Выдача: {issueBook.Issue.IssueDate}");
+                Console.WriteLine("Некорректный ID выдачи.");
             }
+
+            _databaseManager.DeleteIssue(_issueId);
         }
 
-        private void GetAllPublishers()
-        {
-            var publishers = _databaseManager.GetAllPublishers();
-            Console.WriteLine("Список всех издателей:");
-
-            foreach (var publisher in publishers)
-            {
-                Console.WriteLine($"ID: {publisher.PublisherId}, Название: {publisher.NameOfPublisher}, Город: {publisher.City}");
-            }
-        }
-
-        private void GetAllReaders()
-        {
-            var readers = _databaseManager.GetAllReaders();
-            Console.WriteLine("Список всех читателей:");
-
-            foreach (var reader in readers)
-            {
-                Console.WriteLine($"ID: {reader.ReaderId}, ФИО: {reader.FullName}, Адрес: {reader.Address}, " +
-                    $"Номер телефона: {reader.PhoneNumber}");
-            }
-        }
-
-        private void DeleteAuthor()
-        {
-            Console.WriteLine("Введите ID автора, которого хотите удалить:");
-            int authorId = GetChoice();
-
-            _databaseManager.DeleteAuthor(authorId);
-            Console.WriteLine("Автор успешно удален.");
-        }
-
-        private void DeleteBook()
-        {
-            Console.WriteLine("Введите ID книги, которую хотите удалить:");
-            int bookId = GetChoice();
-
-            _databaseManager.DeleteBook(bookId);
-            Console.WriteLine("Книга успешно удалена.");
-        }
-
-        private void DeleteIssue()
-        {
-            Console.WriteLine("Введите ID выдачи, которую хотите удалить:");
-            int issueId = GetChoice();
-
-            _databaseManager.DeleteIssue(issueId);
-            Console.WriteLine("Выдача успешно удалена.");
-        }
-
-        private void DeleteIssueBook()
-        {
-            Console.WriteLine("Введите ID экземпляра книги в выдаче, который хотите удалить:");
-            int issueBookId = GetChoice();
-
-            _databaseManager.DeleteIssueBook(issueBookId);
-            Console.WriteLine("Экземпляр книги успешно удален из выдачи.");
-        }
-
-        private void DeletePublisher()
-        {
-            Console.WriteLine("Введите ID издателя, которого хотите удалить:");
-            int publisherId = GetChoice();
-
-            _databaseManager.DeletePublisher(publisherId);
-            Console.WriteLine("Издатель успешно удален.");
-        }
-
-        private void DeleteReader()
-        {
-            Console.WriteLine("Введите ID читателя, которого хотите удалить:");
-            int readerId = GetChoice();
-
-            _databaseManager.DeleteReader(readerId);
-            Console.WriteLine("Читатель успешно удален.");
-        }
     }
-
 }

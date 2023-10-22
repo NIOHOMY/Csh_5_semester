@@ -18,6 +18,16 @@ namespace LibraryManagementSystem.DAL
             _context = context;
         }
 
+        public List<IssueBook> GetIssueBooksByIssueId(int issueId)
+        {
+            return _context.IssueBooks.Where(ib => ib.IssueId == issueId).ToList();
+        }
+
+        public Book GetBookById(int bookId)
+        {
+            return _context.Books.FirstOrDefault(book => book.BookId == bookId);
+        }
+
         public void AddAuthor(Author author)
         {
             _context.Authors.Add(author);
@@ -108,13 +118,20 @@ namespace LibraryManagementSystem.DAL
 
         public void DeleteIssue(int issueId)
         {
-            var issue = _context.Issues.Find(issueId);
+            var issue = _context.Issues.FirstOrDefault(i => i.IssueId == issueId);
 
-            if (issue != null)
+            if (issue == null)
             {
-                _context.Issues.Remove(issue);
-                _context.SaveChanges();
+                Console.WriteLine("Выдача не найдена.");
+                return;
             }
+
+            var issueBooks = _context.IssueBooks.Where(ib => ib.IssueId == issueId).ToList();
+            _context.IssueBooks.RemoveRange(issueBooks);
+
+            _context.Issues.Remove(issue);
+
+            _context.SaveChanges();
         }
 
         public void DeleteIssueBook(int issueBookId)
