@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagementSystem.Models;
+using System.Diagnostics;
 
 namespace LibraryManagementSystem.DAL
 {
@@ -18,152 +19,372 @@ namespace LibraryManagementSystem.DAL
             _context = context;
         }
 
-        public List<IssueBook> GetIssueBooksByIssueId(int issueId)
+        public Reader GetReaderById(int readerId)
         {
-            return _context.IssueBooks.Where(ib => ib.IssueId == issueId).ToList();
+            try
+            {
+                return _context.Readers.FirstOrDefault(r => r.ReaderId == readerId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении читателя из базы данных:");
+                Console.WriteLine(ex.Message);
+                Debug.WriteLine("Произошла ошибка при получении читателя из базы данных:");
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        public List<Book> GetIssueBooksByIssueId(int issueId)
+        {
+            try
+            {
+                return _context.Issues
+                    .Where(issue => issue.IssueId == issueId)
+                    .SelectMany(issue => issue.Books)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении списка книг по ID выдачи:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при получении списка книг по ID выдачи:");
+                Debug.WriteLine(ex.Message);
+                return new List<Book>();
+            }
         }
 
         public Book GetBookById(int bookId)
         {
-            return _context.Books.FirstOrDefault(book => book.BookId == bookId);
+            try
+            {
+                return _context.Books.FirstOrDefault(book => book.BookId == bookId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении книги по ID:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при получении книги по ID:");
+                Debug.WriteLine(ex.Message);
+                
+                return null;
+            }
         }
 
         public void AddAuthor(Author author)
         {
-            _context.Authors.Add(author);
-            _context.SaveChanges();
+            try
+            {
+                _context.Authors.Add(author);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при добавлении автора:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при добавлении автора:");
+                Debug.WriteLine(ex.Message);
+                
+            }
         }
 
         public void AddBook(Book book)
         {
-            _context.Books.Add(book);
-            _context.SaveChanges();
+            try
+            {
+                _context.Books.Add(book);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при добавлении книги:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при добавлении книги:");
+                Debug.WriteLine(ex.Message);
+                
+            }
         }
 
         public void AddIssue(Issue issue)
         {
-            _context.Issues.Add(issue);
-            _context.SaveChanges();
+            try
+            {
+                _context.Issues.Add(issue);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при добавлении выдачи:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при добавлении выдачи:");
+                Debug.WriteLine(ex.Message);
+                
+            }
         }
 
-        public void AddIssueBook(IssueBook issueBook)
-        {
-            _context.IssueBooks.Add(issueBook);
-            _context.SaveChanges();
-        }
 
         public void AddPublisher(Publisher publisher)
         {
-            _context.Publishers.Add(publisher);
-            _context.SaveChanges();
+            try
+            {
+                _context.Publishers.Add(publisher);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при добавлении издателя:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при добавлении издателя:");
+                Debug.WriteLine(ex.Message);
+                
+            }
         }
 
         public void AddReader(Reader reader)
         {
-            _context.Readers.Add(reader);
-            _context.SaveChanges();
+            try
+            {
+                _context.Readers.Add(reader);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при добавлении читателя:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при добавлении читателя:");
+                Debug.WriteLine(ex.Message);
+                
+            }
         }
 
         public List<Author> GetAllAuthors()
         {
-            return _context.Authors.ToList();
+            try
+            {
+                return _context.Authors.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении списка авторов:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при получении списка авторов:");
+                Debug.WriteLine(ex.Message);
+                
+                return new List<Author>();
+            }
         }
 
         public List<Book> GetAllBooks()
         {
-            return _context.Books.Include(b => b.FirstAuthor).Include(b => b.Publisher).ToList();
+            try
+            {
+                return _context.Books.Include(b => b.FirstAuthor).Include(b => b.Publisher).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении списка книг:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при получении списка книг:");
+                Debug.WriteLine(ex.Message);
+                
+                return new List<Book>();
+            }
         }
 
         public List<Issue> GetAllIssues()
         {
-            return _context.Issues.Include(i => i.Reader).ToList();
-        }
-
-        public List<IssueBook> GetAllIssueBooks()
-        {
-            return _context.IssueBooks.Include(ib => ib.Book).Include(ib => ib.Issue).ToList();
+            try
+            {
+                return _context.Issues.Include(i => i.Reader).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении списка выдач:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при получении списка выдач:");
+                Debug.WriteLine(ex.Message);
+                
+                return new List<Issue>();
+            }
         }
 
         public List<Publisher> GetAllPublishers()
         {
-            return _context.Publishers.ToList();
+            try
+            {
+                return _context.Publishers.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении списка издателей:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при получении списка издателей:");
+                Debug.WriteLine(ex.Message);
+                
+                return new List<Publisher>();
+            }
         }
 
         public List<Reader> GetAllReaders()
         {
-            return _context.Readers.ToList();
-        }
-
-        public void DeleteAuthor(int authorId)
-        {
-            var author = _context.Authors.Find(authorId);
-
-            if (author != null)
+            try
             {
-                _context.Authors.Remove(author);
-                _context.SaveChanges();
+                return _context.Readers.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении списка читателей:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при получении списка читателей:");
+                Debug.WriteLine(ex.Message);
+                
+                return new List<Reader>();
             }
         }
 
-        public void DeleteBook(int bookId)
+        public bool DeleteAuthor(int authorId)
         {
-            var book = _context.Books.Find(bookId);
-
-            if (book != null)
+            try
             {
-                _context.Books.Remove(book);
-                _context.SaveChanges();
+                Author? author = _context.Authors.Find(authorId);
+
+                if (author != null)
+                {
+                    _context.Authors.Remove(author);
+                    _context.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при удалении автора:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при удалении автора:");
+                Debug.WriteLine(ex.Message);
+                
+                return false;
             }
         }
 
-        public void DeleteIssue(int issueId)
+        public bool DeleteBook(int bookId)
         {
-            var issue = _context.Issues.FirstOrDefault(i => i.IssueId == issueId);
-
-            if (issue == null)
+            try
             {
-                Console.WriteLine("Выдача не найдена.");
-                return;
+                Book? book = _context.Books.Find(bookId);
+
+                if (book != null)
+                {
+                    _context.Books.Remove(book);
+                    _context.SaveChanges();
+                    return true;
+                }
+                return false;
             }
-
-            var issueBooks = _context.IssueBooks.Where(ib => ib.IssueId == issueId).ToList();
-            _context.IssueBooks.RemoveRange(issueBooks);
-
-            _context.Issues.Remove(issue);
-
-            _context.SaveChanges();
-        }
-
-        public void DeleteIssueBook(int issueBookId)
-        {
-            var issueBook = _context.IssueBooks.Find(issueBookId);
-
-            if (issueBook != null)
+            catch (Exception ex)
             {
-                _context.IssueBooks.Remove(issueBook);
-                _context.SaveChanges();
+                Console.WriteLine("Произошла ошибка при удалении книги:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при удалении книги:");
+                Debug.WriteLine(ex.Message);
+                
+                return false;
             }
         }
 
-        public void DeletePublisher(int publisherId)
+        public bool DeleteIssue(int issueId)
         {
-            var publisher = _context.Publishers.Find(publisherId);
-
-            if (publisher != null)
+            try
             {
-                _context.Publishers.Remove(publisher);
+                Issue? issue = _context.Issues.FirstOrDefault(i => i.IssueId == issueId);
+
+                if (issue == null)
+                {
+                    Console.WriteLine("Выдача не найдена.");
+                    return false;
+                }
+
+                _context.Issues.Remove(issue);
                 _context.SaveChanges();
+
+                Console.WriteLine("Выдача успешно удалена.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при удалении выдачи:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при удалении выдачи:");
+                Debug.WriteLine(ex.Message);
+                
+                return false;
             }
         }
 
-        public void DeleteReader(int readerId)
+        public bool DeletePublisher(int publisherId)
         {
-            var reader = _context.Readers.Find(readerId);
-
-            if (reader != null)
+            try
             {
-                _context.Readers.Remove(reader);
-                _context.SaveChanges();
+                Publisher? publisher = _context.Publishers.Find(publisherId);
+
+                if (publisher != null)
+                {
+                    _context.Publishers.Remove(publisher);
+                    _context.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при удалении издателя:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при удалении издателя:");
+                Debug.WriteLine(ex.Message);
+                
+                return false;
+            }
+        }
+
+        public bool DeleteReader(int readerId)
+        {
+            try
+            {
+                Reader? reader = _context.Readers.Find(readerId);
+
+                if (reader != null)
+                {
+                    _context.Readers.Remove(reader);
+                    _context.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при удалении читателя:");
+                Console.WriteLine(ex.Message);
+                
+                Debug.WriteLine("Произошла ошибка при удалении читателя:");
+                Debug.WriteLine(ex.Message);
+                
+                return false;
             }
         }
     }

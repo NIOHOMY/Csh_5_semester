@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagementSystem.Models
 {
-    public class IssueBook
+    /*public class IssueBook
     {
         public int Id { get; set; }
         public int BookId { get; set; }
@@ -19,5 +19,5 @@ namespace LibraryManagementSystem.Models
 
         [ForeignKey("IssueId")]
         public Issue Issue { get; set; }
-    }
+    }*/
 }

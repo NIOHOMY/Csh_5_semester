@@ -9,7 +9,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+/*
+переделать связь многие ко многим   +
+добавить try catch  
+добавить [] и сообщения об ошибках  +
+мб улучшить интерфейс (удаление ...)
 
+ */
 class Program
 {
     static void Main(string[] args)
