@@ -65,7 +65,7 @@ namespace LibraryManagementSystem.DAL
                         FirstAuthorId = 2,
                         YearOfPublication = 1866,
                         Price = 800,
-                        NumberOfExamples = 5,
+                        NumberOfExamples = 1,
                         PublisherId = 2
                     },
                     new Book
@@ -77,6 +77,15 @@ namespace LibraryManagementSystem.DAL
                         Price = 500,
                         NumberOfExamples = 15,
                         PublisherId = 1
+                    }, new Book
+                    {
+                        BookId = 4,
+                        Title = "Честный вор",
+                        FirstAuthorId = 2,
+                        YearOfPublication = 1848,
+                        Price = 700,
+                        NumberOfExamples = 2,
+                        PublisherId = 2
                     }
                 );
 

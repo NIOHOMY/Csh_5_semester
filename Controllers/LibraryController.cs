@@ -535,7 +535,7 @@ namespace LibraryManagementSystem.Controllers
             {
                 Console.WriteLine("Список доступных авторов:");
 
-                var authors = _databaseManager.GetAllAuthors();
+                List<Author>? authors = _databaseManager.GetAllAuthors();
                 for (int i = 0; i < authors.Count; i++)
                 {
                     Console.WriteLine($"{i + 1}. {authors[i].Name}");
@@ -547,45 +547,54 @@ namespace LibraryManagementSystem.Controllers
                     Console.WriteLine($"Неверный выбор. Пожалуйста, введите число от 1 до {authors.Count}.");
                 }
 
-                var selectedAuthor = authors[choice - 1];
+                Author? selectedAuthor = authors[choice - 1];
 
                 Console.WriteLine("Введите название книги:");
-                string title = Console.ReadLine();
-
-                Console.WriteLine("Введите год публикации:");
-                int yearOfPublication;
-                while (!int.TryParse(Console.ReadLine(), out yearOfPublication))
+                string? title = Console.ReadLine();
+                if (title != null)
                 {
-                    Console.WriteLine("Некорректный ввод. Пожалуйста, введите корректный год публикации.");
+                    Console.WriteLine("Введите год публикации:");
+                    int yearOfPublication;
+                    while (!int.TryParse(Console.ReadLine(), out yearOfPublication))
+                    {
+                        Console.WriteLine("Некорректный ввод. Пожалуйста, введите корректный год публикации.");
+                    }
+
+                    Console.WriteLine("Введите цену книги:");
+                    decimal price;
+                    while (!decimal.TryParse(Console.ReadLine(), out price))
+                    {
+                        Console.WriteLine("Некорректный ввод. Пожалуйста, введите корректную цену книги.");
+                    }
+
+                    Console.WriteLine("Введите количество экземпляров книги:");
+                    int numberOfExamples;
+                    while (!int.TryParse(Console.ReadLine(), out numberOfExamples))
+                    {
+                        Console.WriteLine("Некорректный ввод. Пожалуйста, введите корректное количество экземпляров книги.");
+                    }
+
+                    // Создание объекта Book и сохранение в базе данных
+                    Book? book = new Book
+                    {
+                        Title = title,
+                        YearOfPublication = yearOfPublication,
+                        Price = price,
+                        NumberOfExamples = numberOfExamples,
+                        PublisherId = publisher.PublisherId,
+                        FirstAuthorId = selectedAuthor.AuthorId
+                    };
+                    _databaseManager.AddBook(book);
+
+                    Console.WriteLine("Книга успешно выпущена!");
+                }
+                else
+                {
+                    Console.WriteLine("Некорректное название, публикация отменена.");
+
                 }
 
-                Console.WriteLine("Введите цену книги:");
-                decimal price;
-                while (!decimal.TryParse(Console.ReadLine(), out price))
-                {
-                    Console.WriteLine("Некорректный ввод. Пожалуйста, введите корректную цену книги.");
-                }
-
-                Console.WriteLine("Введите количество экземпляров книги:");
-                int numberOfExamples;
-                while (!int.TryParse(Console.ReadLine(), out numberOfExamples))
-                {
-                    Console.WriteLine("Некорректный ввод. Пожалуйста, введите корректное количество экземпляров книги.");
-                }
-
-                // Создание объекта Book и сохранение в базе данных
-                var book = new Book
-                {
-                    Title = title,
-                    YearOfPublication = yearOfPublication,
-                    Price = price,
-                    NumberOfExamples = numberOfExamples,
-                    PublisherId = publisher.PublisherId,
-                    FirstAuthorId = selectedAuthor.AuthorId
-                };
-                _databaseManager.AddBook(book);
-
-                Console.WriteLine("Книга успешно выпущена!");
+               
             }
             catch (Exception ex)
             {
@@ -604,7 +613,7 @@ namespace LibraryManagementSystem.Controllers
             {
                 Console.WriteLine("Список доступных книг:");
 
-                var books = _databaseManager.GetAllBooks();
+                var books = _databaseManager.GetAllAvailableBooks();
                 for (int i = 0; i < books.Count; i++)
                 {
                     Console.WriteLine($"{i + 1}. {books[i].Title}");
@@ -653,10 +662,11 @@ namespace LibraryManagementSystem.Controllers
                     Books = new List<Book>()
                 };
 
-                foreach (var bookChoice in bookChoices)
+                foreach (int bookChoice in bookChoices)
                 {
                     Book? selectedBook = books[bookChoice - 1];
                     issue.Books.Add(selectedBook);
+                    _databaseManager.DecreaseNumberOfExamples(selectedBook.BookId);
                 }
 
                 _databaseManager.AddIssue(issue);

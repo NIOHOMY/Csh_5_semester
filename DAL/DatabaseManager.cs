@@ -73,6 +73,26 @@ namespace LibraryManagementSystem.DAL
             }
         }
 
+        public void IncreaseNumberOfExamples(int bookId, int quantity=1)
+        {
+            Book? book = _context.Books.Find(bookId);
+            if (book != null)
+            {
+                book.NumberOfExamples += quantity;
+                _context.SaveChanges();
+            }
+        }
+
+        public void DecreaseNumberOfExamples(int bookId, int quantity=1)
+        {
+            Book? book = _context.Books.Find(bookId);
+            if (book != null && book.NumberOfExamples >= quantity)
+            {
+                book.NumberOfExamples -= quantity;
+                _context.SaveChanges();
+            }
+        }
+
         public void AddAuthor(Author author)
         {
             try
@@ -200,6 +220,24 @@ namespace LibraryManagementSystem.DAL
             }
         }
 
+        public List<Book> GetAllAvailableBooks()
+        {
+            try
+            {
+                return _context.Books.Where(b => b.NumberOfExamples > 0).ToList();   
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении списка доступных книг:");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine("Произошла ошибка при получении списка доступных книг:");
+                Debug.WriteLine(ex.Message);
+
+                return new List<Book>();
+            }
+        }
+
         public List<Issue> GetAllIssues()
         {
             try
@@ -317,7 +355,10 @@ namespace LibraryManagementSystem.DAL
                     Console.WriteLine("Выдача не найдена.");
                     return false;
                 }
-
+                foreach (Book book in issue.Books)
+                {
+                    IncreaseNumberOfExamples(book.BookId);
+                }
                 _context.Issues.Remove(issue);
                 _context.SaveChanges();
 
