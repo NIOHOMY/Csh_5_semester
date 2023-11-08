@@ -16,6 +16,7 @@ namespace WebApplication1.Models
         public string Title { get; set; }
         [Required(ErrorMessage = "Идентификатор первого автора обязателен.")]
         public int FirstAuthorId { get; set; }
+        [Required(ErrorMessage = "Идентификатор первого автора обязателен.")]
         [ForeignKey("FirstAuthorId")]
         public Author FirstAuthor { get; set; }
         [Required(ErrorMessage = "Год публикации обязателен.")]

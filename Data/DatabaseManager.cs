@@ -128,6 +128,23 @@ namespace WebApplication1.Data
                 
             }
         }
+        public void UpdateBook(Book book)
+        {
+            try
+            {
+                _context.Books.Update(book);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при обновлении книги:");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine("Произошла ошибка при обновлении книги:");
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
 
         public void AddIssue(Issue issue)
         {
@@ -224,6 +241,7 @@ namespace WebApplication1.Data
         {
             try
             {
+                List<Book> book = _context.Books.Include(b => b.FirstAuthor).Include(b => b.Publisher).Where(b => b.NumberOfExamples > 0).ToList();
                 return _context.Books.Where(b => b.NumberOfExamples > 0).ToList();   
             }
             catch (Exception ex)
@@ -427,6 +445,11 @@ namespace WebApplication1.Data
                 
                 return false;
             }
+        }
+
+        internal Task<string?> GetBookById(int? id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -13,9 +13,12 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+//builder.Services.AddScoped<DatabaseManager>();
+//builder.Services.AddSingleton<DatabaseManager>();
+
 builder.Services.AddControllersWithViews();
 
-string connection = builder.Configuration.GetConnectionString("StudentConnection");
+string connection = builder.Configuration.GetConnectionString("LibraryConnection");
  
 // добавляем контекст ApplicationContext в качестве сервиса в приложение
 //builder.Services.AddDbContext<StudentDbContext>(options => options.UseSqlServer(connection));
