@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,92 +10,87 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    public class StudentController : Controller
+    public class PublishersController : Controller
     {
-        private readonly StudentDbContext _context;
+        private readonly LibraryContext _context;
 
-        public StudentController(StudentDbContext context)
+        public PublishersController(LibraryContext context)
         {
             _context = context;
         }
 
-        // GET: Student
+        // GET: Publishers
         public async Task<IActionResult> Index()
         {
-            
-            var studentDbContext = _context.Students.Include(s => s.Group);
-            return View(await studentDbContext.ToListAsync());
+              return _context.Publishers != null ? 
+                          View(await _context.Publishers.ToListAsync()) :
+                          Problem("Entity set 'LibraryContext.Publishers'  is null.");
         }
 
-        // GET: Student/Details/5
+        // GET: Publishers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Students == null)
+            if (id == null || _context.Publishers == null)
             {
                 return NotFound();
             }
 
-            var student = await _context.Students
-                .Include(s => s.Group)
-                .FirstOrDefaultAsync(m => m.StudentId == id);
-            if (student == null)
+            var publisher = await _context.Publishers
+                .FirstOrDefaultAsync(m => m.PublisherId == id);
+            if (publisher == null)
             {
                 return NotFound();
             }
 
-            return View(student);
+            return View(publisher);
         }
 
-        // GET: Student/Create
+        // GET: Publishers/Create
         public IActionResult Create()
         {
-            ViewData["GroupId"] = new SelectList(_context.Set<Group>(), "GroupId", "NameGroup");
             return View();
         }
 
-        // POST: Student/Create
+        // POST: Publishers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentId,NameStudent,GroupId")] Student student)
+        public async Task<IActionResult> Create([Bind("PublisherId,NameOfPublisher,City")] Publisher publisher)
         {
-            
             if (ModelState.IsValid)
             {
-                _context.Students.Add(student);
+                _context.Add(publisher);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GroupId"] = new SelectList(_context.Set<Group>(), "GroupId", "GroupId", student.GroupId);
-            return View(student);
+            return View(publisher);
         }
 
-        // GET: Student/Edit/5
+        // GET: Publishers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Students == null)
+            if (id == null || _context.Publishers == null)
             {
                 return NotFound();
             }
 
-            var student = await _context.Students.FindAsync(id);
-            if (student == null)
+            var publisher = await _context.Publishers.FindAsync(id);
+            if (publisher == null)
             {
                 return NotFound();
             }
-            ViewData["GroupId"] = new SelectList(_context.Set<Group>(), "GroupId", "GroupId", student.GroupId);
-            return View(student);
+            return View(publisher);
         }
 
-        // POST: Student/Edit/5
+        // POST: Publishers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StudentId,NameStudent,GroupId")] Student student)
+        public async Task<IActionResult> Edit(int id, [Bind("PublisherId,NameOfPublisher,City")] Publisher publisher)
         {
-            if (id != student.StudentId)
+            if (id != publisher.PublisherId)
             {
                 return NotFound();
             }
@@ -104,12 +99,12 @@ namespace WebApplication1.Controllers
             {
                 try
                 {
-                    _context.Update(student);
+                    _context.Update(publisher);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentExists(student.StudentId))
+                    if (!PublisherExists(publisher.PublisherId))
                     {
                         return NotFound();
                     }
@@ -120,51 +115,49 @@ namespace WebApplication1.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GroupId"] = new SelectList(_context.Set<Group>(), "GroupId", "GroupId", student.GroupId);
-            return View(student);
+            return View(publisher);
         }
 
-        // GET: Student/Delete/5
+        // GET: Publishers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Students == null)
+            if (id == null || _context.Publishers == null)
             {
                 return NotFound();
             }
 
-            var student = await _context.Students
-                .Include(s => s.Group)
-                .FirstOrDefaultAsync(m => m.StudentId == id);
-            if (student == null)
+            var publisher = await _context.Publishers
+                .FirstOrDefaultAsync(m => m.PublisherId == id);
+            if (publisher == null)
             {
                 return NotFound();
             }
 
-            return View(student);
+            return View(publisher);
         }
 
-        // POST: Student/Delete/5
+        // POST: Publishers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Students == null)
+            if (_context.Publishers == null)
             {
-                return Problem("Entity set 'StudentDbContext.Student'  is null.");
+                return Problem("Entity set 'LibraryContext.Publishers'  is null.");
             }
-            var student = await _context.Students.FindAsync(id);
-            if (student != null)
+            var publisher = await _context.Publishers.FindAsync(id);
+            if (publisher != null)
             {
-                _context.Students.Remove(student);
+                _context.Publishers.Remove(publisher);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StudentExists(int id)
+        private bool PublisherExists(int id)
         {
-          return (_context.Students?.Any(e => e.StudentId == id)).GetValueOrDefault();
+          return (_context.Publishers?.Any(e => e.PublisherId == id)).GetValueOrDefault();
         }
     }
 }

@@ -18,7 +18,8 @@ builder.Services.AddControllersWithViews();
 string connection = builder.Configuration.GetConnectionString("StudentConnection");
  
 // добавляем контекст ApplicationContext в качестве сервиса в приложение
-builder.Services.AddDbContext<StudentDbContext>(options => options.UseSqlServer(connection));
+//builder.Services.AddDbContext<StudentDbContext>(options => options.UseSqlServer(connection));
+builder.Services.AddDbContext<LibraryContext>(options => options.UseSqlServer(connection));
 
 
 
