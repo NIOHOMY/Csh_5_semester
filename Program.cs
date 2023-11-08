@@ -1,82 +1,51 @@
-﻿using ConsoleApp1;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using WebApplication1.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+                       throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(connectionString));
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddControllersWithViews();
+
+string connection = builder.Configuration.GetConnectionString("StudentConnection");
+ 
+// добавляем контекст ApplicationContext в качестве сервиса в приложение
+builder.Services.AddDbContext<StudentDbContext>(options => options.UseSqlServer(connection));
 
 
-StudentDBStorage studentDBStorage = new StudentDBStorage(new StudentContext());
-Direction d1 = new Direction { DirectionName = "FIIT" };
-Group g1 = new Group { GroupName = "61", Direction = d1 };
-Student s1 = new Student
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-    Name = "Tom",
-    Age = "10",
-    Group = g1,
-
-};
-Student s2 = new Student
+    app.UseMigrationsEndPoint();
+}
+else
 {
-    Name = "Tom2",
-    Age = "11",
-    Group = g1,
-};
-studentDBStorage.addStudent(s1);
-studentDBStorage.addStudent(s2);
-
-List<Student> studentList = studentDBStorage.GetAllStudents();
-foreach (Student student in studentList)
-{
-    Console.WriteLine(student.Name);
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
 }
 
-studentDBStorage.removeStudent("Tom2");
-studentList = studentDBStorage.GetAllStudents();
-foreach (Student student in studentList)
-{
-    Console.WriteLine(student.Name);
-}
-studentList = studentDBStorage.GetAllStudents();
-foreach (Student student in studentList)
-{
-    Console.WriteLine(student.Name);
-    student.Name = "Bob";
-    studentDBStorage.editStudent(student);
-}
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 
-/*using (StudentContext db = new StudentContext())
-{
-    Direction d1 = new Direction { DirectionName = "FIIT"};
-    Direction d2 = new Direction { DirectionName = "PMI"};
+app.UseRouting();
 
-    Group g1 = new Group { GroupName = "61", Direction = d1};
-    Group g2 = new Group { GroupName = "62", Direction = d2};
+app.UseAuthorization();
 
-    Course c1 = new Course { CourseName = "мат анализ" };
-    Course c2 = new Course { CourseName = "физика" };
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
-    Student s1 = new Student { Name = "Tom", Age = "10", Group = g1, Courses = new List<Course> { c1,c2} };
-    Student s2 = new Student { Name = "Alice", Age = "100", Group = g2, Courses = new List<Course> { c1 } };
-
-
-    db.Students.AddRange(s1, s2);
-    db.Groups.AddRange(g1, g2);
-    db.Directions.AddRange(d1, d2);
-    db.Courses.AddRange(c1, c2);
-    db.SaveChanges();
-
-
-}
-*/
-/*namespace ConsoleApp1
-{
-    class Program
-    {
-        static void Main()
-        {
-            
-        }
-    }
-}*/
+app.Run();
