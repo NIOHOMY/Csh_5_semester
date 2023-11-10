@@ -24,7 +24,7 @@ namespace WebApplication1.Controllers
         // GET: Books
         public async Task<IActionResult> Index()
         {
-            List<Book>? libraryContext = _databaseManager.GetAllAvailableBooks();
+            List<Book>? libraryContext = _databaseManager.GetAllBooks();
 
             return View(libraryContext);
         }

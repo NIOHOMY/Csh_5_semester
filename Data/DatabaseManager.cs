@@ -528,10 +528,11 @@ namespace WebApplication1.Data
 
                 if (issue == null)
                 {
-                    Console.WriteLine("Выдача не найдена.");
+                    Debug.WriteLine("Выдача не найдена.");
                     return false;
                 }
-                foreach (Book book in issue.Books)
+                var Books = GetIssueBooksByIssueId(issueId);
+                foreach (Book book in Books)
                 {
                     IncreaseNumberOfExamples(book.BookId);
                 }
