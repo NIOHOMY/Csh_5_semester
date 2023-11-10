@@ -13,6 +13,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.IssueId)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.IssueDate)
             </th>
             <th>
@@ -21,27 +24,44 @@
             <th>
                 @Html.DisplayNameFor(model => model.Reader)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Books)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IssueDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReturnDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reader.Address)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IssueId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IssueId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IssueId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IssueId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IssueDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReturnDate)
+                </td>
+                <td>
+                    <p>@item.Reader.FirstName</p>
+                    <p>@item.Reader.LastName</p>
+                    <p>@item.Reader.Patronymic</p>
+                    <p>@item.Reader.Address</p>
+                    <p>@item.Reader.PhoneNumber</p>
+                </td>
+                <td>
+                    @foreach (var book in item.Books)
+                    {
+                        <p>@book.Title by @(book.FirstAuthor != null ? book.FirstAuthor.Name : "Unknown Author")</p>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IssueId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.IssueId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IssueId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

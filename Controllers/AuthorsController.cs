@@ -12,31 +12,33 @@ namespace WebApplication1.Controllers
 {
     public class AuthorsController : Controller
     {
-        private readonly LibraryContext _context;
+        //private readonly LibraryContext _context;
+        private readonly DatabaseManager _databaseManager;
 
         public AuthorsController(LibraryContext context)
         {
-            _context = context;
+            //_context = context;
+            _databaseManager = new DatabaseManager(context);
         }
 
         // GET: Authors
         public async Task<IActionResult> Index()
         {
-              return _context.Authors != null ? 
-                          View(await _context.Authors.ToListAsync()) :
+            var authors = _databaseManager.GetAllAuthors();
+            return authors.Count != 0 ? 
+                          View(authors) :
                           Problem("Entity set 'LibraryContext.Authors'  is null.");
         }
 
         // GET: Authors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Authors == null)
+            if (id == null )
             {
                 return NotFound();
             }
 
-            var author = await _context.Authors
-                .FirstOrDefaultAsync(m => m.AuthorId == id);
+            var author = _databaseManager.GetAuthorById(id.Value);
             if (author == null)
             {
                 return NotFound();
@@ -58,10 +60,10 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AuthorId,Name")] Author author)
         {
-            if (ModelState.IsValid)
+            if (author != null)
             {
-                _context.Add(author);
-                await _context.SaveChangesAsync();
+                _databaseManager.AddAuthor(author);
+                
                 return RedirectToAction(nameof(Index));
             }
             return View(author);
@@ -70,12 +72,12 @@ namespace WebApplication1.Controllers
         // GET: Authors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Authors == null)
+            if (id == null )
             {
                 return NotFound();
             }
 
-            var author = await _context.Authors.FindAsync(id);
+            var author = _databaseManager.GetAuthorById(id.Value);
             if (author == null)
             {
                 return NotFound();
@@ -95,12 +97,12 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (author != null)
             {
                 try
                 {
-                    _context.Update(author);
-                    await _context.SaveChangesAsync();
+                    _databaseManager.UpdateAuthor(author);
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -121,13 +123,12 @@ namespace WebApplication1.Controllers
         // GET: Authors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Authors == null)
+            if (id == null )
             {
                 return NotFound();
             }
 
-            var author = await _context.Authors
-                .FirstOrDefaultAsync(m => m.AuthorId == id);
+            var author = _databaseManager.GetAuthorById(id.Value);
             if (author == null)
             {
                 return NotFound();
@@ -141,23 +142,18 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Authors == null)
+            if (id>=0)
             {
-                return Problem("Entity set 'LibraryContext.Authors'  is null.");
-            }
-            var author = await _context.Authors.FindAsync(id);
-            if (author != null)
-            {
-                _context.Authors.Remove(author);
+                _databaseManager.DeleteAuthor(id);
             }
             
-            await _context.SaveChangesAsync();
+            
             return RedirectToAction(nameof(Index));
         }
 
         private bool AuthorExists(int id)
         {
-          return (_context.Authors?.Any(e => e.AuthorId == id)).GetValueOrDefault();
+          return (_databaseManager.GetAuthorById(id)!=null);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace WebApplication1.Controllers
         // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _databaseManager.GetAllAvailableBooks().Count == 0)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -76,7 +76,7 @@ namespace WebApplication1.Controllers
         // GET: Books/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _databaseManager.GetAllBooks().Count == 0)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -132,7 +132,7 @@ namespace WebApplication1.Controllers
         // GET: Books/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _databaseManager.GetAllBooks().Count == 0)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -156,12 +156,7 @@ namespace WebApplication1.Controllers
                 return Problem("Entity set 'LibraryContext.Books'  is null.");
             }
             _databaseManager.DeleteBook(id);
-            /*var book = _databaseManager.GetBookById(id);
-            if (book != null)
-            {
-            }
             
-            await _context.SaveChangesAsync();*/
             return RedirectToAction(nameof(Index));
         }
 

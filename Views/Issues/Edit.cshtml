@@ -1,5 +1,4 @@
 ﻿@model WebApplication1.Models.Issue
-
 @{
     ViewData["Title"] = "Edit";
 }
@@ -29,6 +28,16 @@
                 <span asp-validation-for="ReaderId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label>Select Books</label>
+                @foreach (var book in ViewBag.Books)
+                {
+                    <div>
+                        <input type="checkbox" name="selectedBooks" value="@book.BookId" />
+                        <label>@book.Title</label>
+                    </div>
+                }
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -40,5 +49,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

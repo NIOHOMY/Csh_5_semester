@@ -12,31 +12,33 @@ namespace WebApplication1.Controllers
 {
     public class ReadersController : Controller
     {
-        private readonly LibraryContext _context;
+        //private readonly LibraryContext _context;
+        private readonly DatabaseManager _databaseManager;
 
         public ReadersController(LibraryContext context)
         {
-            _context = context;
+            //_context = context;
+            _databaseManager = new DatabaseManager(context);
         }
 
         // GET: Readers
         public async Task<IActionResult> Index()
         {
-              return _context.Readers != null ? 
-                          View(await _context.Readers.ToListAsync()) :
+            List<Reader>? readers = _databaseManager.GetAllReaders();
+              return readers.Count != 0 ?
+                          View(readers) :
                           Problem("Entity set 'LibraryContext.Readers'  is null.");
         }
 
         // GET: Readers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Readers == null)
+            if (id == null )
             {
                 return NotFound();
             }
 
-            var reader = await _context.Readers
-                .FirstOrDefaultAsync(m => m.ReaderId == id);
+            var reader = _databaseManager.GetReaderById(id.Value);
             if (reader == null)
             {
                 return NotFound();
@@ -58,10 +60,10 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ReaderId,FirstName,LastName,Patronymic,Address,PhoneNumber")] Reader reader)
         {
-            if (ModelState.IsValid)
+            if (reader != null)
             {
-                _context.Add(reader);
-                await _context.SaveChangesAsync();
+                _databaseManager.AddReader(reader);
+                //await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(reader);
@@ -70,12 +72,12 @@ namespace WebApplication1.Controllers
         // GET: Readers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Readers == null)
+            if (id == null )
             {
                 return NotFound();
             }
 
-            var reader = await _context.Readers.FindAsync(id);
+            var reader = _databaseManager.GetReaderById(id.Value);
             if (reader == null)
             {
                 return NotFound();
@@ -95,12 +97,12 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (reader != null)
             {
                 try
                 {
-                    _context.Update(reader);
-                    await _context.SaveChangesAsync();
+                    _databaseManager.UpdateReader(reader);
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -121,13 +123,13 @@ namespace WebApplication1.Controllers
         // GET: Readers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Readers == null)
+            if (id == null )
             {
                 return NotFound();
             }
 
-            var reader = await _context.Readers
-                .FirstOrDefaultAsync(m => m.ReaderId == id);
+            var reader = _databaseManager.GetReaderById(id.Value);
+             
             if (reader == null)
             {
                 return NotFound();
@@ -141,23 +143,16 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Readers == null)
+            if (id >= 0)
             {
-                return Problem("Entity set 'LibraryContext.Readers'  is null.");
+                _databaseManager.DeleteReader(id);
             }
-            var reader = await _context.Readers.FindAsync(id);
-            if (reader != null)
-            {
-                _context.Readers.Remove(reader);
-            }
-            
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ReaderExists(int id)
         {
-          return (_context.Readers?.Any(e => e.ReaderId == id)).GetValueOrDefault();
+          return (_databaseManager.GetReaderById(id) != null);
         }
     }
 }

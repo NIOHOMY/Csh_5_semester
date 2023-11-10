@@ -7,6 +7,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using WebApplication1.Models;
+using System.Security.Policy;
+
+using Publisher = WebApplication1.Models.Publisher;
 
 namespace WebApplication1.Data
 {
@@ -19,7 +22,7 @@ namespace WebApplication1.Data
             _context = context;
         }
 
-        public Reader GetReaderById(int readerId)
+        public Reader? GetReaderById(int readerId)
         {
             try
             {
@@ -55,11 +58,11 @@ namespace WebApplication1.Data
             }
         }
 
-        public Book GetBookById(int bookId)
+        public Book? GetBookById(int bookId)
         {
             try
             {
-                return _context.Books.FirstOrDefault(book => book.BookId == bookId);
+                return _context.Books.Include(b => b.FirstAuthor).Include(b => b.Publisher).FirstOrDefault(book => book.BookId == bookId);
             }
             catch (Exception ex)
             {
@@ -72,6 +75,107 @@ namespace WebApplication1.Data
                 return null;
             }
         }
+
+        public Issue? GetIssueById(int issueId)
+        {
+            try
+            {
+                return _context.Issues
+                    .Include(issue => issue.Reader)
+                    .Include(issue => issue.Books)
+                    .FirstOrDefault(issue => issue.IssueId == issueId);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Произошла ошибка при получении выдачи по ID:", ex);
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        public Publisher? GetPublisherById(int publisherId)
+        {
+            try
+            {
+                return _context.Publishers.FirstOrDefault(publisher => publisher.PublisherId == publisherId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении издательства по ID:");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine("Произошла ошибка при получении издательства по ID:");
+                Debug.WriteLine(ex.Message);
+
+                return null;
+            }
+        }
+        public Author? GetAuthorById(int authorId)
+        {
+            try
+            {
+                return _context.Authors.FirstOrDefault(author => author.AuthorId == authorId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении автора по ID:");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine("Произошла ошибка при получении автора по ID:");
+                Debug.WriteLine(ex.Message);
+
+                return null;
+            }
+        }
+
+        public void UpdateIssue(Issue updatedIssue)
+        {
+            try
+            {
+                var existingIssue = _context.Issues
+                    .Include(issue => issue.Books)
+                    .FirstOrDefault(issue => issue.IssueId == updatedIssue.IssueId);
+
+                if (existingIssue != null)
+                {
+                    existingIssue.IssueDate = updatedIssue.IssueDate;
+                    existingIssue.ReturnDate = updatedIssue.ReturnDate;
+                    existingIssue.ReaderId = updatedIssue.ReaderId;
+                    // Обновление списка книг можно выполнить в соответствии с требованиями вашей системы
+
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Произошла ошибка при обновлении выдачи:", ex);
+                Debug.WriteLine(ex.Message);
+            }
+        }
+        public void UpdateIssue(Issue issue, int[] selectedBooks)
+        {
+            var existingIssue = _context.Issues
+                .Include(i => i.Books)
+                .Single(i => i.IssueId == issue.IssueId);
+
+            
+            existingIssue.IssueDate = issue.IssueDate;
+            existingIssue.ReturnDate = issue.ReturnDate;
+            existingIssue.ReaderId = issue.ReaderId;
+
+            
+            if (selectedBooks != null)
+            {
+                existingIssue.Books = _context.Books.Where(b => selectedBooks.Contains(b.BookId)).ToList();
+            }
+            else
+            {
+                existingIssue.Books.Clear();
+            }
+
+            _context.SaveChanges();
+        }
+
 
         public void IncreaseNumberOfExamples(int bookId, int quantity=1)
         {
@@ -115,6 +219,7 @@ namespace WebApplication1.Data
         {
             try
             {
+                //book.FirstAuthor = _context.Authors.FirstOrDefault(author => author.AuthorId == book.FirstAuthorId);
                 _context.Books.Add(book);
                 _context.SaveChanges();
             }
@@ -132,6 +237,7 @@ namespace WebApplication1.Data
         {
             try
             {
+                //book.FirstAuthor = _context.Authors.FirstOrDefault(author => author.AuthorId == book.FirstAuthorId);
                 _context.Books.Update(book);
                 _context.SaveChanges();
             }
@@ -144,13 +250,63 @@ namespace WebApplication1.Data
                 Debug.WriteLine(ex.Message);
             }
         }
+        public void UpdateReader(Reader reader)
+        {
+            try
+            {
+                _context.Readers.Update(reader);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при обновлении читателя:");
+                Console.WriteLine(ex.Message);
 
+                Debug.WriteLine("Произошла ошибка при обновлении читателя:");
+                Debug.WriteLine(ex.Message);
+            }
+        }
+        public void UpdatePublisher(Publisher publisher)
+        {
+            try
+            {
+                _context.Publishers.Update(publisher);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при обновлении издательства:");
+                Console.WriteLine(ex.Message);
 
+                Debug.WriteLine("Произошла ошибка при обновлении издательства:");
+                Debug.WriteLine(ex.Message);
+            }
+        }
+        public void UpdateAuthor(Author author)
+        {
+            try
+            {
+                _context.Authors.Update(author);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при обновлении автора:");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine("Произошла ошибка при обновлении автора:");
+                Debug.WriteLine(ex.Message);
+            }
+        }
         public void AddIssue(Issue issue)
         {
             try
             {
                 _context.Issues.Add(issue);
+                foreach (Book book in issue.Books)
+                {
+                    DecreaseNumberOfExamples(book.BookId);
+                }
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -241,8 +397,8 @@ namespace WebApplication1.Data
         {
             try
             {
-                List<Book> book = _context.Books.Include(b => b.FirstAuthor).Include(b => b.Publisher).Where(b => b.NumberOfExamples > 0).ToList();
-                return _context.Books.Where(b => b.NumberOfExamples > 0).ToList();   
+                //List<Book> book = _context.Books.Include(b => b.FirstAuthor).Include(b => b.Publisher).Where(b => b.NumberOfExamples > 0).ToList();
+                return _context.Books.Include(b => b.FirstAuthor).Include(b => b.Publisher).Where(b => b.NumberOfExamples > 0).ToList();
             }
             catch (Exception ex)
             {
@@ -260,7 +416,9 @@ namespace WebApplication1.Data
         {
             try
             {
-                return _context.Issues.Include(i => i.Reader).ToList();
+                return _context.Issues.Include(b => b.Reader).Include(b => b.Books)
+                    .ThenInclude(b => b.FirstAuthor)
+                    .ToList();
             }
             catch (Exception ex)
             {

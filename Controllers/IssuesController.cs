@@ -12,77 +12,92 @@ namespace WebApplication1.Controllers
 {
     public class IssuesController : Controller
     {
-        private readonly LibraryContext _context;
+        //private readonly LibraryContext _context;
+        private readonly DatabaseManager _databaseManager;
 
         public IssuesController(LibraryContext context)
         {
-            _context = context;
+            //_context = context;
+            _databaseManager = new DatabaseManager(context);
         }
 
         // GET: Issues
         public async Task<IActionResult> Index()
         {
-            var libraryContext = _context.Issues.Include(i => i.Reader);
-            return View(await libraryContext.ToListAsync());
+            List<Issue>? libraryContext = _databaseManager.GetAllIssues();//_context.Issues.Include(i => i.Reader);
+            return View(libraryContext);
         }
 
         // GET: Issues/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Issues == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var issue = await _context.Issues
-                .Include(i => i.Reader)
-                .FirstOrDefaultAsync(m => m.IssueId == id);
+            Issue? issue = _databaseManager.GetIssueById(id.Value);
             if (issue == null)
             {
                 return NotFound();
             }
 
+
             return View(issue);
         }
 
-        // GET: Issues/Create
         public IActionResult Create()
         {
-            ViewData["ReaderId"] = new SelectList(_context.Readers, "ReaderId", "PhoneNumber");
+            ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "PhoneNumber");
+            ViewData["Books"] = _databaseManager.GetAllAvailableBooks(); // Получаем список всех книг и передаем его в представление
             return View();
         }
 
-        // POST: Issues/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IssueId,IssueDate,ReturnDate,ReaderId")] Issue issue)
+        public async Task<IActionResult> Create([Bind("IssueId,IssueDate,ReturnDate,ReaderId")] Issue issue, int[] selectedBooks)
         {
-            if (ModelState.IsValid)
+            if (issue != null)
             {
-                _context.Add(issue);
-                await _context.SaveChangesAsync();
+                if (selectedBooks != null)
+                {
+                    foreach (var bookId in selectedBooks)
+                    {
+                        var book = _databaseManager.GetBookById(bookId);
+                        if (book != null)
+                        {
+                            issue.Books.Add(book);
+                        }
+                    }
+                }
+
+                _databaseManager.AddIssue(issue);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ReaderId"] = new SelectList(_context.Readers, "ReaderId", "PhoneNumber", issue.ReaderId);
+            ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "PhoneNumber", issue.ReaderId);
+            ViewData["Books"] = _databaseManager.GetAllAvailableBooks();
             return View(issue);
         }
+
+
 
         // GET: Issues/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Issues == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var issue = await _context.Issues.FindAsync(id);
+            Issue issue = _databaseManager.GetIssueById(id.Value);
             if (issue == null)
             {
                 return NotFound();
             }
-            ViewData["ReaderId"] = new SelectList(_context.Readers, "ReaderId", "Address", issue.ReaderId);
+
+            ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "Address", issue.ReaderId);
+            ViewData["Books"] = _databaseManager.GetAllAvailableBooks(); 
+            ViewBag.SelectedBooks = _databaseManager.GetIssueBooksByIssueId(id.Value); 
             return View(issue);
         }
 
@@ -91,19 +106,19 @@ namespace WebApplication1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IssueId,IssueDate,ReturnDate,ReaderId")] Issue issue)
+        public async Task<IActionResult> Edit(int id, [Bind("IssueId,IssueDate,ReturnDate,ReaderId")] Issue issue, int[] selectedBooks)
         {
             if (id != issue.IssueId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (issue != null)
             {
                 try
                 {
-                    _context.Update(issue);
-                    await _context.SaveChangesAsync();
+                    _databaseManager.UpdateIssue(issue, selectedBooks);
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -116,23 +131,23 @@ namespace WebApplication1.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["ReaderId"] = new SelectList(_context.Readers, "ReaderId", "Address", issue.ReaderId);
+
+            ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "Address", issue.ReaderId);
+            ViewData["Books"] = _databaseManager.GetAllAvailableBooks(); // Assuming you have a method to get all books
+            ViewBag.SelectedBooks = selectedBooks; // Pass back the selected books to the view
             return View(issue);
         }
 
         // GET: Issues/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Issues == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var issue = await _context.Issues
-                .Include(i => i.Reader)
-                .FirstOrDefaultAsync(m => m.IssueId == id);
+            Issue? issue = _databaseManager.GetIssueById(id.Value);
             if (issue == null)
             {
                 return NotFound();
@@ -146,23 +161,16 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Issues == null)
-            {
-                return Problem("Entity set 'LibraryContext.Issues'  is null.");
-            }
-            var issue = await _context.Issues.FindAsync(id);
-            if (issue != null)
-            {
-                _context.Issues.Remove(issue);
-            }
-            
-            await _context.SaveChangesAsync();
+           
+            _databaseManager.DeleteIssue(id);
+
+            //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool IssueExists(int id)
         {
-          return (_context.Issues?.Any(e => e.IssueId == id)).GetValueOrDefault();
+          return (_databaseManager.GetIssueById(id) != null);
         }
     }
 }
