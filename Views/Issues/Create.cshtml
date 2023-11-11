@@ -26,16 +26,93 @@
                 <select asp-for="ReaderId" class="form-control" asp-items="ViewBag.ReaderId"></select>
             </div>
             <div class="form-group">
-                <label>Select Books</label>
-                @foreach (var book in ViewBag.Books)
-                {
-                    <div>
-                        <input type="checkbox" name="selectedBooks" value="@book.BookId" />
-                        <label>@book.Title</label>
-                    </div>
-                }
+                <label>Search Books</label>
+                <input type="text" id="search" class="form-control" placeholder="Start typing...">
+                <button id="addBook" disabled>Add</button>
+                <div id="bookList"></div>
             </div>
 
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+
+            <script>
+                var selectedBookId = null;
+                $(document).ready(function () {
+                    $(document).on('keyup', '#search', function () {
+                        var query = $(this).val().trim(); //  trim() для удаления пробелов в начале и конце
+                        console.log("Searching for: " + query); // Отладочный вывод
+                        if (query !== '') {
+                            $.ajax({
+                                url: "/Issues/SearchBooks", // Замените на фактический URL для вашего контроллера
+                                method: "POST",
+                                data: { 'query': query },
+                                success: function (data) {
+                                    console.log(data); // Отладочный вывод
+                                    $('#bookList').empty(); 
+                                    $.each(data, function (i, book) {
+                                        
+                                        $('#bookList').append('<div data-id="' + book.bookId + '"><label>' + book.title + '</label></div>');
+                                    });
+                                    $('#bookList').fadeIn();
+                                }
+                            });
+                        } else {
+                            $('#bookList').fadeOut();
+                        }
+                    });
+
+
+                    $(document).on('click', '#bookList div', function () {
+                        
+                        $('#search').val($(this).text());
+                        selectedBookId = $(this).data('id');
+                        $('#addBook').prop('disabled', false);
+                        $('#bookList').fadeOut();
+                    });
+
+                    $('#addBook').click(function (e) {
+                        e.preventDefault();
+                        var selectedBooks = $('#selectedBooks');
+                        var selectedBookIds = $('#selectedBookIds');
+
+                        
+                        selectedBooks.append('<li>' + $('#search').val() + '<button class="removeBookBtn" data-bookid="' + selectedBookId + '">Remove</button></li>');
+
+                        
+                        var currentIds = selectedBookIds.val() || '';
+                        selectedBookIds.val(currentIds + selectedBookId + ',');
+
+                        
+                        $('#search').val('');
+                        $('#addBook').prop('disabled', true);
+                    });
+
+                    $(document).on('click', '.removeBookBtn', function (e) {
+                        e.preventDefault();
+                        var bookId = $(this).data('bookid'); // Получаем ID книги, которую нужно удалить
+                        var selectedBookIdsInput = $('#selectedBookIds');
+                        var selectedBookIds = selectedBookIdsInput.val().split(',').filter(Boolean); // Получаем все ID выбранных книг
+
+                        // Удаляем ID текущей книги из списка выбранных
+                        selectedBookIds = selectedBookIds.filter(function (id) {
+                            return id !== bookId.toString();
+                        });
+
+                        // Обновляем значение скрытого поля с ID выбранных книг
+                        selectedBookIdsInput.val(selectedBookIds.join(','));
+
+                        // Удаляем элемент списка с текущей книгой
+                        $(this).parent().remove();
+                    });
+
+
+
+                });
+            </script>
+
+            <div id="selectedBooks"></div>
+            <input type="hidden" id="selectedBookIds" name="SelectedBookIds" />
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -49,5 +126,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

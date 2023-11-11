@@ -9,9 +9,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="IssueId" />
             <div class="form-group">
                 <label asp-for="IssueDate" class="control-label"></label>
                 <input asp-for="IssueDate" class="form-control" />
@@ -25,20 +24,111 @@
             <div class="form-group">
                 <label asp-for="ReaderId" class="control-label"></label>
                 <select asp-for="ReaderId" class="form-control" asp-items="ViewBag.ReaderId"></select>
-                <span asp-validation-for="ReaderId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label>Select Books</label>
-                @foreach (var book in ViewBag.Books)
-                {
-                    <div>
-                        <input type="checkbox" name="selectedBooks" value="@book.BookId" />
-                        <label>@book.Title</label>
-                    </div>
-                }
+                <label>Search Books</label>
+                <input type="text" id="search" class="form-control" placeholder="Start typing...">
+                <button id="addBook" disabled>Add</button>
+                <div id="bookList"></div>
             </div>
+            <div>
+                <h4>Selected Books</h4>
+                <ul id="selectedBooksList">
+                    @foreach (var book in ViewBag.SelectedBooks)
+                    {
+                        <li>@book.Title @* <button class="removeBookBtn" data-bookid="@book.BookId">Remove</button> *@</li>
+                    }
+                </ul>
+            </div>
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+
+            <script>
+                $(document).ready(function () {
+
+                    var selectedBookIds = [@Html.Raw(Json.Serialize(ViewBag.SelectedBooksIds))];
+                    
+
+                    $(document).on('keyup', '#search', function () {
+                        var query = $(this).val().trim();
+                        console.log("Searching for: " + query);
+                        if (query !== '') {
+                            $.ajax({
+                                url: "/Issues/SearchBooks",
+                                method: "POST",
+                                data: { 'query': query },
+                                success: function (data) {
+                                    console.log(data);
+                                    $('#bookList').empty();
+                                    $.each(data, function (i, book) {
+                                        $('#bookList').append('<div data-id="' + book.bookId + '"><label>' + book.title + '</label></div>');
+                                    });
+                                    $('#bookList').fadeIn();
+                                }
+                            });
+                        } else {
+                            $('#bookList').fadeOut();
+                        }
+                    });
+
+                    $(document).on('click', '#bookList div', function () {
+                        $('#search').val($(this).text());
+                        selectedBookIds.push($(this).data('id')); // Добавляем выбранный идентификатор книги в массив
+                        $('#addBook').prop('disabled', false);
+                        $('#bookList').fadeOut();
+                    });
+
+                    $('#addBook').click(function (e) {
+                        e.preventDefault();
+                        var selectedBooksList = $('#selectedBooksList');
+                        var selectedBookIdsInput = $('#selectedBookIds');
+
+                        // Добавляем выбранную книгу в список
+                        selectedBooksList.append('<li>' + $('#search').val() + '<button class="removeBookBtn" data-bookid="' + selectedBookIds[selectedBookIds.length - 1] + '">Remove</button></li>');
+
+                        // Обновляем значение скрытого поля с выбранными идентификаторами книг
+                        selectedBookIdsInput.val(selectedBookIds.join(','));
+
+
+                        // Очищаем поле поиска и отключаем кнопку "Add"
+                        $('#search').val('');
+                        $('#addBook').prop('disabled', true);
+                    });
+
+                    $(document).on('click', '.removeBookBtn', function (e) {
+                        e.preventDefault();
+                        var bookId = $(this).data('bookid'); // Получаем идентификатор книги
+
+                        var index = 0; // Находим индекс идентификатора в массиве
+                        while (String(selectedBookIds[index]) != String(bookId) && index < selectedBookIds.length) {
+                            index++;
+                        }
+
+                        if (index >= 0) { 
+                            selectedBookIds.splice(index, 1); 
+                        }
+
+                        var selectedBookIdsInput = $('#selectedBookIds');
+
+                        // Обновляем значение скрытого поля с выбранными идентификаторами книг
+                        selectedBookIdsInput.val(selectedBookIds.join(','));
+
+                        // Удаляем элемент списка
+                        $(this).parent().remove();
+                    });
+
+
+
+                });
+            </script>
+
+            <ul id="selectedBooksList"></ul>
+            <input type="hidden" id="selectedBookIds" name="selectedBookIds" value="@ViewBag.SelectedBooksIds" />
+
+
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Edit" class="btn btn-primary" />
             </div>
         </form>
     </div>

@@ -55,30 +55,46 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IssueId,IssueDate,ReturnDate,ReaderId")] Issue issue, int[] selectedBooks)
+        public async Task<IActionResult> Create([Bind("IssueId,IssueDate,ReturnDate,ReaderId")] Issue issue, string selectedBookIds)
         {
+
             if (issue != null)
             {
-                if (selectedBooks != null)
+                if(selectedBookIds != null)
                 {
-                    foreach (var bookId in selectedBooks)
-                    {
-                        var book = _databaseManager.GetBookById(bookId);
-                        if (book != null)
+                    var bookIds = selectedBookIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                
+                        foreach (var bookId in bookIds)
                         {
-                            issue.Books.Add(book);
+                            if (int.TryParse(bookId, out int id))
+                            {
+                                var book = _databaseManager.GetBookById(id);
+                                if (book != null)
+                                {
+                                    issue.Books.Add(book);
+                                }
+                            }
                         }
-                    }
-                }
+                
+                    _databaseManager.AddIssue(issue);
+                    return RedirectToAction(nameof(Index));
 
-                _databaseManager.AddIssue(issue);
-                return RedirectToAction(nameof(Index));
+                }
             }
             ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "PhoneNumber", issue.ReaderId);
             ViewData["Books"] = _databaseManager.GetAllAvailableBooks();
             return View(issue);
         }
 
+
+
+        [HttpPost]
+        public IActionResult SearchBooks(string query)
+        {
+            var availableBooks = _databaseManager.GetAllAvailableBooks();
+            var books = availableBooks.Where(b => b.Title.Contains(query)).ToList();
+            return Json(books);
+        }
 
 
         // GET: Issues/Edit/5
@@ -95,9 +111,19 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
 
+            // Добавим список уже выбранных книг для данного выпуска
+            var selectedBooks = _databaseManager.GetIssueBooksByIssueId(id.Value);
             ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "Address", issue.ReaderId);
-            ViewData["Books"] = _databaseManager.GetAllAvailableBooks(); 
-            ViewBag.SelectedBooks = _databaseManager.GetIssueBooksByIssueId(id.Value); 
+            ViewData["Books"] = _databaseManager.GetAllAvailableBooks();
+            ViewBag.SelectedBooks = selectedBooks; // Передача выбранных книг в представление
+            string ids = "";
+            foreach (var book in selectedBooks)
+            {
+                ids += book.BookId.ToString() + ",";
+            }
+            ids = ids.TrimEnd(','); // Удаление последней запятой
+            ViewBag.SelectedBooksIds = ids; // Передача выбранных книг в представление
+
             return View(issue);
         }
 
@@ -106,19 +132,29 @@ namespace WebApplication1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IssueId,IssueDate,ReturnDate,ReaderId")] Issue issue, int[] selectedBooks)
+        public async Task<IActionResult> Edit(int id, [Bind("IssueDate,ReturnDate,ReaderId")] Issue issue, string selectedBookIds)
         {
-            if (id != issue.IssueId)
-            {
-                return NotFound();
-            }
-
             if (issue != null)
             {
                 try
                 {
-                    _databaseManager.UpdateIssue(issue, selectedBooks);
-                    return RedirectToAction(nameof(Index));
+                    int[] selectedBooks = Array.Empty<int>();
+                    if (!string.IsNullOrEmpty(selectedBookIds))
+                    {
+                        var bookIds = selectedBookIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+                        foreach (var bookId in bookIds)
+                        {
+                            if (int.TryParse(bookId, out int bid))
+                            {
+                                selectedBooks = selectedBooks.Append(bid).ToArray();
+                            }
+                        }
+
+                        _databaseManager.UpdateIssue(id, issue, selectedBooks);
+                        return RedirectToAction(nameof(Index));
+                    }
+                    return RedirectToAction(nameof(Edit));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -133,11 +169,20 @@ namespace WebApplication1.Controllers
                 }
             }
 
-            ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "Address", issue.ReaderId);
-            ViewData["Books"] = _databaseManager.GetAllAvailableBooks(); // Assuming you have a method to get all books
-            ViewBag.SelectedBooks = selectedBooks; // Pass back the selected books to the view
+            ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "PhoneNumber", issue.ReaderId);
+            ViewData["Books"] = _databaseManager.GetAllAvailableBooks(); // Предполагая, что у вас есть метод для получения всех книг
+            ViewBag.SelectedBooks = _databaseManager.GetIssueBooksByIssueId(id);
+            var selectedBookss = _databaseManager.GetIssueBooksByIssueId(id);
+            string ids = "";
+            foreach (var book in selectedBookss)
+            {
+                ids += book.BookId.ToString() + ",";
+            }
+            ids = ids.TrimEnd(','); // Удаление последней запятой
+            ViewBag.SelectedBooksIds = ids; // Передача выбранных книг в представление
             return View(issue);
         }
+
 
         // GET: Issues/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -152,6 +197,7 @@ namespace WebApplication1.Controllers
             {
                 return NotFound();
             }
+
 
             return View(issue);
         }

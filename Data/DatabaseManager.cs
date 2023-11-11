@@ -9,11 +9,14 @@ using System.Diagnostics;
 using WebApplication1.Models;
 using System.Security.Policy;
 
+
+
 using Publisher = WebApplication1.Models.Publisher;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication1.Data
 {
-    public class DatabaseManager
+    public class DatabaseManager : Controller
     {
         private readonly LibraryContext _context;
 
@@ -76,13 +79,15 @@ namespace WebApplication1.Data
             }
         }
 
+
         public Issue? GetIssueById(int issueId)
         {
             try
             {
                 return _context.Issues
-                    .Include(issue => issue.Reader)
-                    .Include(issue => issue.Books)
+                    .Include(b => b.Reader)
+                    .Include(b => b.Books)
+                        .ThenInclude(b => b.FirstAuthor)
                     .FirstOrDefault(issue => issue.IssueId == issueId);
             }
             catch (Exception ex)
@@ -152,21 +157,42 @@ namespace WebApplication1.Data
                 Debug.WriteLine(ex.Message);
             }
         }
-        public void UpdateIssue(Issue issue, int[] selectedBooks)
+        public void UpdateIssue(int id,Issue issue, int[] selectedBooks)
         {
             var existingIssue = _context.Issues
                 .Include(i => i.Books)
-                .Single(i => i.IssueId == issue.IssueId);
+                .FirstOrDefault(i => i.IssueId == id);
 
-            
             existingIssue.IssueDate = issue.IssueDate;
             existingIssue.ReturnDate = issue.ReturnDate;
             existingIssue.ReaderId = issue.ReaderId;
 
-            
             if (selectedBooks != null)
             {
-                existingIssue.Books = _context.Books.Where(b => selectedBooks.Contains(b.BookId)).ToList();
+                // Получаем список уже существующих книг в выпуске
+                var existingBookIds = existingIssue.Books.Select(b => b.BookId).ToList();
+
+                // Находим новые книги, которые должны быть добавлены
+                var newBookIds = selectedBooks.Except(existingBookIds).ToList();
+
+                // Находим книги, которые должны быть удалены
+                var removedBookIds = existingBookIds.Except(selectedBooks).ToList();
+
+                // Добавляем новые книги в выпуск
+                foreach (var bookId in newBookIds)
+                {
+                    var bookToAdd = _context.Books.Single(b => b.BookId == bookId);
+                    DecreaseNumberOfExamples(bookId);
+                    existingIssue.Books.Add(bookToAdd);
+                }
+
+                // Удаляем книги из выпуска
+                foreach (var bookId in removedBookIds)
+                {
+                    var bookToRemove = existingIssue.Books.Single(b => b.BookId == bookId);
+                    IncreaseNumberOfExamples(bookId);
+                    existingIssue.Books.Remove(bookToRemove);
+                }
             }
             else
             {
@@ -175,6 +201,7 @@ namespace WebApplication1.Data
 
             _context.SaveChanges();
         }
+
 
 
         public void IncreaseNumberOfExamples(int bookId, int quantity=1)
