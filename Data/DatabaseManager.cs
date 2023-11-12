@@ -157,46 +157,49 @@ namespace WebApplication1.Data
                 Debug.WriteLine(ex.Message);
             }
         }
-        public void UpdateIssue(int id,Issue issue, int[] selectedBooks)
+        public void UpdateIssue(int id,Issue issue, int[] selectedBooks, int[] selectedBooksToDelete)
         {
             var existingIssue = _context.Issues
                 .Include(i => i.Books)
                 .FirstOrDefault(i => i.IssueId == id);
-
-            existingIssue.IssueDate = issue.IssueDate;
-            existingIssue.ReturnDate = issue.ReturnDate;
-            existingIssue.ReaderId = issue.ReaderId;
-
-            if (selectedBooks != null)
+            if (existingIssue != null)
             {
+                existingIssue.IssueDate = issue.IssueDate;
+                existingIssue.ReturnDate = issue.ReturnDate;
+                //existingIssue.ReaderId = issue.ReaderId;
+
                 // Получаем список уже существующих книг в выпуске
                 var existingBookIds = existingIssue.Books.Select(b => b.BookId).ToList();
-
-                // Находим новые книги, которые должны быть добавлены
-                var newBookIds = selectedBooks.Except(existingBookIds).ToList();
-
-                // Находим книги, которые должны быть удалены
-                var removedBookIds = existingBookIds.Except(selectedBooks).ToList();
-
-                // Добавляем новые книги в выпуск
-                foreach (var bookId in newBookIds)
+                if (selectedBooks != null)
                 {
-                    var bookToAdd = _context.Books.Single(b => b.BookId == bookId);
-                    DecreaseNumberOfExamples(bookId);
-                    existingIssue.Books.Add(bookToAdd);
-                }
 
-                // Удаляем книги из выпуска
-                foreach (var bookId in removedBookIds)
-                {
-                    var bookToRemove = existingIssue.Books.Single(b => b.BookId == bookId);
-                    IncreaseNumberOfExamples(bookId);
-                    existingIssue.Books.Remove(bookToRemove);
+                    // Находим новые книги, которые должны быть добавлены
+                    var newBookIds = selectedBooks.Except(existingBookIds).ToList();
+
+                    // Добавляем новые книги в выпуск
+                    foreach (var bookId in newBookIds)
+                    {
+                        var bookToAdd = _context.Books.FirstOrDefault(b => b.BookId == bookId);
+                        //DecreaseNumberOfExamples(bookId);
+                        var book = _context.Books.FirstOrDefault(b => b.BookId == bookId);
+                        book.NumberOfExamples -= 1;
+                        existingIssue.Books.Add(bookToAdd);
+                    }
+
                 }
-            }
-            else
-            {
-                existingIssue.Books.Clear();
+                if (selectedBooksToDelete != null)
+                {
+                    // Удаляем книги из выпуска
+                    foreach (var bookId in selectedBooksToDelete)
+                    {
+                        var bookToRemove = existingIssue.Books.FirstOrDefault(b => b.BookId == bookId);
+                        //IncreaseNumberOfExamples(bookId);
+                        var book = _context.Books.FirstOrDefault(b => b.BookId == bookId);
+                        book.NumberOfExamples += 1;
+                        existingIssue.Books.Remove(bookToRemove);
+                    }
+
+                }
             }
 
             _context.SaveChanges();

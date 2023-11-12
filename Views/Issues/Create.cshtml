@@ -21,9 +21,15 @@
                 <input asp-for="ReturnDate" class="form-control" />
                 <span asp-validation-for="ReturnDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @* <div class="form-group">
                 <label asp-for="ReaderId" class="control-label"></label>
                 <select asp-for="ReaderId" class="form-control" asp-items="ViewBag.ReaderId"></select>
+            </div> *@
+            <div class="form-group">
+                <label asp-for="Reader" class="control-label"></label>
+                <input type="text" id="searchReaders" class="form-control" placeholder="Start typing...">
+                <div id="readerList"></div>
+                <input type="hidden" id="selectedReaderId" name="ReaderId" />
             </div>
             <div class="form-group">
                 <label>Search Books</label>
@@ -31,13 +37,14 @@
                 <button id="addBook" disabled>Add</button>
                 <div id="bookList"></div>
             </div>
-
+            
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="/_framework/aspnetcore-browser-refresh.js"></script>
 
             <script>
                 var selectedBookId = null;
+                var selectedReaderId = null;
                 $(document).ready(function () {
                     $(document).on('keyup', '#search', function () {
                         var query = $(this).val().trim(); //  trim() для удаления пробелов в начале и конце
@@ -70,6 +77,44 @@
                         $('#addBook').prop('disabled', false);
                         $('#bookList').fadeOut();
                     });
+
+                    
+                    $(document).on('keyup', '#searchReaders', function () {
+                        var query = $(this).val().trim();
+                        console.log("Searching for readers: " + query);
+                        if (query !== '') {
+                            $.ajax({
+                                url: "/Issues/SearchReaders",
+                                method: "POST",
+                                data: { 'query': query, 'selectedReaderId': selectedReaderId },
+                                success: function (data) {
+                                    console.log(data);
+                                    $('#readerList').empty();
+                                    $.each(data, function (i, reader) {
+                                        $('#readerList').append('<div data-id="' + reader.readerId + '">' + reader.displayText + '</div>');
+                                        console.log(reader.readerId);
+                                    });
+                                    $('#readerList').fadeIn();
+                                }
+                            });
+
+                        } else {
+                            $('#readerList').fadeOut();
+                        }
+                    });
+
+                    $(document).on('click', '#readerList div', function () {
+                        $('#searchReaders').val($(this).text());
+                        selectedReaderId = $(this).data('id');
+                        $('#selectedReaderId').val(selectedReaderId);
+                        console.log(selectedReaderId);
+                        $('#readerList').fadeOut();
+                    });
+
+
+                
+
+
 
                     $('#addBook').click(function (e) {
                         e.preventDefault();
@@ -113,6 +158,8 @@
 
             <div id="selectedBooks"></div>
             <input type="hidden" id="selectedBookIds" name="SelectedBookIds" />
+            @* <div id="selectedReaders"></div>
+            <input type="hidden" id="selectedReaderId" name="ReaderId" /> *@
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

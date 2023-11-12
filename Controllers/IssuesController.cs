@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -60,7 +61,7 @@ namespace WebApplication1.Controllers
 
             if (issue != null)
             {
-                if(selectedBookIds != null)
+                if (selectedBookIds != null)
                 {
                     var bookIds = selectedBookIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
                 
@@ -95,6 +96,20 @@ namespace WebApplication1.Controllers
             var books = availableBooks.Where(b => b.Title.Contains(query)).ToList();
             return Json(books);
         }
+        [HttpPost]
+        public IActionResult SearchReaders(string query)
+        {
+            var readers = _databaseManager.GetAllReaders();
+            var q = readers
+                .Where(r => (r.LastName + r.FirstName + r.Patronymic + r.PhoneNumber).Contains(query))
+                .Select(r => new { 
+                    ReaderId = r.ReaderId, 
+                    DisplayText = $"{r.LastName} {r.FirstName} {r.Patronymic} {r.FormattedPhoneNumber}" 
+                })
+                .ToList();
+
+            return Json(q);
+        }
 
 
         // GET: Issues/Edit/5
@@ -113,7 +128,12 @@ namespace WebApplication1.Controllers
 
             // Добавим список уже выбранных книг для данного выпуска
             var selectedBooks = _databaseManager.GetIssueBooksByIssueId(id.Value);
-            ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "Address", issue.ReaderId);
+            /*ViewBag.ReaderId = new SelectList(_databaseManager.GetAllReaders()
+                        .Select(r => new {
+                            Value = r.ReaderId,
+                            Text = $"{r.LastName} {r.FirstName} {r.Patronymic} {r.PhoneNumber}"
+                        }), "Value", "Text", issue.ReaderId);*/
+            ViewBag.ReaderId = issue.Reader;
             ViewData["Books"] = _databaseManager.GetAllAvailableBooks();
             ViewBag.SelectedBooks = selectedBooks; // Передача выбранных книг в представление
             string ids = "";
@@ -132,26 +152,43 @@ namespace WebApplication1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IssueDate,ReturnDate,ReaderId")] Issue issue, string selectedBookIds)
+        public async Task<IActionResult> Edit(int id, [Bind("IssueDate,ReturnDate,ReaderId")] Issue issue, string selectedBookIds, string removedBookIds)
         {
             if (issue != null)
             {
                 try
                 {
-                    int[] selectedBooks = Array.Empty<int>();
-                    if (!string.IsNullOrEmpty(selectedBookIds))
+                    int[] selectedBooksToAdd = Array.Empty<int>();
+                    int[] selectedBooksToDelete = Array.Empty<int>();
+                    if (!string.IsNullOrEmpty(selectedBookIds) || !string.IsNullOrEmpty(removedBookIds))
                     {
-                        var bookIds = selectedBookIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
-
-                        foreach (var bookId in bookIds)
+                        if (!string.IsNullOrEmpty(selectedBookIds))
                         {
-                            if (int.TryParse(bookId, out int bid))
+                            var bookIds = selectedBookIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+                            foreach (var bookId in bookIds)
                             {
-                                selectedBooks = selectedBooks.Append(bid).ToArray();
+                                if (int.TryParse(bookId, out int bid))
+                                {
+                                    selectedBooksToAdd = selectedBooksToAdd.Append(bid).ToArray();
+                                }
                             }
                         }
 
-                        _databaseManager.UpdateIssue(id, issue, selectedBooks);
+                        if (!string.IsNullOrEmpty(removedBookIds))
+                        {
+                            var removedIds = removedBookIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                            
+                            foreach (var removedId in removedIds)
+                            {
+                                if (int.TryParse(removedId, out int removedBid))
+                                {
+                                    selectedBooksToDelete = selectedBooksToDelete.Append(removedBid).ToArray();
+                                }
+                            }
+                        }
+
+                        _databaseManager.UpdateIssue(id, issue, selectedBooksToAdd, selectedBooksToDelete);
                         return RedirectToAction(nameof(Index));
                     }
                     return RedirectToAction(nameof(Edit));
