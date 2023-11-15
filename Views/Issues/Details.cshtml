@@ -37,8 +37,14 @@
         <dd class="col-sm-12">
             @foreach (var book in Model.Books)
             {
-                <p>@book.Title by @(book.FirstAuthor != null ? book.FirstAuthor.Name : "Unknown Author")</p>
+                <p>@book.Title - @(book.FirstAuthor != null ? book.FirstAuthor.Name : "Unknown Author")</p>
             }
+        </dd>
+        <dt class="col-sm-12">
+            Сумма:
+        </dt>
+        <dd class="col-sm-12">
+            @Html.DisplayFor(model => model.Price)
         </dd>
     </dl>
 </div>

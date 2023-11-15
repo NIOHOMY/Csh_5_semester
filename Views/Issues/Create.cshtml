@@ -37,7 +37,9 @@
                 <button id="addBook" disabled>Add</button>
                 <div id="bookList"></div>
             </div>
-            
+            <h4>Selected Books</h4>
+            <ul id="selectedBooksList"></ul>
+            <p>Total Price: <span id="totalPrice">0</span></p>
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="/_framework/aspnetcore-browser-refresh.js"></script>
@@ -112,26 +114,36 @@
                     });
 
 
-                
-
-
+         
 
                     $('#addBook').click(function (e) {
                         e.preventDefault();
-                        var selectedBooks = $('#selectedBooks');
+                        var selectedBooksList = $('#selectedBooksList');
                         var selectedBookIds = $('#selectedBookIds');
 
-                        
-                        selectedBooks.append('<li>' + $('#search').val() + '<button class="removeBookBtn" data-bookid="' + selectedBookId + '">Remove</button></li>');
+                        // Получаем информацию о выбранной книге
+                        $.ajax({
+                            url: "/Issues/GetBookInfo",
+                            method: "POST",
+                            data: { 'bookId': selectedBookId },
+                            success: function (book) {
+                                // Добавляем книгу в список
+                                selectedBooksList.append('<li data-price="' + book.price + '">' + book.title + ' - ' + book.price + ' руб ' + ' <button class="removeBookBtn" data-bookid="' + selectedBookId + '">Remove</button></li>');
 
-                        
-                        var currentIds = selectedBookIds.val() || '';
-                        selectedBookIds.val(currentIds + selectedBookId + ',');
+                                // Обновляем общую стоимость
+                                updateTotalPrice();
 
-                        
-                        $('#search').val('');
-                        $('#addBook').prop('disabled', true);
+                                // Добавляем ID книги в скрытое поле
+                                var currentIds = selectedBookIds.val() || '';
+                                selectedBookIds.val(currentIds + selectedBookId + ',');
+
+                                // Очищаем поле поиска
+                                $('#search').val('');
+                                $('#addBook').prop('disabled', true);
+                            }
+                        });
                     });
+
 
                     $(document).on('click', '.removeBookBtn', function (e) {
                         e.preventDefault();
@@ -149,8 +161,17 @@
 
                         // Удаляем элемент списка с текущей книгой
                         $(this).parent().remove();
+                        updateTotalPrice();
                     });
 
+
+                    function updateTotalPrice() {
+                        var totalPrice = 0;
+                        $('#selectedBooksList li').each(function () {
+                            totalPrice += parseFloat($(this).data('price'));
+                        });
+                        $('#totalPrice').text(totalPrice.toFixed(2)+' руб ');
+                    }
 
 
                 });

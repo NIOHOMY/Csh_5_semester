@@ -49,7 +49,11 @@
                     }
                 </ul>
             </div>
-
+            <div class="form-group">
+                <p>Price</p>
+                @Html.DisplayFor(model => model.Price)
+            </div>
+            <p>доп оплата: <span id="totalPrice">0</span></p>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="/_framework/aspnetcore-browser-refresh.js"></script>
 
@@ -88,7 +92,34 @@
                         $('#bookList').fadeOut();
                     });
 
+                    
                     $('#addBook').click(function (e) {
+                        e.preventDefault();
+                        var selectedBooksList = $('#selectedBooksList');
+                        var selectedBookIdsInput = $('#selectedBookIds');
+                        var selectedBookId = selectedBookIds[selectedBookIds.length - 1];
+                        // Получаем информацию о выбранной книге
+                        $.ajax({
+                            url: "/Issues/GetBookInfo",
+                            method: "POST",
+                            data: { 'bookId': selectedBookId },
+                            success: function (book) {
+                                // Добавляем книгу в список
+                                selectedBooksList.append('<li data-price="' + book.price + '">' + book.title + ' - ' + book.price + ' руб ' + ' <button class="removeBookBtn" data-bookid="' + selectedBookId + '">Remove</button></li>');
+
+                                // Обновляем общую стоимость
+                                updateTotalPrice();
+
+                                // Добавляем ID книги в скрытое поле
+                                selectedBookIdsInput.val(selectedBookIds.join(','));
+
+                                // Очищаем поле поиска
+                                $('#search').val('');
+                                $('#addBook').prop('disabled', true);
+                            }
+                        });
+                    });
+                    @*$('#addBook').click(function (e) {
                         e.preventDefault();
                         var selectedBooksList = $('#selectedBooksList');
                         var selectedBookIdsInput = $('#selectedBookIds');
@@ -103,7 +134,7 @@
                         // Очищаем поле поиска и отключаем кнопку "Add"
                         $('#search').val('');
                         $('#addBook').prop('disabled', true);
-                    });
+                    });*@
 
                     $(document).on('click', '.removeBookBtn', function (e) {
                         e.preventDefault();
@@ -127,9 +158,20 @@
 
                         // Удаляем элемент списка
                         $(this).parent().remove();
+                        updateTotalPrice();
                     });
 
-
+                    function updateTotalPrice() {
+                        var totalPrice = 0;
+                        $('#selectedBooksList  li').each(function () {
+                            var bookPrice = parseFloat($(this).data('price'));
+                            
+                            if (!isNaN(bookPrice)) {
+                                totalPrice += bookPrice;
+                            }
+                        });
+                        $('#totalPrice').text(totalPrice.toFixed(2)+' руб ');
+                    }
 
                 });
             </script>

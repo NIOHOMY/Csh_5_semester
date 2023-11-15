@@ -27,6 +27,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Books)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -53,8 +56,11 @@
                 <td>
                     @foreach (var book in item.Books)
                     {
-                        <p>@book.Title by @(book.FirstAuthor != null ? book.FirstAuthor.Name : "Unknown Author")</p>
+                        <p>@book.Title - @(book.FirstAuthor != null ? book.FirstAuthor.Name : "Unknown Author")</p>
                     }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IssueId">Edit</a> |

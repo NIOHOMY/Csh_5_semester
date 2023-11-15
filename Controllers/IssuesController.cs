@@ -97,6 +97,13 @@ namespace WebApplication1.Controllers
             return Json(books);
         }
         [HttpPost]
+        public IActionResult GetBookInfo(int bookId)
+        {
+            var book = _databaseManager.GetBookById(bookId);
+            return Json(new { title = book.Title, price = book.Price });
+        }
+
+        [HttpPost]
         public IActionResult SearchReaders(string query)
         {
             var readers = _databaseManager.GetAllReaders();

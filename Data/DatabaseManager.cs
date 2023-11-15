@@ -184,6 +184,7 @@ namespace WebApplication1.Data
                         var book = _context.Books.FirstOrDefault(b => b.BookId == bookId);
                         book.NumberOfExamples -= 1;
                         existingIssue.Books.Add(bookToAdd);
+                        existingIssue.Price += bookToAdd.Price;
                     }
 
                 }
@@ -336,6 +337,7 @@ namespace WebApplication1.Data
                 foreach (Book book in issue.Books)
                 {
                     DecreaseNumberOfExamples(book.BookId);
+                    issue.Price += book.Price;
                 }
                 _context.SaveChanges();
             }

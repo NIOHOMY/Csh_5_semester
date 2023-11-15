@@ -584,8 +584,8 @@ C:\Users\N1o\0projects\VS\WebApplication1\obj\Debug\net7.0\WebApplication1.genru
 C:\Users\N1o\0projects\VS\WebApplication1\obj\Debug\net7.0\ref\WebApplication1.dll
 C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\bin\Debug\net7.0\appsettings.Development.json
 C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\bin\Debug\net7.0\appsettings.json
-C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\bin\Debug\net7.0\app.db
 C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\bin\Debug\net7.0\WebApplication1.staticwebassets.runtime.json
+C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\bin\Debug\net7.0\app.db
 C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\bin\Debug\net7.0\WebApplication1.exe
 C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\bin\Debug\net7.0\WebApplication1.deps.json
 C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\bin\Debug\net7.0\WebApplication1.runtimeconfig.json
