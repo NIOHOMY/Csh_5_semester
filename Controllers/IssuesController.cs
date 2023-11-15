@@ -108,7 +108,7 @@ namespace WebApplication1.Controllers
         {
             var readers = _databaseManager.GetAllReaders();
             var q = readers
-                .Where(r => (r.LastName + r.FirstName + r.Patronymic + r.PhoneNumber).Contains(query))
+                .Where(r => (r.LastName +' '+r.FirstName + ' ' + r.Patronymic + ' ' + r.PhoneNumber).Contains(query))
                 .Select(r => new { 
                     ReaderId = r.ReaderId, 
                     DisplayText = $"{r.LastName} {r.FirstName} {r.Patronymic} {r.FormattedPhoneNumber}" 
