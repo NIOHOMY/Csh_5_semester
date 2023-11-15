@@ -1,0 +1,45 @@
+﻿
+@model WebApplication1.Models.VMRegistration
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Register</title>
+</head>
+<body>
+    <dl class="row">
+        <form asp-controller="Access" asp-action="Register" method="post">
+
+
+            <label asp-for="FirstName">First Name:</label>
+            <input asp-for="FirstName" />
+
+            <label asp-for="LastName">Last Name:</label>
+            <input asp-for="LastName" />
+
+            <label asp-for="Patronymic">Patronymic:</label>
+            <input asp-for="Patronymic" />
+
+            <label asp-for="Address">Address:</label>
+            <input asp-for="Address" />
+
+            <label asp-for="PhoneNumber">Phone Number:</label>
+            <input asp-for="PhoneNumber" />
+
+            <label asp-for="Email">Email:</label>
+            <input asp-for="Email" />
+
+            <label asp-for="Password">Password:</label>
+            <input asp-for="Password" />
+
+            <button type="submit">Register</button>
+        </form>
+        </dl>
+
+</body>

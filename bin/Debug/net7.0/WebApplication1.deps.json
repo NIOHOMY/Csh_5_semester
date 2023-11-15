@@ -8,13 +8,15 @@
     ".NETCoreApp,Version=v7.0": {
       "WebApplication1/1.0.0": {
         "dependencies": {
+          "BCrypt.Net-Core": "1.6.0",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "7.0.13",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "7.0.13",
           "Microsoft.AspNetCore.Identity.UI": "7.0.13",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.13",
           "Microsoft.EntityFrameworkCore.Sqlite": "7.0.13",
           "Microsoft.EntityFrameworkCore.Tools": "7.0.13",
-          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "7.0.11"
+          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "7.0.11",
+          "Portable.BouncyCastle": "1.9.0"
         },
         "runtime": {
           "WebApplication1.dll": {}
@@ -51,6 +53,14 @@
           "lib/netstandard2.0/Azure.Identity.dll": {
             "assemblyVersion": "1.7.0.0",
             "fileVersion": "1.700.22.46903"
+          }
+        }
+      },
+      "BCrypt.Net-Core/1.6.0": {
+        "runtime": {
+          "lib/netstandard2.0/BCrypt.Net-Core.dll": {
+            "assemblyVersion": "1.6.0.0",
+            "fileVersion": "1.6.0.0"
           }
         }
       },
@@ -1797,6 +1807,14 @@
           }
         }
       },
+      "Portable.BouncyCastle/1.9.0": {
+        "runtime": {
+          "lib/netstandard2.0/BouncyCastle.Crypto.dll": {
+            "assemblyVersion": "1.9.0.0",
+            "fileVersion": "1.9.0.1"
+          }
+        }
+      },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
@@ -2804,6 +2822,13 @@
       "path": "azure.identity/1.7.0",
       "hashPath": "azure.identity.1.7.0.nupkg.sha512"
     },
+    "BCrypt.Net-Core/1.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hsKiHGjrnlDW05MzuzzlD9gNP8YOW2KbZ+FbvISrilsKJJ76tXKhWey6psZX5sd7DczNpSU2U6ldjPoblk8BLw==",
+      "path": "bcrypt.net-core/1.6.0",
+      "hashPath": "bcrypt.net-core.1.6.0.nupkg.sha512"
+    },
     "Humanizer/2.14.1": {
       "type": "package",
       "serviceable": true,
@@ -3727,6 +3752,13 @@
       "sha512": "sha512-Wm/AOFICTIrCgbVxv9dNWusraTzcggbo5W4ao7hD8NNVq911an9TGwW+uNuYc8I5PkpTeMuSXneV2u6hbi1P4w==",
       "path": "nuget.versioning/6.6.1",
       "hashPath": "nuget.versioning.6.6.1.nupkg.sha512"
+    },
+    "Portable.BouncyCastle/1.9.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eZZBCABzVOek+id9Xy04HhmgykF0wZg9wpByzrWN7q8qEI0Qen9b7tfd7w8VA3dOeesumMG7C5ZPy0jk7PSRHw==",
+      "path": "portable.bouncycastle/1.9.0",
+      "hashPath": "portable.bouncycastle.1.9.0.nupkg.sha512"
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
       "type": "package",

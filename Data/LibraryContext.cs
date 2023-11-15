@@ -18,6 +18,8 @@ namespace WebApplication1.Data
         public DbSet<Reader> Readers { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
 
+        public DbSet<UserModel> Users { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;
