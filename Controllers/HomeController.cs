@@ -7,11 +7,11 @@ using WebApplication1.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-
+using System.Security.Claims;
 
 namespace WebApplication1.Controllers;
 
-[Authorize]
+[Authorize(Roles = "User")]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -22,8 +22,12 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    //[AllowAnonymous]
+    //[Authorize(Roles = "User")]
     public IActionResult Index()
     {
+        //var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
         return View();
     }
 
@@ -31,7 +35,7 @@ public class HomeController : Controller
     {
         return View();
     }
-
+    [AllowAnonymous]
     public async Task<IActionResult> LogOut()
     {
 

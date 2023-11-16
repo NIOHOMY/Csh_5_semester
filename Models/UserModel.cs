@@ -1,6 +1,8 @@
-﻿namespace WebApplication1.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace WebApplication1.Models
 {
-    public class UserModel
+    public class UserModel : IdentityUser
     {
         public int UserModelId { get; set; }
         public string Email { get; set; }
