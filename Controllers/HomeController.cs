@@ -11,7 +11,8 @@ using System.Security.Claims;
 
 namespace WebApplication1.Controllers;
 
-[Authorize(Roles = "User")]
+//[Authorize(Roles = "User")]
+[Authorize(Roles = "Admin,Manager,User")]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -24,9 +25,10 @@ public class HomeController : Controller
 
     //[AllowAnonymous]
     //[Authorize(Roles = "User")]
+    //[Authorize(Roles = "Admin")]
     public IActionResult Index()
     {
-        //var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+        var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
         return View();
     }

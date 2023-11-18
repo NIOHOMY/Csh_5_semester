@@ -12,7 +12,8 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    [Authorize(Roles = "User")]
+    //[Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin,Manager,User")]
     public class BooksController : Controller
     {
         //private readonly LibraryContext _context;

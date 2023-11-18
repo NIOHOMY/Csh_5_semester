@@ -42,6 +42,100 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(VMLogin modelLogin)
         {
+            /*
+            string AhashedPassword = HashPassword("Qwerty123-");
+            var adminUser = new UserModel
+            {
+                UserName = "admin@a.com",
+
+                Email = "admin@a.com",
+                PasswordHash = AhashedPassword,
+                FirstName = "Alex",
+                LastName = "Temdijw",
+                Patronymic = "Rfb",
+                Address = "st Prsefsf",
+                PhoneNumber = "+75436735622"
+            };
+
+            var Aresult = await _userManager.CreateAsync(adminUser, "Qwerty123-");
+
+            if (Aresult.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(adminUser, "Admin");
+                // Sign in the user after registration
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, adminUser.UserName),
+                        // Add other claims as needed
+                    };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true, // You can set this based on your requirement
+                };
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+            }
+
+            _databaseManager.AddUser(adminUser);
+            _databaseManager.AddReader(new Reader
+            {
+                FirstName = "Alex",
+                LastName = "Temdijw",
+                Patronymic = "Rfb",
+                Address = "st Prsefsf",
+                PhoneNumber = "+75436735622"
+            });
+            */
+            /////////////////////////////////
+            /*
+            string MhashedPassword = HashPassword("Qwerty123-");
+            var adminUser = new UserModel
+            {
+                UserName = "employee@e.com",
+
+                Email = "employee@e.com",
+                PasswordHash = MhashedPassword,
+                FirstName = "Elex",
+                LastName = "Gemdijw",
+                Patronymic = "Pfb",
+                Address = "st Arsefsf",
+                PhoneNumber = "+75468335622"
+            };
+
+            var Aresult = await _userManager.CreateAsync(adminUser, "Qwerty123-");
+
+            if (Aresult.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(adminUser, "Manager");
+                // Sign in the user after registration
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, adminUser.UserName),
+                        // Add other claims as needed
+                    };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true, // You can set this based on your requirement
+                };
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+            }
+
+            _databaseManager.AddUser(adminUser);
+            _databaseManager.AddReader(new Reader
+            {
+                FirstName = "Elex",
+                LastName = "Gemdijw",
+                Patronymic = "Pfb",
+                Address = "st Arsefsf",
+                PhoneNumber = "+75468335622"
+            });
+            */
+            /////////////////////////////////
 
             var user = _databaseManager.GetUserByEmail(modelLogin.Email); 
 
@@ -68,11 +162,15 @@ namespace WebApplication1.Controllers
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
                 if (roles.Contains("User"))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Books");
                 }
                 else if (roles.Contains("Manager"))
                 {
-                    return RedirectToAction("ManagerPage", "Home");
+                    return RedirectToAction("Index", "Issues");
+                }
+                else if (roles.Contains("Admin"))
+                {
+                    return RedirectToAction("Index", "Books");
                 }
 
             }
@@ -89,11 +187,9 @@ namespace WebApplication1.Controllers
         {
             if (model.Email != null && model.Password != null)
             {
-                /*var user = new IdentityUser
-                {
-                    UserName = model.Email,
-                    Email = model.Email,
-                };*/
+                
+                /////////////////////////////////////////////////////
+
                 // Хэширование пароля перед сохранением в базу данных
                 string hashedPassword = HashPassword(model.Password);
                 var user = new UserModel
@@ -129,17 +225,6 @@ namespace WebApplication1.Controllers
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
                 }
-
-                /*var userr = new UserModel
-                {
-                    Email = model.Email,
-                    PasswordHash = hashedPassword,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Patronymic = model.Patronymic,
-                    Address = model.Address,
-                    PhoneNumber = model.PhoneNumber
-                };*/
 
 
                 _databaseManager.AddUser(user);
