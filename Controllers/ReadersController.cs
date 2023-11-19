@@ -157,6 +157,8 @@ namespace WebApplication1.Controllers
                 var user = _databaseManager.GetUserByEmail(reader.Email);
                 if (user != null)
                 {
+                    /*var use = _userManager.FindByEmailAsync(user.Email).Result;
+                    _userManager.DeleteAsync(use);*/
                     _userManager.DeleteAsync(user);
                     _databaseManager.DeleteUser(user.UserModelId);
                     _databaseManager.DeleteReader(id);
@@ -169,5 +171,12 @@ namespace WebApplication1.Controllers
         {
           return (_databaseManager.GetReaderById(id) != null);
         }
+
+        public IActionResult ChangeUserRole(int userId)
+        {
+            var reader = _databaseManager.GetReaderById(userId);
+            return RedirectToAction("ChangeUserRole", "Role", new { userEmail = reader.Email });
+        }
+
     }
 }
