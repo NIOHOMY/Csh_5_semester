@@ -23,12 +23,12 @@ public class HomeController : Controller
         _logger = logger;
     }
 
-    //[AllowAnonymous]
+    [AllowAnonymous]
     //[Authorize(Roles = "User")]
     //[Authorize(Roles = "Admin")]
     public IActionResult Index()
     {
-        var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+        //var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
         return View();
     }

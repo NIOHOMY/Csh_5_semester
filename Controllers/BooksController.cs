@@ -26,6 +26,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Books
+        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> Index()
         {
             List<Book>? libraryContext = _databaseManager.GetAllBooks();
@@ -34,6 +35,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Books/Details/5
+        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -51,6 +53,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Books/Create
+        [Authorize(Roles = "Admin,Manager")]
         public IActionResult Create()
         {
             ViewData["FirstAuthorId"] = new SelectList(_databaseManager.GetAllAuthors(), "AuthorId", "Name");
@@ -63,6 +66,7 @@ namespace WebApplication1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public IActionResult Create([Bind("BookId,Title,FirstAuthorId,YearOfPublication,Price,NumberOfExamples,PublisherId")] Book book)
         {
             
@@ -78,6 +82,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Books/Edit/5
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -101,6 +106,7 @@ namespace WebApplication1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("BookId,Title,FirstAuthorId,YearOfPublication,Price,NumberOfExamples,PublisherId")] Book book)
         {
             if (id != book.BookId)
@@ -134,6 +140,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Books/Delete/5
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -153,6 +160,7 @@ namespace WebApplication1.Controllers
         // POST: Books/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_databaseManager.GetAllBooks().Count == 0)

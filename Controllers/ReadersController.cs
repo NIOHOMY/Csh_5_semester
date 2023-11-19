@@ -63,12 +63,13 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ReaderId,FirstName,LastName,Patronymic,Address,PhoneNumber")] Reader reader)
         {
-            if (reader != null)
+            /*if (reader != null)
             {
                 _databaseManager.AddReader(reader);
                 //await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            }*/
+            RedirectToAction("Register", "Access");
             return View(reader);
         }
 

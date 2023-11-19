@@ -99,10 +99,11 @@ namespace WebApplication1.Data
                     }
                 );
 
-                modelBuilder.Entity<Reader>().HasData(
+                /*modelBuilder.Entity<Reader>().HasData(
                     new Reader
                     {
                         ReaderId = 1,
+                        Email = "ivan@mail.ru",
                         FirstName = "Иван",
                         LastName = "Иванов",
                         Patronymic = "Иванович",
@@ -112,13 +113,14 @@ namespace WebApplication1.Data
                     new Reader
                     {
                         ReaderId = 2,
+                        Email = "petr@mail.ru",
                         FirstName = "Петр",
                         LastName = "Петров",
                         Patronymic = "Петрович",
                         Address = "ул. Лермонтова, д. 20, кв. 30",
                         PhoneNumber = "+7 (999) 765-43-21"
                     }
-                );
+                );*/
 
                 base.OnModelCreating(modelBuilder);
             }

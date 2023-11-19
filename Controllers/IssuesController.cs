@@ -26,6 +26,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Issues
+        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> Index()
         {
             List<Issue>? libraryContext = _databaseManager.GetAllIssues();//_context.Issues.Include(i => i.Reader);
@@ -33,6 +34,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Issues/Details/5
+        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,7 +51,7 @@ namespace WebApplication1.Controllers
 
             return View(issue);
         }
-
+        [Authorize(Roles = "Admin,Manager,User")]
         public IActionResult Create()
         {
             ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "PhoneNumber");
@@ -59,6 +61,7 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create([Bind("IssueId,IssueDate,ReturnDate,ReaderId")] Issue issue, string selectedBookIds)
         {
 
@@ -123,6 +126,7 @@ namespace WebApplication1.Controllers
 
 
         // GET: Issues/Edit/5
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -162,6 +166,7 @@ namespace WebApplication1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("IssueDate,ReturnDate,ReaderId")] Issue issue, string selectedBookIds, string removedBookIds)
         {
             if (issue != null)
@@ -232,6 +237,7 @@ namespace WebApplication1.Controllers
 
 
         // GET: Issues/Delete/5
+        [Authorize(Roles = "Admin,Managerб User")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -252,6 +258,7 @@ namespace WebApplication1.Controllers
         // POST: Issues/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
            

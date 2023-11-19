@@ -11,10 +11,12 @@ using Org.BouncyCastle.Crypto.Generators;
 using WebApplication1.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace WebApplication1.Controllers
 {
     [AllowAnonymous]
+    [Authorize(Roles = "Admin,Manager,User")]
     public class AccessController : Controller
     {
         private readonly DatabaseManager _databaseManager;
@@ -24,13 +26,22 @@ namespace WebApplication1.Controllers
         public AccessController(LibraryContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             //_context = context;
-            _databaseManager = new DatabaseManager(context);
             _userManager = userManager;
+            /*
+            var allUsers = _userManager.Users.ToList();
+            foreach (var user in allUsers)
+            {
+                // Удаление пользователя
+                _userManager.DeleteAsync(user);
+            }
+            */
+            _databaseManager = new DatabaseManager(context);
             _signInManager = signInManager;
         }
         public IActionResult Login()
         {
             ClaimsPrincipal claimUser = HttpContext.User;
+            //var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
             if (claimUser.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "Home");
@@ -43,18 +54,13 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> Login(VMLogin modelLogin)
         {
             /*
+            
             string AhashedPassword = HashPassword("Qwerty123-");
             var adminUser = new UserModel
             {
                 UserName = "admin@a.com",
-
                 Email = "admin@a.com",
-                PasswordHash = AhashedPassword,
-                FirstName = "Alex",
-                LastName = "Temdijw",
-                Patronymic = "Rfb",
-                Address = "st Prsefsf",
-                PhoneNumber = "+75436735622"
+                PasswordHash = AhashedPassword
             };
 
             var Aresult = await _userManager.CreateAsync(adminUser, "Qwerty123-");
@@ -81,6 +87,7 @@ namespace WebApplication1.Controllers
             _databaseManager.AddUser(adminUser);
             _databaseManager.AddReader(new Reader
             {
+                Email = "admin@a.com",
                 FirstName = "Alex",
                 LastName = "Temdijw",
                 Patronymic = "Rfb",
@@ -90,29 +97,26 @@ namespace WebApplication1.Controllers
             */
             /////////////////////////////////
             /*
+            
             string MhashedPassword = HashPassword("Qwerty123-");
-            var adminUser = new UserModel
+            var managerUser = new UserModel
             {
                 UserName = "employee@e.com",
 
                 Email = "employee@e.com",
                 PasswordHash = MhashedPassword,
-                FirstName = "Elex",
-                LastName = "Gemdijw",
-                Patronymic = "Pfb",
-                Address = "st Arsefsf",
-                PhoneNumber = "+75468335622"
+                
             };
 
-            var Aresult = await _userManager.CreateAsync(adminUser, "Qwerty123-");
+            var Mresult = await _userManager.CreateAsync(managerUser, "Qwerty123-");
 
             if (Aresult.Succeeded)
             {
-                await _userManager.AddToRoleAsync(adminUser, "Manager");
+                await _userManager.AddToRoleAsync(managerUser, "Manager");
                 // Sign in the user after registration
                 var claims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Name, adminUser.UserName),
+                        new Claim(ClaimTypes.Name, managerUser.UserName),
                         // Add other claims as needed
                     };
 
@@ -125,9 +129,10 @@ namespace WebApplication1.Controllers
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
             }
 
-            _databaseManager.AddUser(adminUser);
+            _databaseManager.AddUser(managerUser);
             _databaseManager.AddReader(new Reader
             {
+                Email = "employee@e.com",
                 FirstName = "Elex",
                 LastName = "Gemdijw",
                 Patronymic = "Pfb",
@@ -144,7 +149,7 @@ namespace WebApplication1.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
-                    // Add other claims as needed
+                    
                 };
 
                 var roles = await _userManager.GetRolesAsync(user);
@@ -197,12 +202,7 @@ namespace WebApplication1.Controllers
                     UserName = model.Email,
 
                     Email = model.Email,
-                    PasswordHash = hashedPassword,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Patronymic = model.Patronymic,
-                    Address = model.Address,
-                    PhoneNumber = model.PhoneNumber
+                    PasswordHash = hashedPassword                    
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -210,17 +210,17 @@ namespace WebApplication1.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, "User");
-                    // Sign in the user after registration
+                    
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, user.UserName),
-                        // Add other claims as needed
+                        
                     };
-
+                    claims.Add(new Claim(ClaimTypes.Role, "User"));
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var authProperties = new AuthenticationProperties
                     {
-                        IsPersistent = true, // You can set this based on your requirement
+                        IsPersistent = true, 
                     };
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -230,6 +230,7 @@ namespace WebApplication1.Controllers
                 _databaseManager.AddUser(user);
                 _databaseManager.AddReader(new Reader
                 {
+                    Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Patronymic = model.Patronymic,

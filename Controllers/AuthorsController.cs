@@ -25,6 +25,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Authors
+        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> Index()
         {
             var authors = _databaseManager.GetAllAuthors();
@@ -34,6 +35,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Authors/Details/5
+        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null )
@@ -51,6 +53,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Authors/Create
+        [Authorize(Roles = "Admin,Manager")]
         public IActionResult Create()
         {
             return View();
@@ -61,6 +64,7 @@ namespace WebApplication1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create([Bind("AuthorId,Name")] Author author)
         {
             if (author != null)
@@ -73,6 +77,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Authors/Edit/5
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null )
@@ -93,6 +98,7 @@ namespace WebApplication1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("AuthorId,Name")] Author author)
         {
             if (id != author.AuthorId)
@@ -124,6 +130,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Authors/Delete/5
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null )
@@ -143,6 +150,7 @@ namespace WebApplication1.Controllers
         // POST: Authors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (id>=0)

@@ -12,6 +12,8 @@ namespace WebApplication1.Models
     public class Reader
     {
         public int ReaderId { get; set; }
+        [Required(ErrorMessage = "Почта читателя обязательна.")]
+        public string Email { get; set; }
         [Required(ErrorMessage = "Имя читателя обязательно.")]
         public string FirstName { get; set; }
         [Required(ErrorMessage = "Фамилия читателя обязательна.")]
