@@ -97,7 +97,6 @@ namespace WebApplication1.Controllers
             */
             /////////////////////////////////
             /*
-            
             string MhashedPassword = HashPassword("Qwerty123-");
             var managerUser = new UserModel
             {
@@ -211,7 +210,7 @@ namespace WebApplication1.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, "User");
                     
-                    var claims = new List<Claim>
+                    /*var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, user.UserName),
                         
@@ -220,10 +219,10 @@ namespace WebApplication1.Controllers
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var authProperties = new AuthenticationProperties
                     {
-                        IsPersistent = true, 
+                        IsPersistent = true,
                     };
 
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);*/
                 }
 
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,13 @@ namespace WebApplication1.Controllers
     {
         //private readonly LibraryContext _context;
         private readonly DatabaseManager _databaseManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ReadersController(LibraryContext context)
+        public ReadersController(LibraryContext context, UserManager<IdentityUser> userManager)
         {
             //_context = context;
             _databaseManager = new DatabaseManager(context);
+            _userManager = userManager;
         }
 
         // GET: Readers
@@ -53,12 +56,10 @@ namespace WebApplication1.Controllers
         // GET: Readers/Create
         public IActionResult Create()
         {
-            return View();
+            // Переход на контроллер Access и метод Register
+            return RedirectToAction("Register", "Access");
         }
 
-        // POST: Readers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ReaderId,FirstName,LastName,Patronymic,Address,PhoneNumber")] Reader reader)
@@ -69,9 +70,11 @@ namespace WebApplication1.Controllers
                 //await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }*/
-            RedirectToAction("Register", "Access");
-            return View(reader);
+
+            // Переход на контроллер Access и метод Register
+            return RedirectToAction("Register", "Access");
         }
+
 
         // GET: Readers/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -149,7 +152,15 @@ namespace WebApplication1.Controllers
         {
             if (id >= 0)
             {
-                _databaseManager.DeleteReader(id);
+                var reader = _databaseManager.GetReaderById(id);
+
+                var user = _databaseManager.GetUserByEmail(reader.Email);
+                if (user != null)
+                {
+                    _userManager.DeleteAsync(user);
+                    _databaseManager.DeleteUser(user.UserModelId);
+                    _databaseManager.DeleteReader(id);
+                }
             }
             return RedirectToAction(nameof(Index));
         }

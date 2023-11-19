@@ -23,6 +23,9 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ReturnDate)
         </dd>
+        <dd>
+            <p>@(Model.isСonfirmed ? "Подтверждена" : "Ожидает подтверждения")</p>
+        </dd>
         <dt class="col-sm-12">
             Reader:
         </dt>

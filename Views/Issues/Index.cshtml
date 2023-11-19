@@ -22,6 +22,9 @@
                 @Html.DisplayNameFor(model => model.ReturnDate)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.isСonfirmed)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Reader)
             </th>
             <th>
@@ -47,6 +50,9 @@
                     @Html.DisplayFor(modelItem => item.ReturnDate)
                 </td>
                 <td>
+                    <p>@(item.isСonfirmed? "Подтверждена": "Ожидает подтверждения")</p>
+                </td>
+                <td>
                     <p>@item.Reader.FirstName</p>
                     <p>@item.Reader.LastName</p>
                     <p>@item.Reader.Patronymic</p>
@@ -66,8 +72,16 @@
                     <a asp-action="Edit" asp-route-id="@item.IssueId">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.IssueId">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.IssueId">Delete</a>
+                    <a asp-action="Status" asp-route-id="@item.IssueId">Status</a>
                 </td>
             </tr>
         }
+        <p>
+            Show issues:
+            <a asp-action="Index" asp-route-filter="all">All</a> |
+            <a asp-action="Index" asp-route-filter="confirmed">Confirmed</a> |
+            <a asp-action="Index" asp-route-filter="pending">Pending Confirmation</a>
+        </p>
+
     </tbody>
 </table>

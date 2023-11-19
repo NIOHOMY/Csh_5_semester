@@ -27,10 +27,33 @@ namespace WebApplication1.Controllers
 
         // GET: Issues
         [Authorize(Roles = "Admin,Manager,User")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filter)
         {
-            List<Issue>? libraryContext = _databaseManager.GetAllIssues();//_context.Issues.Include(i => i.Reader);
-            return View(libraryContext);
+            List<Issue>? issues = new List<Issue>();
+            if (!string.IsNullOrEmpty(filter))
+            {
+
+                // Определите значение isConfirmedFilter в зависимости от выбранного фильтра
+                switch (filter.ToLower())
+                {
+                    case "confirmed":
+                        issues = _databaseManager.GetIssuesByStatus(true);
+                        break;
+                    case "pending":
+                        issues = _databaseManager.GetIssuesByStatus(false);
+                        break;
+                    default:
+                        issues = _databaseManager.GetAllIssues();
+                        break;
+                }
+
+            }
+            else
+            {
+                issues = _databaseManager.GetAllIssues();
+            }
+            
+            return View(issues);
         }
 
         // GET: Issues/Details/5
@@ -167,7 +190,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> Edit(int id, [Bind("IssueDate,ReturnDate,ReaderId")] Issue issue, string selectedBookIds, string removedBookIds)
+        public async Task<IActionResult> Edit(int id, [Bind("IssueDate,ReturnDate,isСonfirmed,ReaderId")] Issue issue, string selectedBookIds, string removedBookIds)
         {
             if (issue != null)
             {
@@ -235,6 +258,26 @@ namespace WebApplication1.Controllers
             return View(issue);
         }
 
+        public IActionResult Status(int id)
+        {
+            ViewData["id"] = id;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> SaveStatus(int id, bool isСonfirmed)
+        {
+            if (ModelState.IsValid)
+            {
+                // Обновление статуса в базе данных
+                _databaseManager.UpdateIssueStatus(id, isСonfirmed);
+                return RedirectToAction(nameof(Index));
+            }
+
+            return BadRequest();
+        }
 
         // GET: Issues/Delete/5
         [Authorize(Roles = "Admin,Managerб User")]

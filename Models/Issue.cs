@@ -16,6 +16,7 @@ namespace WebApplication1.Models
         public DateTime IssueDate { get; set; }
         [Required(ErrorMessage = "Дата возврата обязательна.")]
         public DateTime ReturnDate { get; set; }
+        public bool isСonfirmed { get; set; } = false;
         [Required(ErrorMessage = "Идентификатор читателя обязателен.")]
         public int ReaderId { get; set; }
         [Required(ErrorMessage = "Стоимость обязательна.")]

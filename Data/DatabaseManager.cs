@@ -42,6 +42,24 @@ namespace WebApplication1.Data
 
             }
         }
+        public void DeleteUser(int userId)
+        {
+            try
+            {
+                var user = _context.Users.FirstOrDefault(a => a.UserModelId == userId);
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при удалении пользователя:");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine("Произошла ошибка при удалении пользователя:");
+                Debug.WriteLine(ex.Message);
+
+            }
+        }
         public UserModel? GetUserByEmail(string email)
         {
             try
@@ -178,6 +196,7 @@ namespace WebApplication1.Data
                 {
                     existingIssue.IssueDate = updatedIssue.IssueDate;
                     existingIssue.ReturnDate = updatedIssue.ReturnDate;
+                    existingIssue.isСonfirmed = updatedIssue.isСonfirmed;
                     existingIssue.ReaderId = updatedIssue.ReaderId;
                     // Обновление списка книг можно выполнить в соответствии с требованиями вашей системы
 
@@ -199,6 +218,7 @@ namespace WebApplication1.Data
             {
                 existingIssue.IssueDate = issue.IssueDate;
                 existingIssue.ReturnDate = issue.ReturnDate;
+                existingIssue.isСonfirmed = issue.isСonfirmed;
                 //existingIssue.ReaderId = issue.ReaderId;
 
                 // Получаем список уже существующих книг в выпуске
@@ -238,7 +258,18 @@ namespace WebApplication1.Data
 
             _context.SaveChanges();
         }
+        public void UpdateIssueStatus(int id, bool status)
+        {
+            var existingIssue = _context.Issues
+                .Include(i => i.Books)
+                .FirstOrDefault(i => i.IssueId == id);
+            if (existingIssue != null)
+            {
+                existingIssue.isСonfirmed = status;
+                _context.SaveChanges();
+            }
 
+        }
 
 
         public void IncreaseNumberOfExamples(int bookId, int quantity=1)
@@ -318,8 +349,19 @@ namespace WebApplication1.Data
         {
             try
             {
-                _context.Readers.Update(reader);
-                _context.SaveChanges();
+                var readerOrig = _context.Readers.FirstOrDefault(x => x.ReaderId == reader.ReaderId);
+                if (readerOrig != null)
+                {
+                    readerOrig.Address = reader.Address;
+                    readerOrig.PhoneNumber = reader.PhoneNumber;
+                    readerOrig.FirstName = reader.FirstName;
+                    readerOrig.LastName = reader.LastName;
+                    readerOrig.Patronymic = reader.Patronymic;
+
+                    _context.Readers.Update(readerOrig);
+                    _context.SaveChanges();
+                }
+
             }
             catch (Exception ex)
             {
@@ -493,6 +535,25 @@ namespace WebApplication1.Data
                 Debug.WriteLine("Произошла ошибка при получении списка выдач:");
                 Debug.WriteLine(ex.Message);
                 
+                return new List<Issue>();
+            }
+        }
+        public List<Issue> GetIssuesByStatus(bool isConfirmed)
+        {
+            try
+            {
+                return _context.Issues.Include(b => b.Reader).Include(b => b.Books)
+                    .ThenInclude(b => b.FirstAuthor).Where(i => i.isСonfirmed == isConfirmed)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении списка выдач с фильтром:");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine("Произошла ошибка при получении списка выдач с фильтром:");
+                Debug.WriteLine(ex.Message);
+
                 return new List<Issue>();
             }
         }
