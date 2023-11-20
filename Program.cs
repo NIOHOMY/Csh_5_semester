@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
@@ -25,6 +26,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 //builder.Services.AddSingleton<DatabaseManager>();
 
 builder.Services.AddControllersWithViews();
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = long.MaxValue;
+});
+
 
 builder.Services.AddRazorPages();
 

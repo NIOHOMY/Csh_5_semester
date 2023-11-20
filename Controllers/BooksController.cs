@@ -54,7 +54,7 @@ namespace WebApplication1.Controllers
             return View(book);
         }
 
-        // GET: Books/Create
+        
         [Authorize(Roles = "Admin,Manager")]
         public IActionResult Create()
         {
@@ -63,25 +63,30 @@ namespace WebApplication1.Controllers
             return View();
         }
 
-        // POST: Books/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        public IActionResult Create([Bind("BookId,Title,FirstAuthorId,YearOfPublication,Price,NumberOfExamples,PublisherId")] Book book)
+        public IActionResult Create([Bind("BookId,Title,FirstAuthorId,YearOfPublication,Price,NumberOfExamples,PublisherId,ImageData")] Book book, IFormFile imageData)
         {
-            
-            if (book!=null)
+
+            if (book != null)
             {
+                if (imageData != null && imageData.Length > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        imageData.CopyTo(memoryStream);
+                        book.ImageData = memoryStream.ToArray();
+                    }
+                }
                 _databaseManager.AddBook(book);
-                //await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["FirstAuthorId"] = new SelectList(_databaseManager.GetAllAuthors(), "AuthorId", "Name", book.FirstAuthorId);
             ViewData["PublisherId"] = new SelectList(_databaseManager.GetAllPublishers(), "PublisherId", "City", book.PublisherId);
             return View(book);
         }
+
 
         // GET: Books/Edit/5
         [Authorize(Roles = "Admin,Manager")]
@@ -109,7 +114,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> Edit(int id, [Bind("BookId,Title,FirstAuthorId,YearOfPublication,Price,NumberOfExamples,PublisherId")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("BookId,Title,FirstAuthorId,YearOfPublication,Price,NumberOfExamples,PublisherId,ImageData")] Book book, IFormFile imageData)
         {
             if (id != book.BookId)
             {
@@ -120,6 +125,14 @@ namespace WebApplication1.Controllers
             {
                 try
                 {
+                    if (imageData != null && imageData.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            imageData.CopyTo(memoryStream);
+                            book.ImageData = memoryStream.ToArray();
+                        }
+                    }
                     _databaseManager.UpdateBook(book);
                     //await _context.SaveChangesAsync();
                 }
@@ -189,8 +202,10 @@ namespace WebApplication1.Controllers
                 byte[] imageData = book.ImageData;
                 if (imageData != null)
                 {
+                    string imageUrl = Url.Action("GetImage", "Books", new { id = book.BookId, width = 100, height = 100, random = DateTime.Now.Ticks });
 
-                    return File(imageData, "image/jpeg");
+                    return File(book.ImageData, "image/jpeg");
+                    //return File(imageData, "image/jpeg");
                 }
             }
             return File("~/images/default-book-image.jpg", "image/jpeg");
