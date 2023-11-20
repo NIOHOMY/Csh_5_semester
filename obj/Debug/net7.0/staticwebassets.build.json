@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "rfDJgBDnxjQcw/NJmAXOTrfgx+fMxBQSdwGUu71VC7s=",
+  "Hash": "ztV5gNWuQJfiX+qu/3stcXNO1NOq9SB/BeZ4LjENyaA=",
   "Source": "WebApplication1",
   "BasePath": "_content/WebApplication1",
   "Mode": "Default",
@@ -1105,12 +1105,12 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
-      "Identity": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\basic_books_imgs\\default-book-image.jpg",
+      "Identity": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\basic_books_imgs\\honest_thief.jpg",
       "SourceId": "WebApplication1",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\",
       "BasePath": "_content/WebApplication1",
-      "RelativePath": "images/basic_books_imgs/default-book-image.jpg",
+      "RelativePath": "images/basic_books_imgs/honest_thief.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1119,7 +1119,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\images\\basic_books_imgs\\default-book-image.jpg"
+      "OriginalItemSpec": "wwwroot\\images\\basic_books_imgs\\honest_thief.jpg"
     },
     {
       "Identity": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\basic_books_imgs\\offense_and_punishment.jpg",
