@@ -13,6 +13,14 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\default-book-image - Copy.jpg",
+      "PackagePath": "staticwebassets\\images\\default-book-image - Copy.jpg"
+    },
+    {
+      "Id": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\default-book-image.jpg",
+      "PackagePath": "staticwebassets\\images\\default-book-image.jpg"
+    },
+    {
       "Id": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

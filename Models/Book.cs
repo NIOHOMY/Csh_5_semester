@@ -27,6 +27,8 @@ namespace WebApplication1.Models
         [Required(ErrorMessage = "Количество экземпляров обязательно.")]
         [Range(1, int.MaxValue, ErrorMessage = "Количество экземпляров должно быть положительным числом.")]
         public int NumberOfExamples { get; set; }
+
+        public byte[]? ImageData { get; set; }
         [Required(ErrorMessage = "Идентификатор издателя обязателен.")]
         public int PublisherId { get; set; }
         [ForeignKey("PublisherId")]

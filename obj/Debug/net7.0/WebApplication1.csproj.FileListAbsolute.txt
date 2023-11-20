@@ -876,3 +876,4 @@ C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\obj\Debug\net7.0\WebApplication1.genru
 C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\obj\Debug\net7.0\ref\WebApplication1.dll
 C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\bin\Debug\net7.0\BCrypt.Net-Core.dll
 C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\bin\Debug\net7.0\BouncyCastle.Crypto.dll
+C:\Users\N1o\0projects\VS\Csh\ConsoleApp1\bin\Debug\net7.0\SixLabors.ImageSharp.dll

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
 using WebApplication1.Models;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace WebApplication1.Controllers
 {
@@ -176,5 +178,63 @@ namespace WebApplication1.Controllers
         {
           return (_databaseManager.GetBookById(id)!=null);
         }
+
+        /*
+        */
+        public IActionResult GetImage(int id)
+        {
+            var book = _databaseManager.GetBookById(id);
+            if (book != null)
+            {
+                byte[] imageData = book.ImageData;
+                if (imageData != null)
+                {
+
+                    return File(imageData, "image/jpeg");
+                }
+            }
+            return File("~/images/default-book-image.jpg", "image/jpeg");
+            /*string imagePath = "~/images/default-book-image.jpg";
+
+            string physicalPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagePath.TrimStart('~').Trim('/'));
+
+            if (System.IO.File.Exists(physicalPath))
+            {
+                // Загрузите изображение и верните его в ответе
+                var imageBytes = System.IO.File.ReadAllBytes(physicalPath);
+                return File(imageBytes, "image/jpeg"); // Изменьте MIME-тип по необходимости
+            }*/
+        }
+
+        /*public IActionResult GetImage(int id, int width = 100, int height = 100)
+        {
+            Console.WriteLine($"GetImage called with id: {id}, width: {width}, height: {height}");
+            var book = _databaseManager.GetBookById(id);
+            if (book != null)
+            {
+                byte[] imageData = book.ImageData;
+                if (imageData != null)
+                {
+                    using (var image = Image.Load(imageData))
+                    {
+                        image.Mutate(x => x.Resize(new ResizeOptions
+                        {
+                            Size = new Size(width, height),
+                            Mode = ResizeMode.Max
+                        }));
+
+                        using (var outputStream = new MemoryStream())
+                        {
+                            image.Save(outputStream, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder());
+
+                            return File(outputStream.ToArray(), "image/jpeg");
+                        }
+                    }
+                }
+            }
+            return File("~/images/default-book-image.jpg", "image/jpeg");
+        }*/
+
     }
+
 }
