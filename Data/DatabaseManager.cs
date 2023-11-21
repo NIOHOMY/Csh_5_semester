@@ -13,6 +13,7 @@ using System.Security.Policy;
 
 using Publisher = WebApplication1.Models.Publisher;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApplication1.Data
 {
@@ -130,6 +131,16 @@ namespace WebApplication1.Data
             }
         }
 
+        public List<Book> SearchBooksByTitleOrFirstAuthor(string searchString)
+        {
+            var result = _context.Books
+                .Include(b => b.FirstAuthor)
+                .Where(b => b.Title.ToLower().Contains(searchString.ToLower()) || b.FirstAuthor.Name.ToLower().Contains(searchString.ToLower()))
+                .ToList();
+
+            return result;
+        }
+
 
         public Issue? GetIssueById(int issueId)
         {
@@ -147,6 +158,19 @@ namespace WebApplication1.Data
                 Debug.WriteLine(ex.Message);
                 return null;
             }
+        }
+
+        public List<Issue> SearchIssuesByIdOrReader(string searchString)
+        {
+            var result = _context.Issues
+                .Include(b => b.Reader)
+                .Where(b => b.IssueId.ToString().Contains(searchString) ||
+                            b.Reader.LastName.ToLower().Contains(searchString.ToLower()) ||
+                            b.Reader.FirstName.ToLower().Contains(searchString.ToLower()) ||
+                            b.Reader.Patronymic.ToLower().Contains(searchString.ToLower()))
+                .ToList();
+
+            return result;
         }
 
         public Publisher? GetPublisherById(int publisherId)

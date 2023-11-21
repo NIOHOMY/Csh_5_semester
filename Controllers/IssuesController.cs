@@ -27,13 +27,12 @@ namespace WebApplication1.Controllers
 
         // GET: Issues
         [Authorize(Roles = "Admin,Manager,User")]
-        public async Task<IActionResult> Index(string filter)
+        public async Task<IActionResult> Index(string filter, [FromQuery(Name = "search")] string searchString)
         {
             List<Issue>? issues = new List<Issue>();
             if (!string.IsNullOrEmpty(filter))
             {
 
-                // Определите значение isConfirmedFilter в зависимости от выбранного фильтра
                 switch (filter.ToLower())
                 {
                     case "confirmed":
@@ -48,11 +47,17 @@ namespace WebApplication1.Controllers
                 }
 
             }
+            else if (!string.IsNullOrEmpty(searchString))
+            {
+                issues = _databaseManager.SearchIssuesByIdOrReader(searchString);
+            }
             else
             {
                 issues = _databaseManager.GetAllIssues();
             }
-            
+
+            ViewBag.SearchString = searchString;
+
             return View(issues);
         }
 
@@ -122,7 +127,7 @@ namespace WebApplication1.Controllers
         public IActionResult SearchBooks(string query)
         {
             var availableBooks = _databaseManager.GetAllAvailableBooks();
-            var books = availableBooks.Where(b => b.Title.Contains(query)).ToList();
+            var books = availableBooks.Where(b => b.Title.ToLower().Contains(query.ToLower())).ToList();
             return Json(books);
         }
         [HttpPost]
@@ -137,7 +142,7 @@ namespace WebApplication1.Controllers
         {
             var readers = _databaseManager.GetAllReaders();
             var q = readers
-                .Where(r => (r.LastName +' '+r.FirstName + ' ' + r.Patronymic + ' ' + r.PhoneNumber).Contains(query))
+                .Where(r => (r.LastName.ToLower() + ' '+r.FirstName.ToLower() + ' ' + r.Patronymic.ToLower() + ' ' + r.PhoneNumber).Contains(query.ToLower()))
                 .Select(r => new { 
                     ReaderId = r.ReaderId, 
                     DisplayText = $"{r.LastName} {r.FirstName} {r.Patronymic} {r.FormattedPhoneNumber}" 

@@ -29,9 +29,20 @@ namespace WebApplication1.Controllers
 
         // GET: Books
         [Authorize(Roles = "Admin,Manager,User")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery(Name = "search")] string searchString)
         {
-            List<Book>? libraryContext = _databaseManager.GetAllBooks();
+            List<Book>? libraryContext;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                libraryContext = _databaseManager.SearchBooksByTitleOrFirstAuthor(searchString);
+            }
+            else
+            {
+                libraryContext = _databaseManager.GetAllBooks();
+            }
+
+            ViewBag.SearchString = searchString;
 
             return View(libraryContext);
         }
