@@ -356,7 +356,6 @@ namespace WebApplication1.Data
         {
             try
             {
-                //book.FirstAuthor = _context.Authors.FirstOrDefault(author => author.AuthorId == book.FirstAuthorId);
                 _context.Books.Update(book);
                 _context.SaveChanges();
             }

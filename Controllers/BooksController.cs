@@ -136,16 +136,26 @@ namespace WebApplication1.Controllers
             {
                 try
                 {
+                    var existingBook = _databaseManager.GetBookById(id);
                     if (imageData != null && imageData.Length > 0)
                     {
                         using (var memoryStream = new MemoryStream())
                         {
                             imageData.CopyTo(memoryStream);
-                            book.ImageData = memoryStream.ToArray();
+                            existingBook.ImageData = memoryStream.ToArray();
                         }
                     }
-                    _databaseManager.UpdateBook(book);
-                    //await _context.SaveChangesAsync();
+                    if (existingBook != null)
+                    {
+                        existingBook.Title = book.Title;
+                        existingBook.FirstAuthorId = book.FirstAuthorId;
+                        existingBook.YearOfPublication = book.YearOfPublication;
+                        existingBook.Price = book.Price;
+                        existingBook.NumberOfExamples = book.NumberOfExamples;
+                        existingBook.PublisherId = book.PublisherId;
+
+                        _databaseManager.UpdateBook(existingBook);
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
