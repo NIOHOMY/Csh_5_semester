@@ -11,6 +11,7 @@ using WebApplication1.Data;
 using WebApplication1.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebApplication1.Controllers
 {
@@ -20,11 +21,13 @@ namespace WebApplication1.Controllers
     {
         //private readonly LibraryContext _context;
         private readonly DatabaseManager _databaseManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public BooksController(LibraryContext context)
+        public BooksController(LibraryContext context, UserManager<IdentityUser> userManager)
         {
             //_context = context;
             _databaseManager = new DatabaseManager(context);
+            _userManager = userManager;
         }
 
         // GET: Books
@@ -33,13 +36,29 @@ namespace WebApplication1.Controllers
         {
             List<Book>? libraryContext;
 
-            if (!string.IsNullOrEmpty(searchString))
+            var user = await _userManager.GetUserAsync(User);
+
+            if (User.IsInRole("User"))
             {
-                libraryContext = _databaseManager.SearchBooksByTitleOrFirstAuthor(searchString);
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    libraryContext = _databaseManager.SearchAvailableBooksByTitleOrFirstAuthor(searchString);
+                }
+                else
+                {
+                    libraryContext = _databaseManager.GetAllAvailableBooks();
+                }
             }
             else
             {
-                libraryContext = _databaseManager.GetAllBooks();
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    libraryContext = _databaseManager.SearchBooksByTitleOrFirstAuthor(searchString);
+                }
+                else
+                {
+                    libraryContext = _databaseManager.GetAllBooks();
+                }
             }
 
             ViewBag.SearchString = searchString;

@@ -141,6 +141,16 @@ namespace WebApplication1.Data
             return result;
         }
 
+        public List<Book> SearchAvailableBooksByTitleOrFirstAuthor(string searchString)
+        {
+            var result = _context.Books
+                .Include(b => b.FirstAuthor)
+                .Where(b => (b.Title.ToLower().Contains(searchString.ToLower()) || b.FirstAuthor.Name.ToLower().Contains(searchString.ToLower())) && b.NumberOfExamples>0)
+                .ToList();
+
+            return result;
+        }
+
 
         public Issue? GetIssueById(int issueId)
         {
@@ -163,7 +173,7 @@ namespace WebApplication1.Data
         public List<Issue> SearchIssuesByIdOrReader(string searchString)
         {
             var result = _context.Issues
-                .Include(b => b.Reader)
+                .Include(b => b.Reader).Include(issue => issue.Books).ThenInclude(b => b.FirstAuthor)
                 .Where(b => b.IssueId.ToString().Contains(searchString) ||
                             b.Reader.LastName.ToLower().Contains(searchString.ToLower()) ||
                             b.Reader.FirstName.ToLower().Contains(searchString.ToLower()) ||
@@ -247,7 +257,7 @@ namespace WebApplication1.Data
 
                 // Получаем список уже существующих книг в выпуске
                 var existingBookIds = existingIssue.Books.Select(b => b.BookId).ToList();
-                if (selectedBooks != null)
+                if (selectedBooks != null && !existingIssue.isСonfirmed)
                 {
 
                     // Находим новые книги, которые должны быть добавлены
@@ -279,7 +289,7 @@ namespace WebApplication1.Data
                     }
 
                 }
-                existingIssue.isСonfirmed = issue.isСonfirmed;
+                existingIssue.isСonfirmed = existingIssue.isСonfirmed? existingIssue.isСonfirmed : issue.isСonfirmed;
             }
 
             _context.SaveChanges();

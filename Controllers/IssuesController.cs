@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,11 +20,13 @@ namespace WebApplication1.Controllers
     {
         //private readonly LibraryContext _context;
         private readonly DatabaseManager _databaseManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public IssuesController(LibraryContext context)
+        public IssuesController(LibraryContext context, UserManager<IdentityUser> userManager)
         {
             //_context = context;
             _databaseManager = new DatabaseManager(context);
+            _userManager = userManager;
         }
 
         // GET: Issues
@@ -30,6 +34,8 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> Index(string filter, [FromQuery(Name = "search")] string searchString)
         {
             List<Issue>? issues = new List<Issue>();
+            var user = await _userManager.GetUserAsync(User);
+
             if (!string.IsNullOrEmpty(filter))
             {
 
@@ -54,6 +60,11 @@ namespace WebApplication1.Controllers
             else
             {
                 issues = _databaseManager.GetAllIssues();
+            }
+            if (User.IsInRole("User"))
+            {
+                var userEmailClaim = User.FindFirst(ClaimTypes.Name).Value;
+                issues = issues.Where(b => b.Reader.Email == userEmailClaim).ToList();
             }
 
             ViewBag.SearchString = searchString;
@@ -89,7 +100,7 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> Create([Bind("IssueId,IssueDate,ReturnDate,ReaderId")] Issue issue, string selectedBookIds)
         {
 
@@ -154,7 +165,7 @@ namespace WebApplication1.Controllers
 
 
         // GET: Issues/Edit/5
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -163,13 +174,12 @@ namespace WebApplication1.Controllers
             }
 
             Issue issue = _databaseManager.GetIssueById(id.Value);
-            if (issue == null)
+            if (issue == null || (User.IsInRole("User") && issue.isСonfirmed))
             {
                 return NotFound();
             }
-
-            // Добавим список уже выбранных книг для данного выпуска
-            var selectedBooks = _databaseManager.GetIssueBooksByIssueId(id.Value);
+                // Добавим список уже выбранных книг для данного выпуска
+                var selectedBooks = _databaseManager.GetIssueBooksByIssueId(id.Value);
             /*ViewBag.ReaderId = new SelectList(_databaseManager.GetAllReaders()
                         .Select(r => new {
                             Value = r.ReaderId,
@@ -194,13 +204,17 @@ namespace WebApplication1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> Edit(int id, [Bind("IssueDate,ReturnDate,isСonfirmed,ReaderId")] Issue issue, string selectedBookIds, string removedBookIds)
         {
             if (issue != null)
             {
                 try
                 {
+                    if (issue == null || (User.IsInRole("User") && issue.isСonfirmed))
+                    {
+                        return NotFound();
+                    }
                     int[] selectedBooksToAdd = Array.Empty<int>();
                     int[] selectedBooksToDelete = Array.Empty<int>();
                     if (!string.IsNullOrEmpty(selectedBookIds) || !string.IsNullOrEmpty(removedBookIds))
@@ -285,7 +299,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Issues/Delete/5
-        [Authorize(Roles = "Admin,Managerб User")]
+        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
