@@ -242,7 +242,7 @@ namespace WebApplication1.Data
             {
                 existingIssue.IssueDate = issue.IssueDate;
                 existingIssue.ReturnDate = issue.ReturnDate;
-                existingIssue.isСonfirmed = issue.isСonfirmed;
+                
                 //existingIssue.ReaderId = issue.ReaderId;
 
                 // Получаем список уже существующих книг в выпуске
@@ -275,9 +275,11 @@ namespace WebApplication1.Data
                         var book = _context.Books.FirstOrDefault(b => b.BookId == bookId);
                         book.NumberOfExamples += 1;
                         existingIssue.Books.Remove(bookToRemove);
+                        existingIssue.Price -= existingIssue.isСonfirmed? 0 : bookToRemove.Price;
                     }
 
                 }
+                existingIssue.isСonfirmed = issue.isСonfirmed;
             }
 
             _context.SaveChanges();
