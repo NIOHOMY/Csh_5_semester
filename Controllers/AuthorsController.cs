@@ -15,17 +15,14 @@ namespace WebApplication1.Controllers
     [Authorize(Roles = "Admin,Manager,User")]
     public class AuthorsController : Controller
     {
-        //private readonly LibraryContext _context;
         private readonly DatabaseManager _databaseManager;
 
         public AuthorsController(LibraryContext context)
         {
-            //_context = context;
             _databaseManager = new DatabaseManager(context);
         }
 
-        // GET: Authors
-        [Authorize(Roles = "Admin,Manager,User")]
+        // GET: 
         public async Task<IActionResult> Index()
         {
             var authors = _databaseManager.GetAllAuthors();
@@ -34,8 +31,7 @@ namespace WebApplication1.Controllers
                           Problem("Entity set 'LibraryContext.Authors'  is null.");
         }
 
-        // GET: Authors/Details/5
-        [Authorize(Roles = "Admin,Manager,User")]
+        // GET: 
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null )
@@ -59,9 +55,7 @@ namespace WebApplication1.Controllers
             return View();
         }
 
-        // POST: Authors/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
@@ -93,9 +87,7 @@ namespace WebApplication1.Controllers
             return View(author);
         }
 
-        // POST: Authors/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]

@@ -160,7 +160,7 @@ namespace WebApplication1.Controllers
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = true, // You can set this based on your requirement
+                    IsPersistent = true, 
                 };
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -184,7 +184,6 @@ namespace WebApplication1.Controllers
         }
 
 
-        // AccessController.cs
         [HttpPost]
         [HttpGet]
         public async Task<IActionResult> Register(VMRegistration model)
@@ -246,8 +245,6 @@ namespace WebApplication1.Controllers
 
         private string HashPassword(string password)
         {
-            // В реальном приложении рекомендуется использовать библиотеку для хэширования паролей, например, BCrypt.Net
-            // Пример с использованием BCrypt.Net: https://github.com/BcryptNet/bcrypt.net
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
 

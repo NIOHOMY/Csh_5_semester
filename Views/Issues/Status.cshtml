@@ -21,11 +21,14 @@
             
             <div>
                 <label>
-                    <input type="radio" name="isСonfirmed" value="True" /> Подтверждено
+                    <input type="radio" name="isСonfirmed" value="True" /> Подтверждить
                 </label>
-                <label>
-                    <input type="radio" name="isСonfirmed" value="False" /> Ожидание
-                </label>
+                @if (User.IsInRole("Admin") )
+                {
+                    <label>
+                        <input type="radio" name="isСonfirmed" value="False" /> Перевести в ожидание
+                    </label>
+                }
             </div>
         </div>
 

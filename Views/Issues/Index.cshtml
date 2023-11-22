@@ -79,7 +79,11 @@
                     <a asp-action="Edit" asp-route-id="@item.IssueId">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.IssueId">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.IssueId">Delete</a>
-                    <a asp-action="Status" asp-route-id="@item.IssueId">Status</a>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <text> | </text>
+                        <a asp-action="Status" asp-route-id="@item.IssueId">Status</a>
+                    }
                 </td>
             </tr>
         }

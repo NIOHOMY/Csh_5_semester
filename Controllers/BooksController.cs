@@ -31,7 +31,6 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Books
-        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> Index([FromQuery(Name = "search")] string searchString)
         {
             List<Book>? libraryContext;
@@ -67,7 +66,6 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Books/Details/5
-        [Authorize(Roles = "Admin,Manager,User")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
