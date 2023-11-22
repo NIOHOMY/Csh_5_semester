@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
 using WebApplication1.Data;
 using WebApplication1.Models;
 
@@ -15,12 +17,10 @@ namespace WebApplication1.Controllers
     [Authorize(Roles = "Admin,Manager,User")]
     public class PublishersController : Controller
     {
-        //private readonly LibraryContext _context;
         private readonly DatabaseManager _databaseManager;
 
         public PublishersController(LibraryContext context)
         {
-            //_context = context;
             _databaseManager = new DatabaseManager(context);
         }
 
@@ -28,7 +28,7 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> Index()
         {
             List<Publisher>? publishers = _databaseManager.GetAllPublishers();
-            return publishers.Count != 0 ? 
+            return publishers != null ? 
                           View(publishers) :
                           Problem("Entity set 'LibraryContext.Publishers'  is null.");
         }
@@ -58,8 +58,6 @@ namespace WebApplication1.Controllers
         }
 
         // POST: Publishers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
@@ -68,7 +66,6 @@ namespace WebApplication1.Controllers
             if (publisher != null)
             {
                 _databaseManager.AddPublisher(publisher);
-                //await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(publisher);
@@ -92,8 +89,6 @@ namespace WebApplication1.Controllers
         }
 
         // POST: Publishers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
@@ -109,7 +104,6 @@ namespace WebApplication1.Controllers
                 try
                 {
                     _databaseManager.UpdatePublisher(publisher);
-                    //await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {

@@ -12,8 +12,10 @@ namespace WebApplication1.Models
     public class Publisher
     {
         public int PublisherId { get; set; }
+
         [Required(ErrorMessage = "Название издателя обязательно.")]
         public string NameOfPublisher { get; set; }
+
         [Required(ErrorMessage = "Город обязателен.")]
         public string City { get; set; }
     }

@@ -25,7 +25,7 @@ namespace WebApplication1.Models
         [Range(0.01, double.MaxValue, ErrorMessage = "Цена должна быть положительным числом.")]
         public decimal Price { get; set; }
         [Required(ErrorMessage = "Количество экземпляров обязательно.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Количество экземпляров должно быть положительным числом.")]
+        [Range(0, int.MaxValue, ErrorMessage = "Количество экземпляров должно быть неотрицательным числом.")]
         public int NumberOfExamples { get; set; }
 
         public byte[]? ImageData { get; set; }

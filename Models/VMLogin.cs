@@ -6,8 +6,10 @@ namespace WebApplication1.Models
     {
         [Required(ErrorMessage = "Почта читателя обязательна.")]
         public string? Email { get; set; }
+
         [Required(ErrorMessage = "Пароль обязателен.")]
         public string? PassWord { get; set; }
+
         public bool KeepLoggedIn { get; set; }
     }
 }

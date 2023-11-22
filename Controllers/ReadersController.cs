@@ -16,13 +16,11 @@ namespace WebApplication1.Controllers
     [Authorize(Roles = "Admin,Manager")]
     public class ReadersController : Controller
     {
-        //private readonly LibraryContext _context;
         private readonly DatabaseManager _databaseManager;
         private readonly UserManager<IdentityUser> _userManager;
 
         public ReadersController(LibraryContext context, UserManager<IdentityUser> userManager)
         {
-            //_context = context;
             _databaseManager = new DatabaseManager(context);
             _userManager = userManager;
         }
@@ -31,7 +29,7 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> Index()
         {
             List<Reader>? readers = _databaseManager.GetAllReaders();
-              return readers.Count != 0 ?
+              return readers != null ?
                           View(readers) :
                           Problem("Entity set 'LibraryContext.Readers'  is null.");
         }
@@ -56,7 +54,6 @@ namespace WebApplication1.Controllers
         // GET: Readers/Create
         public IActionResult Create()
         {
-            // Переход на контроллер Access и метод Register
             return RedirectToAction("Register", "Access");
         }
 
@@ -71,7 +68,6 @@ namespace WebApplication1.Controllers
                 return RedirectToAction(nameof(Index));
             }*/
 
-            // Переход на контроллер Access и метод Register
             return RedirectToAction("Register", "Access");
         }
 
@@ -93,8 +89,6 @@ namespace WebApplication1.Controllers
         }
 
         // POST: Readers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ReaderId,FirstName,LastName,Patronymic,Address,PhoneNumber")] Reader reader)
@@ -155,12 +149,14 @@ namespace WebApplication1.Controllers
                 var reader = _databaseManager.GetReaderById(id);
 
                 var user = _databaseManager.GetUserByEmail(reader.Email);
-                if (user != null)
+                var userLP = _userManager.FindByNameAsync(reader.Email).Result;
+                if (userLP != null && user != null)
                 {
-                    /*var use = _userManager.FindByEmailAsync(user.Email).Result;
-                    _userManager.DeleteAsync(use);*/
-                    _userManager.DeleteAsync(user);
+                    _userManager.DeleteAsync(userLP);
                     _databaseManager.DeleteUser(user.UserModelId);
+                }
+                if (reader != null)
+                {
                     _databaseManager.DeleteReader(id);
                 }
             }

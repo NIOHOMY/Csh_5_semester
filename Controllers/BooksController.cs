@@ -12,20 +12,19 @@ using WebApplication1.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Policy;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebApplication1.Controllers
 {
-    //[Authorize(Roles = "User")]
     [Authorize(Roles = "Admin,Manager,User")]
     public class BooksController : Controller
     {
-        //private readonly LibraryContext _context;
         private readonly DatabaseManager _databaseManager;
         private readonly UserManager<IdentityUser> _userManager;
 
         public BooksController(LibraryContext context, UserManager<IdentityUser> userManager)
         {
-            //_context = context;
             _databaseManager = new DatabaseManager(context);
             _userManager = userManager;
         }
@@ -33,7 +32,7 @@ namespace WebApplication1.Controllers
         // GET: Books
         public async Task<IActionResult> Index(string filter, [FromQuery(Name = "search")] string searchString)
         {
-            List<Book>? libraryContext;
+            List<Book>? books;
 
             var user = await _userManager.GetUserAsync(User);
             if (!string.IsNullOrEmpty(filter))
@@ -42,16 +41,16 @@ namespace WebApplication1.Controllers
                 switch (filter.ToLower())
                 {
                     case "all":
-                        libraryContext = _databaseManager.GetAllBooks();
+                        books = _databaseManager.GetAllBooks();
                         break;
                     case "archived":
-                        libraryContext = _databaseManager.GetArchivedBooks();
+                        books = _databaseManager.GetArchivedBooks();
                         break;
                     case "available":
-                        libraryContext = _databaseManager.GetAllAvailableBooks();
+                        books = _databaseManager.GetAllAvailableBooks();
                         break;
                     default:
-                        libraryContext = _databaseManager.GetAllBooks();
+                        books = _databaseManager.GetAllBooks();
                         break;
                 }
 
@@ -60,28 +59,30 @@ namespace WebApplication1.Controllers
             {
                 if (!string.IsNullOrEmpty(searchString))
                 {
-                    libraryContext = _databaseManager.SearchAvailableBooksByTitleOrFirstAuthor(searchString);
+                    books = _databaseManager.SearchAvailableBooksByTitleOrFirstAuthor(searchString);
                 }
                 else
                 {
-                    libraryContext = _databaseManager.GetAllAvailableBooks();
+                    books = _databaseManager.GetAllAvailableBooks();
                 }
             }
             else
             {
                 if (!string.IsNullOrEmpty(searchString))
                 {
-                    libraryContext = _databaseManager.SearchBooksByTitleOrFirstAuthor(searchString);
+                    books = _databaseManager.SearchBooksByTitleOrFirstAuthor(searchString);
                 }
                 else
                 {
-                    libraryContext = _databaseManager.GetAllBooks();
+                    books = _databaseManager.GetAllBooks();
                 }
             }
 
             ViewBag.SearchString = searchString;
-
-            return View(libraryContext);
+            return books != null ?
+                         View(books) :
+                         Problem("Entity set 'LibraryContext.Books'  is null.");
+            //return View(books);
         }
 
         // GET: Books/Details/5
@@ -156,8 +157,6 @@ namespace WebApplication1.Controllers
         }
 
         // POST: Books/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
@@ -168,7 +167,7 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
 
-            if (book != null)//(ModelState.IsValid)
+            if (book != null)
             {
                 try
                 {
@@ -263,7 +262,6 @@ namespace WebApplication1.Controllers
                     string imageUrl = Url.Action("GetImage", "Books", new { id = book.BookId, width = 100, height = 100, random = DateTime.Now.Ticks });
 
                     return File(book.ImageData, "image/jpeg");
-                    //return File(imageData, "image/jpeg");
                 }
             }
             return File("~/images/basic_books_imgs/default_images/default-book-image.jpg", "image/jpeg");

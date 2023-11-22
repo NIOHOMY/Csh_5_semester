@@ -27,7 +27,8 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangeUserRolePost(string userEmail, string newRole)
         {
-            var user = _databaseManager.GetUserByEmail(userEmail);
+            //var user = _databaseManager.GetUserByEmail(userEmail);
+            var user = _userManager.FindByNameAsync(userEmail).Result;
 
             if (user == null)
             {
@@ -51,13 +52,13 @@ namespace WebApplication1.Controllers
         }
         public async Task<IActionResult> ChangeUserRoleAsync(string userEmail)
         {
-            var user = _databaseManager.GetUserByEmail(userEmail);
+            //var user = _databaseManager.GetUserByEmail(userEmail);
+            var user = _userManager.FindByNameAsync(userEmail).Result;
             ViewBag.UserId = user.Id.ToString();
             ViewBag.Email = userEmail;
             var roles = await _userManager.GetRolesAsync(user);
             ViewBag.UserRoles = roles.Any() ? roles.First() : "No Roles";
 
-            // Здесь получите список ролей, например, из базы данных или статически
             ViewBag.Roles = new SelectList(new List<string> { "Admin", "Manager", "User" });
 
             return View("SelectRole");

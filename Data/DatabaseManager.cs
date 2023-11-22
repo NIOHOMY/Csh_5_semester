@@ -499,7 +499,7 @@ namespace WebApplication1.Data
             }
         }
 
-        public List<Author> GetAllAuthors()
+        public List<Author>? GetAllAuthors()
         {
             try
             {

@@ -10,21 +10,23 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
 using WebApplication1.Data;
 using WebApplication1.Models;
+
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace WebApplication1.Controllers
 {
     [Authorize(Roles = "Admin,Manager,User")]
     public class IssuesController : Controller
     {
-        //private readonly LibraryContext _context;
         private readonly DatabaseManager _databaseManager;
         private readonly UserManager<IdentityUser> _userManager;
 
         public IssuesController(LibraryContext context, UserManager<IdentityUser> userManager)
         {
-            //_context = context;
             _databaseManager = new DatabaseManager(context);
             _userManager = userManager;
         }
@@ -68,7 +70,10 @@ namespace WebApplication1.Controllers
 
             ViewBag.SearchString = searchString;
 
-            return View(issues);
+            return issues!=null ?
+                         View(issues) :
+                         Problem("Entity set 'LibraryContext.Issues'  is null.");
+            //return View(issues);
         }
 
         // GET: Issues/Details/5

@@ -21,12 +21,11 @@ namespace WebApplication1.Controllers
     {
         private readonly DatabaseManager _databaseManager;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public AccessController(LibraryContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccessController(LibraryContext context, UserManager<IdentityUser> userManager)
         {
-            //_context = context;
             _userManager = userManager;
+            _databaseManager = new DatabaseManager(context);
             /*
             var allUsers = _userManager.Users.ToList();
             foreach (var user in allUsers)
@@ -35,8 +34,6 @@ namespace WebApplication1.Controllers
                 _userManager.DeleteAsync(user);
             }
             */
-            _databaseManager = new DatabaseManager(context);
-            _signInManager = signInManager;
         }
         public IActionResult Login()
         {
@@ -44,7 +41,20 @@ namespace WebApplication1.Controllers
             //var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
             if (claimUser.Identity.IsAuthenticated)
-                return RedirectToAction("Index", "Home");
+            {
+                if (User.IsInRole("User"))
+                {
+                    return RedirectToAction("Index", "Books");
+                }
+                else if (User.IsInRole("Manager"))
+                {
+                    return RedirectToAction("Index", "Issues");
+                }
+                else if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Index", "Readers");
+                }
+            }    
 
 
             return View();
@@ -160,7 +170,7 @@ namespace WebApplication1.Controllers
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = true, 
+                    IsPersistent = modelLogin.KeepLoggedIn, 
                 };
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -174,7 +184,7 @@ namespace WebApplication1.Controllers
                 }
                 else if (roles.Contains("Admin"))
                 {
-                    return RedirectToAction("Index", "Books");
+                    return RedirectToAction("Index", "Readers");
                 }
 
             }
@@ -191,9 +201,6 @@ namespace WebApplication1.Controllers
             if (model.Email != null && model.Password != null)
             {
                 
-                /////////////////////////////////////////////////////
-
-                // Хэширование пароля перед сохранением в базу данных
                 string hashedPassword = HashPassword(model.Password);
                 var user = new UserModel
                 {
@@ -208,6 +215,19 @@ namespace WebApplication1.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, "User");
+                    
+                    _databaseManager.AddUser(user);
+                    _databaseManager.AddReader(
+                        new Reader
+                    {
+                        Email = model.Email,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Patronymic = model.Patronymic,
+                        Address = model.Address,
+                        PhoneNumber = model.PhoneNumber
+                    });
+                    return RedirectToAction("Login");
                     
                     /*var claims = new List<Claim>
                     {
@@ -225,19 +245,6 @@ namespace WebApplication1.Controllers
                 }
 
 
-                _databaseManager.AddUser(user);
-                _databaseManager.AddReader(new Reader
-                {
-                    Email = model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Patronymic = model.Patronymic,
-                    Address = model.Address,
-                    PhoneNumber = model.PhoneNumber
-                });
-
-
-                return RedirectToAction("Login");
             }
 
             return View("Register", model);

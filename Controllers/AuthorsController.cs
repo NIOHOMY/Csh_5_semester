@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
 using WebApplication1.Data;
 using WebApplication1.Models;
 
@@ -26,9 +28,9 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> Index()
         {
             var authors = _databaseManager.GetAllAuthors();
-            return authors.Count != 0 ? 
+            return authors != null ?
                           View(authors) :
-                          Problem("Entity set 'LibraryContext.Authors'  is null.");
+                          Problem("Entity set is null.");
         }
 
         // GET: 
@@ -63,9 +65,34 @@ namespace WebApplication1.Controllers
         {
             if (author != null)
             {
-                _databaseManager.AddAuthor(author);
-                
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    if (imageData != null && imageData.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            imageData.CopyTo(memoryStream);
+                            author.ImageData = memoryStream.ToArray();
+                        }
+                    }
+                    
+                    
+                    _databaseManager.AddAuthor(author);
+
+                    return RedirectToAction(nameof(Index));
+
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AuthorExists(author.AuthorId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }          
             }
             return View(author);
         }
