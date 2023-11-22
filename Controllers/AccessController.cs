@@ -21,11 +21,13 @@ namespace WebApplication1.Controllers
     {
         private readonly DatabaseManager _databaseManager;
         private readonly UserManager<IdentityUser> _userManager;
+        HashPasswordHasher _passwordHasher;
 
         public AccessController(LibraryContext context, UserManager<IdentityUser> userManager)
         {
             _userManager = userManager;
             _databaseManager = new DatabaseManager(context);
+            _passwordHasher = new HashPasswordHasher();
             /*
             var allUsers = _userManager.Users.ToList();
             foreach (var user in allUsers)
@@ -153,7 +155,7 @@ namespace WebApplication1.Controllers
 
             var user = _databaseManager.GetUserByEmail(modelLogin.Email); 
 
-            if (user != null && BCrypt.Net.BCrypt.Verify(modelLogin.PassWord, user.PasswordHash))
+            if (user != null && _passwordHasher.VerifyHashedPassword(modelLogin.PassWord, user.PasswordHash))
             {
                 var claims = new List<Claim>
                 {
@@ -201,13 +203,13 @@ namespace WebApplication1.Controllers
             if (model.Email != null && model.Password != null)
             {
                 
-                string hashedPassword = HashPassword(model.Password);
+                string hashedPassword = _passwordHasher.HashPassword(model.Password);
                 var user = new UserModel
                 {
                     UserName = model.Email,
 
                     Email = model.Email,
-                    PasswordHash = hashedPassword                    
+                    PasswordHash = hashedPassword             
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -248,11 +250,6 @@ namespace WebApplication1.Controllers
             }
 
             return View("Register", model);
-        }
-
-        private string HashPassword(string password)
-        {
-            return BCrypt.Net.BCrypt.HashPassword(password);
         }
 
     }
