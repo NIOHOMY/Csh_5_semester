@@ -59,7 +59,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> Create([Bind("AuthorId,Name")] Author author)
+        public async Task<IActionResult> Create([Bind("AuthorId,Name,Info,ImageData")] Author author, IFormFile imageData)
         {
             if (author != null)
             {
@@ -91,7 +91,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> Edit(int id, [Bind("AuthorId,Name")] Author author)
+        public async Task<IActionResult> Edit(int id, [Bind("AuthorId,Name,Info,ImageData")] Author author, IFormFile imageData)
         {
             if (id != author.AuthorId)
             {
@@ -102,8 +102,23 @@ namespace WebApplication1.Controllers
             {
                 try
                 {
-                    _databaseManager.UpdateAuthor(author);
-                    
+                    var existingAuthor = _databaseManager.GetAuthorById(id);
+                    if (imageData != null && imageData.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            imageData.CopyTo(memoryStream);
+                            existingAuthor.ImageData = memoryStream.ToArray();
+                        }
+                    }
+                    if (existingAuthor != null)
+                    {
+                        existingAuthor.Name = author.Name;
+                        existingAuthor.Info = author.Info;
+
+                        _databaseManager.UpdateAuthor(existingAuthor);
+                    }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -157,6 +172,22 @@ namespace WebApplication1.Controllers
         private bool AuthorExists(int id)
         {
           return (_databaseManager.GetAuthorById(id)!=null);
+        }
+
+        public IActionResult GetImage(int id)
+        {
+            var author = _databaseManager.GetAuthorById(id);
+            if (author != null)
+            {
+                byte[] imageData = author.ImageData;
+                if (imageData != null)
+                {
+                    string imageUrl = Url.Action("GetImage", "Authors", new { id = author.AuthorId, width = 100, height = 100, random = DateTime.Now.Ticks });
+
+                    return File(author.ImageData, "image/jpeg");
+                }
+            }
+            return File("~/images/basic_authors_imgs/default_images/default-author-image.jpg", "image/jpeg");
         }
     }
 }

@@ -14,5 +14,8 @@ namespace WebApplication1.Models
         public int AuthorId { get; set; }
         [Required(ErrorMessage = "Имя автора обязательно.")]
         public string Name { get; set; }
+
+        public byte[]? ImageData { get; set; }
+        public string? Info { get; set; }
     }
 }

@@ -13,6 +13,18 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\basic_authors_imgs\\default_images\\default-author-image.jpg",
+      "PackagePath": "staticwebassets\\images\\basic_authors_imgs\\default_images\\default-author-image.jpg"
+    },
+    {
+      "Id": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\basic_authors_imgs\\dostoevsky-f.jpg",
+      "PackagePath": "staticwebassets\\images\\basic_authors_imgs\\dostoevsky-f.jpg"
+    },
+    {
+      "Id": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\basic_books_imgs\\default_images\\default-book-image.jpg",
+      "PackagePath": "staticwebassets\\images\\basic_books_imgs\\default_images\\default-book-image.jpg"
+    },
+    {
       "Id": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\basic_books_imgs\\honest_thief.jpg",
       "PackagePath": "staticwebassets\\images\\basic_books_imgs\\honest_thief.jpg"
     },
@@ -23,10 +35,6 @@
     {
       "Id": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\basic_books_imgs\\the_little_prince.jpg",
       "PackagePath": "staticwebassets\\images\\basic_books_imgs\\the_little_prince.jpg"
-    },
-    {
-      "Id": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\default-book-image.jpg",
-      "PackagePath": "staticwebassets\\images\\default-book-image.jpg"
     },
     {
       "Id": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\js\\site.js",

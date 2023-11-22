@@ -94,7 +94,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        public IActionResult Create([Bind("BookId,Title,FirstAuthorId,YearOfPublication,Price,NumberOfExamples,PublisherId,ImageData")] Book book, IFormFile imageData)
+        public IActionResult Create([Bind("BookId,Title,FirstAuthorId,YearOfPublication,Price,NumberOfExamples,PublisherId,Info,ImageData")] Book book, IFormFile imageData)
         {
 
             if (book != null)
@@ -142,7 +142,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> Edit(int id, [Bind("BookId,Title,FirstAuthorId,YearOfPublication,Price,NumberOfExamples,PublisherId,ImageData")] Book book, IFormFile imageData)
+        public async Task<IActionResult> Edit(int id, [Bind("BookId,Title,FirstAuthorId,YearOfPublication,Price,NumberOfExamples,PublisherId,Info,ImageData")] Book book, IFormFile imageData)
         {
             if (id != book.BookId)
             {
@@ -170,6 +170,7 @@ namespace WebApplication1.Controllers
                         existingBook.Price = book.Price;
                         existingBook.NumberOfExamples = book.NumberOfExamples;
                         existingBook.PublisherId = book.PublisherId;
+                        existingBook.Info = book.Info;
 
                         _databaseManager.UpdateBook(existingBook);
                     }
@@ -246,7 +247,7 @@ namespace WebApplication1.Controllers
                     //return File(imageData, "image/jpeg");
                 }
             }
-            return File("~/images/default-book-image.jpg", "image/jpeg");
+            return File("~/images/basic_books_imgs/default_images/default-book-image.jpg", "image/jpeg");
             /*string imagePath = "~/images/default-book-image.jpg";
 
             string physicalPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagePath.TrimStart('~').Trim('/'));

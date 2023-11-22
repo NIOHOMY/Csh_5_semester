@@ -29,6 +29,7 @@ namespace WebApplication1.Models
         public int NumberOfExamples { get; set; }
 
         public byte[]? ImageData { get; set; }
+        public string? Info { get; set; }
         [Required(ErrorMessage = "Идентификатор издателя обязателен.")]
         public int PublisherId { get; set; }
         [ForeignKey("PublisherId")]
