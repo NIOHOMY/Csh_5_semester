@@ -553,7 +553,23 @@ namespace WebApplication1.Data
                 return new List<Book>();
             }
         }
+        public List<Book> GetArchivedBooks()
+        {
+            try
+            {
+                return _context.Books.Include(b => b.FirstAuthor).Include(b => b.Publisher).Where(b => b.NumberOfExamples == 0).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении списка книг в архиве:");
+                Console.WriteLine(ex.Message);
 
+                Debug.WriteLine("Произошла ошибка при получении списка книг в архиве:");
+                Debug.WriteLine(ex.Message);
+
+                return new List<Book>();
+            }
+        }
         public List<Issue> GetAllIssues()
         {
             try

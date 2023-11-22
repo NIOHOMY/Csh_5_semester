@@ -31,13 +31,32 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index([FromQuery(Name = "search")] string searchString)
+        public async Task<IActionResult> Index(string filter, [FromQuery(Name = "search")] string searchString)
         {
             List<Book>? libraryContext;
 
             var user = await _userManager.GetUserAsync(User);
+            if (!string.IsNullOrEmpty(filter))
+            {
 
-            if (User.IsInRole("User"))
+                switch (filter.ToLower())
+                {
+                    case "all":
+                        libraryContext = _databaseManager.GetAllBooks();
+                        break;
+                    case "archived":
+                        libraryContext = _databaseManager.GetArchivedBooks();
+                        break;
+                    case "available":
+                        libraryContext = _databaseManager.GetAllAvailableBooks();
+                        break;
+                    default:
+                        libraryContext = _databaseManager.GetAllBooks();
+                        break;
+                }
+
+            }
+            else if (User.IsInRole("User"))
             {
                 if (!string.IsNullOrEmpty(searchString))
                 {

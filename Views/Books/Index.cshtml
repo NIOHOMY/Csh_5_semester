@@ -6,9 +6,13 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+
+}
 
 <form asp-controller="Books" asp-action="Index" method="get">
     <label for="search">Search:</label>
@@ -80,5 +84,11 @@
             </td>
         </tr>
 }
+        <p>
+            Show books:
+            <a asp-action="Index" asp-route-filter="all">All</a> |
+            <a asp-action="Index" asp-route-filter="available">Available</a> |
+            <a asp-action="Index" asp-route-filter="archived">Archived</a> 
+        </p>
 </tbody>
 </table>
