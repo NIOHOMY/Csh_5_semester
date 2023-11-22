@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "+8LFg8miAFsNfhpJWqZasGguxx2oGes3+Z14iWJy3aw=",
+  "Hash": "y/7GJJWzrN+C8JjAQ97bnOueNuYox08rXT+HMzs5kns=",
   "Source": "WebApplication1",
   "BasePath": "_content/WebApplication1",
   "Mode": "Default",
@@ -1103,6 +1103,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\basic_authors_imgs\\Antoine_de_Saint-Exupery..jpg",
+      "SourceId": "WebApplication1",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\",
+      "BasePath": "_content/WebApplication1",
+      "RelativePath": "images/basic_authors_imgs/Antoine_de_Saint-Exupery..jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\basic_authors_imgs\\Antoine_de_Saint-Exupery..jpg"
     },
     {
       "Identity": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\basic_authors_imgs\\default_images\\default-author-image.jpg",
