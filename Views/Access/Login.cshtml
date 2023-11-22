@@ -1,26 +1,79 @@
 ﻿@model WebApplication1.Models.VMLogin;
 @{
     Layout = "_Layout";
-}
 
+}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+
+    .container {
+        width: 80%;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    p {
+        line-height: 1.6;
+        color: #333;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        border: none;
+        width: 20%;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    input {
+        width: 40%;
+        margin-bottom: 10px;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+</style>
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Login</title>
+    <title>Войти</title>
 </head>
-<body>
-    <form asp-controller="Access" asp-action="Login" method="post">
-        <h1>Login</h1>
-        <input type="email" placeholder="Email" asp-for="Email" />
-        <input type="password" placeholder="PassWord" asp-for="PassWord" />
+<body style="text-align: center; align-items: center; justify-content: center; ">
 
+    <form asp-controller="Access" asp-action="Login" method="post">
+        <h1>Вход</h1>
+        <input type="email" placeholder="Email" asp-for="Email" /><br>
+        <input type="password" placeholder="Password" asp-for="PassWord" /><br>
+
+        <br>
         <label>
+            <p>Оставаться в системе</p>
             <input type="checkbox" asp-for="KeepLoggedIn" />
-            Keep me logged In.
         </label>
+        <br>
+        
         <button type="submit">Login</button>
+        <br>
 
         @if (ViewData["ValidateMessage"] != null)
         {
@@ -31,7 +84,11 @@
 
     </form>
     <div>
-        <p>Don't have an account? <a asp-controller="Access" asp-action="Register">Register</a></p>
+        <br>
+        <p>Нет аккаунта?  <a asp-controller="Access" asp-action="Register">  Зарегестрироваться</a></p>
+        <br>
     </div>
+
 </body>
 </html>
+

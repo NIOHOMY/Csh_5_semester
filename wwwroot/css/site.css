@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -20,3 +20,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.navbar {
+    background-color: #795548 !important; /* Коричневый цвет */
+}
+
+.navbar-nav .nav-link {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+/*.footer {
+    color: #ffffff;
+}*/
