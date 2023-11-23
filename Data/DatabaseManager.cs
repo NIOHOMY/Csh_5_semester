@@ -26,56 +26,6 @@ namespace WebApplication1.Data
             _context = context;
         }
 
-        public void AddUser(UserModel user)
-        {
-            try
-            {
-                _context.Users.Add(user);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Произошла ошибка при добавлении пользователя:");
-                Console.WriteLine(ex.Message);
-
-                Debug.WriteLine("Произошла ошибка при добавлении пользователя:");
-                Debug.WriteLine(ex.Message);
-
-            }
-        }
-        public void DeleteUser(int userId)
-        {
-            try
-            {
-                var user = _context.Users.FirstOrDefault(a => a.UserModelId == userId);
-                _context.Users.Remove(user);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Произошла ошибка при удалении пользователя:");
-                Console.WriteLine(ex.Message);
-
-                Debug.WriteLine("Произошла ошибка при удалении пользователя:");
-                Debug.WriteLine(ex.Message);
-
-            }
-        }
-        public UserModel? GetUserByEmail(string email)
-        {
-            try
-            {
-                return _context.Users.FirstOrDefault(r => r.Email == email);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Произошла ошибка при получении пользователя из базы данных:");
-                Console.WriteLine(ex.Message);
-                Debug.WriteLine("Произошла ошибка при получении пользователя из базы данных:");
-                Debug.WriteLine(ex.Message);
-                return null;
-            }
-        }
 
         public Reader? GetReaderById(int readerId)
         {

@@ -1,17 +1,26 @@
 ﻿
 
+using Microsoft.AspNetCore.Identity;
+using WebApplication1.Models;
+
 namespace WebApplication1.Controllers
 {
-    public class HashPasswordHasher
+    public class HashPasswordHasher : IPasswordHasher<IdentityUser>
     {
-        public string HashPassword(string password)
+        public string HashPassword(IdentityUser user, string password)
         {
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
 
-        public bool VerifyHashedPassword(string providedPassword, string hashedPassword)
+        public PasswordVerificationResult VerifyHashedPassword(IdentityUser user, string hashedPassword, string providedPassword)
         {
-            return (BCrypt.Net.BCrypt.Verify(providedPassword, hashedPassword));         
+            if (BCrypt.Net.BCrypt.Verify(providedPassword, hashedPassword))
+            {
+                return PasswordVerificationResult.Success;
+            }
+
+            return PasswordVerificationResult.Failed;
         }
     }
+
 }
