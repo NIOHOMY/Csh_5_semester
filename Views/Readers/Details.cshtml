@@ -1,13 +1,12 @@
 ﻿@model WebApplication1.Models.Reader
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Детальная информация";
 }
 
-<h1>Details</h1>
 
 <div>
-    <h4>Reader</h4>
+    <h4>Читатель</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-12">
@@ -40,9 +39,15 @@
         <dd class = "col-sm-12">
             @Html.DisplayFor(model => model.FormattedPhoneNumber)
         </dd>
+        <dt class = "col-sm-12">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-sm-12">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ReaderId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.ReaderId">Редактировать</a> |
+    <a asp-action="Index">Назад</a>
 </div>

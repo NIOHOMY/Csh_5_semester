@@ -1,12 +1,12 @@
 ﻿@model WebApplication1.Models.Book
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Редактирование";
 }
 
-<h1>Edit</h1>
 
-<h4>Book</h4>
+
+<h4>Книга</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,54 +14,54 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="BookId" />
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
+                <label asp-for="Title" class="control-label"></label><br>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FirstAuthor" class="control-label"></label>
+                <label asp-for="FirstAuthor" class="control-label"></label><br>
                 <select asp-for="FirstAuthorId" class="form-control" asp-items="ViewBag.FirstAuthorId"></select>
                 <span asp-validation-for="FirstAuthorId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="YearOfPublication" class="control-label"></label>
+                <label asp-for="YearOfPublication" class="control-label"></label><br>
                 <input asp-for="YearOfPublication" class="form-control" />
                 <span asp-validation-for="YearOfPublication" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
+                <label asp-for="Price" class="control-label"></label><br>
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NumberOfExamples" class="control-label"></label>
+                <label asp-for="NumberOfExamples" class="control-label"></label><br>
                 <input asp-for="NumberOfExamples" class="form-control" />
                 <span asp-validation-for="NumberOfExamples" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Publisher" class="control-label"></label>
+                <label asp-for="Publisher" class="control-label"></label><br>
                 <select asp-for="PublisherId" class="form-control" asp-items="ViewBag.PublisherId"></select>
                 <span asp-validation-for="PublisherId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImageData" class="control-label"></label>
+                <label asp-for="ImageData" class="control-label"></label><br>
                 <input type="file" name="ImageData" class="form-control-file" />
                 <span asp-validation-for="ImageData" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Info" class="control-label"></label>
+                <label asp-for="Info" class="control-label"></label><br>
                 <textarea asp-for="Info" class="form-control" rows="8" cols="50"></textarea>
                 <span asp-validation-for="Info" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Назад</a>
 </div>
 
 @section Scripts {

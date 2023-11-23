@@ -1,19 +1,18 @@
 ﻿@model IEnumerable<WebApplication1.Models.Issue>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Выдачи";
 }
 
-<h1>Index</h1>
-
+<h1>Выдачи</h1>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Арендовать книги</a>
 </p>
 
 <form asp-controller="Issues" asp-action="Index" method="get">
-    <label for="search">Search:</label>
+    <label for="search">Поиск:</label>
     <input type="text" id="search" name="search" value="@ViewBag.SearchString" />
-    <input type="submit" value="Search" />
+    <input type="submit" value="Поиск" />
 </form>
 
 <table class="table">
@@ -69,29 +68,29 @@
                 <td>
                     @foreach (var book in item.Books)
                     {
-                        <p>@book.Title - @(book.FirstAuthor != null ? book.FirstAuthor.Name : "Unknown Author")</p>
+                        <p>@book.Title - @(book.FirstAuthor != null ? book.FirstAuthor.Name : "Неизвестный автор")</p>
                     }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price) руб
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.IssueId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.IssueId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IssueId">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.IssueId">Редактировать</a> |
+                    <a asp-action="Details" asp-route-id="@item.IssueId">Детальная инфорамция</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IssueId">Удалить</a>
                     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                     {
                         <text> | </text>
-                        <a asp-action="Status" asp-route-id="@item.IssueId">Status</a>
+                        <a asp-action="Status" asp-route-id="@item.IssueId">Статус</a>
                     }
                 </td>
             </tr>
         }
         <p>
-            Show issues:
-            <a asp-action="Index" asp-route-filter="all">All</a> |
-            <a asp-action="Index" asp-route-filter="confirmed">Confirmed</a> |
-            <a asp-action="Index" asp-route-filter="pending">Pending Confirmation</a>
+            Показать выдачи...
+            <a asp-action="Index" asp-route-filter="all">Все</a> |
+            <a asp-action="Index" asp-route-filter="confirmed">Подтверждённые</a> |
+            <a asp-action="Index" asp-route-filter="pending">Ожидают подтверждения</a>
         </p>
 
     </tbody>

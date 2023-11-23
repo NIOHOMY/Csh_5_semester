@@ -1,23 +1,22 @@
 ﻿@model WebApplication1.Models.Issue
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Редактирование";
 }
 
-<h1>Edit</h1>
 
-<h2>Issue</h2>
+<h2>Выдача</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="IssueDate" class="control-label"></label>
+                <label asp-for="IssueDate" class="control-label"></label><br>
                 <input asp-for="IssueDate" class="form-control" />
                 <span asp-validation-for="IssueDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ReturnDate" class="control-label"></label>
+                <label asp-for="ReturnDate" class="control-label"></label><br>
                 <input asp-for="ReturnDate" class="form-control" />
                 <span asp-validation-for="ReturnDate" class="text-danger"></span>
             </div>
@@ -25,7 +24,7 @@
 
 
             <div class="form-group">
-                <label asp-for="Reader" class="control-label"></label>
+                <label asp-for="Reader" class="control-label"></label><br>
                 <div>
                     @Html.DisplayFor(model => model.Reader.LastName)
                     @Html.DisplayFor(model => model.Reader.FirstName)
@@ -35,27 +34,27 @@
             </div>
 
             <div class="form-group">
-                <label>Search Books</label>
-                <input type="text" id="search" class="form-control" placeholder="Start typing...">
-                <button id="addBook" disabled>Add</button>
+                <label>Поиск книг</label><br>
+                <input type="text" id="search" class="form-control" placeholder="Начните вводить...">
+                <button id="addBook" disabled>Добавить</button>
                 <div id="bookList"></div>
-            </div>
+            </div><br>
             <div class="form-group">
-                <p>Selected Books</p>
+                <p>Выбранные книги</p>
                 <ul id="selectedBooksList">
                     @foreach (var book in ViewBag.SelectedBooks)
                     {
                         <li>
                             @book.Title 
-                            <button class="removeBookBtn" data-bookid="@book.BookId">Remove</button>
+                            <button class="removeBookBtn" data-bookid="@book.BookId">Убрать</button>
                         </li>
                     }
                 </ul>
-            </div>
+            </div><br>
             <div class="form-group">
                 <p>Price</p>
                 @Html.DisplayFor(model => model.Price) руб
-            </div>
+            </div><br>
             <p>доп оплата: <span id="totalPrice">0</span></p>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="/_framework/aspnetcore-browser-refresh.js"></script>
@@ -108,7 +107,7 @@
                             data: { 'bookId': selectedBookId },
                             success: function (book) {
                                 // Добавляем книгу в список
-                                selectedBooksList.append('<li data-price="' + book.price + '">' + book.title + ' - ' + book.price + ' руб ' + ' <button class="removeBookBtn" data-bookid="' + selectedBookId + '">Remove</button></li>');
+                                selectedBooksList.append('<li data-price="' + book.price + '">' + book.title + ' - ' + book.price + ' руб ' + ' <button class="removeBookBtn" data-bookid="' + selectedBookId + '">Убрать</button></li>');
 
                                 // Обновляем общую стоимость
                                 updateTotalPrice();
@@ -185,14 +184,14 @@
 
 
             <div class="form-group">
-                <input type="submit" value="Edit" class="btn btn-primary" />
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Назад</a>
 </div>
 
 @section Scripts {

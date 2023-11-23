@@ -1,32 +1,34 @@
 ﻿@model WebApplication1.Models.Issue
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Дательная информация";
 }
 
-<h1>Issue Details</h1>
 
 <div>
-    <h4>Issue Id: @Model.IssueId</h4>
+    <h4>Номер: @Model.IssueId</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-12">
-            Issue Date:
+            Выдана
         </dt>
         <dd class="col-sm-12">
             @Html.DisplayFor(model => model.IssueDate)
         </dd>
         <dt class="col-sm-12">
-            Return Date:
+            Крайняя дата возврата
         </dt>
         <dd class="col-sm-12">
             @Html.DisplayFor(model => model.ReturnDate)
         </dd>
+        <dt class="col-sm-12">
+            @Html.DisplayNameFor(model => model.isСonfirmed)
+        </dt>
         <dd>
             <p>@(Model.isСonfirmed ? "Подтверждена" : "Ожидает подтверждения")</p>
         </dd>
         <dt class="col-sm-12">
-            Reader:
+            Читатель
         </dt>
         <dd class="col-sm-12">
             <p>@Model.Reader.FirstName @Model.Reader.LastName</p>
@@ -35,16 +37,16 @@
             <p>@Model.Reader.FormattedPhoneNumber</p>
         </dd>
         <dt class="col-sm-12">
-            Books:
+            Список арендованных книг
         </dt>
         <dd class="col-sm-12">
             @foreach (var book in Model.Books)
             {
-                <p>@book.Title - @(book.FirstAuthor != null ? book.FirstAuthor.Name : "Unknown Author")</p>
+                <p>@book.Title - @(book.FirstAuthor != null ? book.FirstAuthor.Name : "Неизвестный автор")</p>
             }
         </dd>
         <dt class="col-sm-12">
-            Сумма:
+            Сумма
         </dt>
         <dd class="col-sm-12">
             @Html.DisplayFor(model => model.Price) руб
@@ -52,6 +54,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.IssueId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.IssueId">Редактировать</a> |
+    <a asp-action="Index">Назад</a>
 </div>

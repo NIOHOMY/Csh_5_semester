@@ -182,7 +182,7 @@ namespace WebApplication1.Controllers
 
             }
 
-            ViewData["ValidateMessage"] = "user not found";
+            ViewData["ValidateMessage"] = "неверный логин или пароль";
             return View();
         }
 

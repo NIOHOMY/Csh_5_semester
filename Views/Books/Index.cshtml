@@ -4,20 +4,20 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Книги</h1>
 
 @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
 {
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create">Добавить новую книгу</a>
     </p>
 
 }
 
 <form asp-controller="Books" asp-action="Index" method="get">
-    <label for="search">Search:</label>
+    <label for="search">Поиск</label>
     <input type="text" id="search" name="search" value="@ViewBag.SearchString" />
-    <input type="submit" value="Search" />
+    <input type="submit" value="Поиск" />
 </form>
 
 
@@ -34,7 +34,7 @@
                 @Html.DisplayNameFor(model => model.YearOfPublication)
             </th>
             <th>
-                Image
+                
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
@@ -73,22 +73,22 @@
                 @Html.DisplayFor(modelItem => item.Publisher.City)
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.BookId">Details</a> 
+                <a asp-action="Details" asp-route-id="@item.BookId">Детальная информация</a> 
                 @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                 {
                     <text> | </text>
-                    <a asp-action="Edit" asp-route-id="@item.BookId">Edit</a> 
+                    <a asp-action="Edit" asp-route-id="@item.BookId">Редактировать</a> 
                     <text> | </text>
-                    <a asp-action="Delete" asp-route-id="@item.BookId">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.BookId">Удалить</a>
                 }
             </td>
         </tr>
 }
         <p>
-            Show books:
-            <a asp-action="Index" asp-route-filter="all">All</a> |
-            <a asp-action="Index" asp-route-filter="available">Available</a> |
-            <a asp-action="Index" asp-route-filter="archived">Archived</a> 
+            Показать книги...
+            <a asp-action="Index" asp-route-filter="all">Все</a> |
+            <a asp-action="Index" asp-route-filter="available">Доступные для аренды</a> |
+            <a asp-action="Index" asp-route-filter="archived">Архив</a> 
         </p>
 </tbody>
 </table>

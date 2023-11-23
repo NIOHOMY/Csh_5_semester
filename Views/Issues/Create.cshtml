@@ -1,23 +1,21 @@
 ﻿@model WebApplication1.Models.Issue
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Создание";
 }
 
-<h1>Create</h1>
 
-<h4>Issue</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="IssueDate" class="control-label"></label>
+                <label asp-for="IssueDate" class="control-label"></label><br>
                 <input asp-for="IssueDate" class="form-control" />
                 <span asp-validation-for="IssueDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ReturnDate" class="control-label"></label>
+                <label asp-for="ReturnDate" class="control-label"></label><br>
                 <input asp-for="ReturnDate" class="form-control" />
                 <span asp-validation-for="ReturnDate" class="text-danger"></span>
             </div>
@@ -26,20 +24,20 @@
                 <select asp-for="ReaderId" class="form-control" asp-items="ViewBag.ReaderId"></select>
             </div> *@
             <div class="form-group">
-                <label asp-for="Reader" class="control-label"></label>
-                <input type="text" id="searchReaders" class="form-control" placeholder="Start typing...">
+                <label asp-for="Reader" class="control-label"></label><br>
+                <input type="text" id="searchReaders" class="form-control" placeholder="Начните вводить...">
                 <div id="readerList"></div>
                 <input type="hidden" id="selectedReaderId" name="ReaderId" />
             </div>
             <div class="form-group">
-                <label>Search Books</label>
-                <input type="text" id="search" class="form-control" placeholder="Start typing...">
-                <button id="addBook" disabled>Add</button>
+                <label>Поиск книг</label><br>
+                <input type="text" id="search" class="form-control" placeholder="Начните вводить...">
+                <button id="addBook" disabled>Добавить</button>
                 <div id="bookList"></div>
-            </div>
-            <h4>Selected Books</h4>
-            <ul id="selectedBooksList"></ul>
-            <p>Total Price: <span id="totalPrice">0</span></p>
+            </div><br>
+            <h4>Выбранные книги</h4>
+            <ul id="selectedBooksList"></ul><br>
+            <p>Сумма: <span id="totalPrice">0</span></p>
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="/_framework/aspnetcore-browser-refresh.js"></script>
@@ -128,7 +126,7 @@
                             data: { 'bookId': selectedBookId },
                             success: function (book) {
                                 // Добавляем книгу в список
-                                selectedBooksList.append('<li data-price="' + book.price + '">' + book.title + ' - ' + book.price + ' руб ' + ' <button class="removeBookBtn" data-bookid="' + selectedBookId + '">Remove</button></li>');
+                                selectedBooksList.append('<li data-price="' + book.price + '">' + book.title + ' - ' + book.price + ' руб ' + ' <button class="removeBookBtn" data-bookid="' + selectedBookId + '">Убрать</button></li>');
 
                                 // Обновляем общую стоимость
                                 updateTotalPrice();
@@ -183,14 +181,14 @@
             <input type="hidden" id="selectedReaderId" name="ReaderId" /> *@
 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Создать" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Назад</a>
 </div>
 
 @section Scripts {

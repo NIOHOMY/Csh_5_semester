@@ -58,7 +58,7 @@ namespace WebApplication1.Controllers
             ViewBag.UserId = user.Id.ToString();
             ViewBag.Email = userEmail;
             var roles = await _userManager.GetRolesAsync(user);
-            ViewBag.UserRoles = roles.Any() ? roles.First() : "No Roles";
+            ViewBag.UserRoles = roles.Any() ? roles.First() : "Нет ролей";
 
             ViewBag.Roles = new SelectList(new List<string> { "Admin", "Manager", "User" });
 

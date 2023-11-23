@@ -1,24 +1,23 @@
 ﻿@model WebApplication1.Models.Issue
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Удаление";
 }
 
-<h1>Delete</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Вы уверены что хотите удалить выдачу?</h3>
 <div>
-    <h4>Issue</h4>
+    <h4>Выдача</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-12">
-            Issue Date:
+            Выдана
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IssueDate)
         </dd>
         <dt class="col-sm-12">
-            Return Date:
+            Крайняя дата возврата книг
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ReturnDate)
@@ -27,7 +26,7 @@
             <p>@(Model.isСonfirmed ? "Подтверждена" : "Ожидает подтверждения")</p>
         </dd>
         <dt class="col-sm-12">
-            Reader:
+            Читатель
         </dt>
         <dd class="col-sm-10">
             <p>@Model.Reader.FirstName @Model.Reader.LastName</p>
@@ -36,16 +35,16 @@
             <p>@Model.Reader.FormattedPhoneNumber</p>
         </dd>
         <dt class="col-sm-12">
-            Books:
+            Книги
         </dt>
         <dd class="col-sm-10">
             @foreach (var book in Model.Books)
             {
-                <p>@book.Title - @(book.FirstAuthor != null ? book.FirstAuthor.Name : "Unknown Author")</p>
+                <p>@book.Title - @(book.FirstAuthor != null ? book.FirstAuthor.Name : "Неизвестный автор")</p>
             }
         </dd>
         <dt class="col-sm-12">
-            Сумма:
+            Сумма
         </dt>
         <dd class="col-sm-12">
             @Html.DisplayFor(model => model.Price) руб
@@ -54,7 +53,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="IssueId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a asp-action="Index">Назад</a>
     </form>
 </div>

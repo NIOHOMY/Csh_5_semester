@@ -1,6 +1,6 @@
 ﻿@model bool
 @{
-    ViewData["Title"] = "Status";
+    ViewData["Title"] = "Статус";
     Layout = null;
 }
 
@@ -9,10 +9,10 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Status</title>
+    <title>Статус</title>
 </head>
-<body>
-    <h2>Status</h2>
+<body>@* 
+    <h2>Status</h2> *@
 
     <form asp-action="SaveStatus" asp-controller="Issues" method="post">
         <input type="hidden" name="id" value="@ViewData["id"]" />
