@@ -64,8 +64,8 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(VMLogin modelLogin)
         {
-            /*
-            var adminUser = new IdentityUser
+
+            /*var adminUser = new IdentityUser
             {
                 UserName = "admin@a.com",
                 Email = "admin@a.com"
@@ -76,7 +76,7 @@ namespace WebApplication1.Controllers
             if (Aresult.Succeeded)
             {
                 await _userManager.AddToRoleAsync(adminUser, "Admin");
-                
+
                 var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, adminUser.UserName),
@@ -85,7 +85,7 @@ namespace WebApplication1.Controllers
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = true, 
+                    IsPersistent = true,
                 };
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -99,12 +99,12 @@ namespace WebApplication1.Controllers
                 Patronymic = "Rfb",
                 Address = "st Prsefsf",
                 PhoneNumber = "+75436735622"
-            });
+            });*/
 
-            */
+
             /////////////////////////////////
-            /*
-            var managerUser = new IdentityUser
+
+            /*var managerUser = new IdentityUser
             {
                 UserName = "employee@e.com",
 
@@ -125,7 +125,7 @@ namespace WebApplication1.Controllers
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = true, 
+                    IsPersistent = true,
                 };
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -139,9 +139,9 @@ namespace WebApplication1.Controllers
                 Patronymic = "Pfb",
                 Address = "st Arsefsf",
                 PhoneNumber = "+75468335622"
-            });
+            });*/
 
-            */
+
             /////////////////////////////////
 
             var user = _userManager.FindByNameAsync(modelLogin.Email).Result; 

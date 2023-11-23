@@ -148,11 +148,11 @@ namespace WebApplication1.Controllers
             {
                 var reader = _databaseManager.GetReaderById(id);
 
-                var user = _userManager.FindByNameAsync(reader.Email).Result;
+                /*var user = _userManager.FindByNameAsync(reader.Email).Result;
                 if (user != null)
                 {
                     _userManager.DeleteAsync(user);
-                }
+                }*/
                 if (reader != null)
                 {
                     _databaseManager.DeleteReader(id);

@@ -56,20 +56,20 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Войти</title>
+    <title>Вход</title>
 </head>
 <body style="text-align: center; align-items: center; justify-content: center; ">
 
     <form asp-controller="Access" asp-action="Login" method="post">
         <h1>Вход</h1>
-        <input type="email" placeholder="Email" asp-for="Email" /><br>
-        <input type="password" placeholder="Password" asp-for="PassWord" /><br>
+        <input type="email" placeholder="Почта" asp-for="Email" /><br>
+        <input type="password" placeholder="Пароль" asp-for="PassWord" /><br>
 
-        <br>
         <label>
-            <p>Оставаться в системе</p>
-            <input type="checkbox" asp-for="KeepLoggedIn" />
+            Оставаться в системе
+            <input type="checkbox"asp-for="KeepLoggedIn" />
         </label>
+        <br>
         <br>
         
         <button type="submit">Login</button>
