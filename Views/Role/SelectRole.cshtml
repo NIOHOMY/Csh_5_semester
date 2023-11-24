@@ -1,11 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Select Role";
+    ViewData["Title"] = "Управление ролью";
 }
 <head>
     <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
 </head>
-<h2>@ViewData["Title"]</h2>
+<body class="text-center">
 
+<h2>@ViewData["Title"]</h2>
 <p>Выберите роль для пользователя с email: @ViewBag.Email</p>
 
 <form asp-action="ChangeUserRolePost" method="post">
@@ -20,3 +21,5 @@
     </div><br>
     <button type="submit">Сохранить</button>
 </form>
+
+    </body>

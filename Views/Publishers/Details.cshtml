@@ -7,7 +7,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
 </head>
-<div>
+<div class="text-center">
     <h4>Издательство</h4>
     <hr />
     <dl class="row">
@@ -25,7 +25,7 @@
         </dd>
     </dl>
 </div>
-<div>
+<div class="text-center">
     <a asp-action="Index">Назад</a>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {

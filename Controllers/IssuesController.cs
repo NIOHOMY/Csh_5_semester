@@ -154,7 +154,14 @@ namespace WebApplication1.Controllers
         {
             var readers = _databaseManager.GetAllReaders();
             var q = readers
-                .Where(r => (r.LastName.ToLower() + ' '+r.FirstName.ToLower() + ' ' + r.Patronymic.ToLower() + ' ' + r.PhoneNumber).Contains(query.ToLower()))
+                .Where(r => (
+                r.LastName.ToLower() + ' '+
+                r.FirstName.ToLower() + ' ' + 
+                r.Patronymic.ToLower() + ' ' + 
+                r.PhoneNumber + ' '+
+                r.Email.ToLower() + ' ')
+                .Contains(query.ToLower())
+                )
                 .Select(r => new { 
                     ReaderId = r.ReaderId, 
                     DisplayText = $"{r.LastName} {r.FirstName} {r.Patronymic} {r.FormattedPhoneNumber}" 

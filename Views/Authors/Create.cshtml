@@ -3,14 +3,22 @@
 @{
     ViewData["Title"] = "Добавление";
 }
+<style>
+    .center-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+</style>
 <head>
     <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
 </head>
 <h1>Добавление</h1>
 
-<h4>Автор</h4>
+<h4 class="text-center">Автор</h4>
 <hr />
-<div class="row">
+<div class="row center-content">
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -38,8 +46,8 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Назад</a>
+<div class="text-center">
+    <a asp-action="Index" class="text-center">Назад</a>
 </div>
 
 @section Scripts {

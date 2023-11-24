@@ -6,36 +6,43 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
-   
-        <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
-    
-    <meta name="viewport" content="width=device-width" />
-    <title>Статус</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
+    <style>
+        div{
+            text-align: center;
+        }
+    </style>
 </head>
-<body>@* 
-    <h2>Status</h2> *@
+<body class="text-center ">
+    <div class="container">
+        <h2>Статус</h2>
 
-    <form asp-action="SaveStatus" asp-controller="Issues" method="post">
-        <input type="hidden" name="id" value="@ViewData["id"]" />
+        <form asp-action="SaveStatus" asp-controller="Issues" method="post">
+            <input type="hidden" name="id" value="@ViewData["id"]" />
 
-        <div class="form-group">
-            
-            <div>
-                <label>
-                    <input type="radio" name="isСonfirmed" value="True" /> Подтверждить
-                </label>
-                @if (User.IsInRole("Admin") )
-                {
+            <div class="text-center">
+                <div>
                     <label>
-                        <input type="radio" name="isСonfirmed" value="False" /> Перевести в ожидание
+                        <input type="radio" name="isСonfirmed" value="True" /> Подтвердить
                     </label>
-                }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <label>
+                            <input type="radio" name="isСonfirmed" value="False" /> Перевести в ожидание
+                        </label>
+                    }
+                </div>
             </div>
-        </div>
-
-        <button type="submit">Сохранить</button>
-    </form>
+            <p> </p>
+            <p> </p>
+            <button type="submit" class="text-center btn btn-primary">Сохранить</button>
+        </form>
+    </div>
 </body>
 </html>

@@ -3,10 +3,45 @@
 @{
     ViewData["Title"] = "Издательства";
 }
+<style>
+    .center-content {
+        text-align: center;
+    }
+
+    .table-container {
+        margin-left: 55px;
+        margin-right: 55px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .table td, .table th {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+    td {
+        text-align: center;
+        margin-top: 35px;
+    }
+    tr {
+        text-align: center;
+        margin-top: 35px;
+    }
+
+    th {
+        text-align: center;
+        margin-top: 15px;
+    }
+</style>
+
 <head>
     <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
 </head>
-<h1>Издательства</h1>
+<h1 class="text-center">Издательства</h1>
 @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
 {
     <p class="text-center">
@@ -16,35 +51,34 @@
 }
 <table class="table">
     <thead>
-        <tr>
+        <tr class="center-content">
             <th>
                 @Html.DisplayNameFor(model => model.NameOfPublisher)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.City)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr class="center-content">
             <td>
                 @Html.DisplayFor(modelItem => item.NameOfPublisher)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.City)
             </td>
-            <td>
                     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                     {
-                        <a asp-action="Details" asp-route-id="@item.PublisherId">Детальная инфофрмация</a> 
-                        <text> | </text>
+            <td>
+                        @* <a asp-action="Details" asp-route-id="@item.PublisherId">Детальная инфофрмация</a> 
+                        <text> | </text> *@
                         <a asp-action="Edit" asp-route-id="@item.PublisherId">Редактирование</a> 
                         <text> | </text>
                         <a asp-action="Delete" asp-route-id="@item.PublisherId">Удаление</a>
-                    }
             </td>
+                    }
         </tr>
 }
     </tbody>

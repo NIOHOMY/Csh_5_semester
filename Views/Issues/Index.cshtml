@@ -3,6 +3,30 @@
 @{
     ViewData["Title"] = "Выдачи";
 }
+<style>
+    .table-container {
+        margin-left: 35px;
+        margin-right: 35px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .table td, .table th {
+            padding: 10px;
+            border: 1px solid #ddd; /* добавим границу для разделения ячеек */
+        }
+        td{
+        text-align: center;
+        margin-top: 35px;
+        }
+        th{
+        text-align: center;
+        margin-top: 15px;
+        }
+</style>
 <head>
     <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
 </head>
@@ -17,7 +41,7 @@
     <input type="submit" value="Поиск" />
 </form>
 
-<table class="table">
+<table class="table" >
     <thead>
         <tr>
             <th>
@@ -77,12 +101,14 @@
                     @Html.DisplayFor(modelItem => item.Price) руб
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.IssueId">Редактировать</a> |
-                    <a asp-action="Details" asp-route-id="@item.IssueId">Детальная инфорамция</a> |
+                    <a asp-action="Edit" asp-route-id="@item.IssueId">Редактировать</a> 
+                    <p></p>
+                    <a asp-action="Details" asp-route-id="@item.IssueId">Детальная инфорамция</a> 
+                    <p></p>
                     <a asp-action="Delete" asp-route-id="@item.IssueId">Удалить</a> 
                     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                     {
-                        <text> | </text>
+                        <p></p>
                         <a asp-action="Status" asp-route-id="@item.IssueId">Статус</a>
                     }
                 </td>

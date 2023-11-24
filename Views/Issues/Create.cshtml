@@ -2,12 +2,21 @@
 @{
     ViewData["Title"] = "Создание";
 }
+<style>
+    .center-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+</style>
+
 <head>
     <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
 </head>
 
 <hr />
-<div class="row">
+<div class="row center-content">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -80,9 +89,17 @@
                         $('#bookList').fadeOut();
                     });
 
-                    
+                    @{
+                        var isUser = User.IsInRole("User").ToString().ToLower();
+                        var userValue = User.Claims.FirstOrDefault()?.Value;
+                    }
                     $(document).on('keyup', '#searchReaders', function () {
+                            var isUserValue = '@isUser'; 
+                            var userValue = '@userValue';
                         var query = $(this).val().trim();
+                            if (isUserValue === 'true') {
+                                query = userValue;
+                            }
                         console.log("Searching for readers: " + query);
                         if (query !== '') {
                             $.ajax({
@@ -189,7 +206,7 @@
     </div>
 </div>
 
-<div>
+<div class="text-center">
     <a asp-action="Index">Назад</a>
 </div>
 
