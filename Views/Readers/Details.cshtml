@@ -4,7 +4,9 @@
     ViewData["Title"] = "Детальная информация";
 }
 
-
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
+</head>
 <div>
     <h4>Читатель</h4>
     <hr />
@@ -48,6 +50,10 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ReaderId">Редактировать</a> |
     <a asp-action="Index">Назад</a>
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+    {
+        <text> | </text>
+    <a asp-action="Edit" asp-route-id="@Model?.ReaderId">Редактировать</a> 
+    }
 </div>

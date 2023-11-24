@@ -3,13 +3,15 @@
 @{
     ViewData["Title"] = "Выдачи";
 }
-
-<h1>Выдачи</h1>
-<p>
-    <a asp-action="Create">Арендовать книги</a>
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
+</head>
+<h1>Ваши выдачи</h1>
+<p class ="text-center">
+    <a asp-action="Create" class="text-center">Арендовать книги</a>
 </p>
 
-<form asp-controller="Issues" asp-action="Index" method="get">
+<form asp-controller="Issues" asp-action="Index" method="get" class="text-center">
     <label for="search">Поиск:</label>
     <input type="text" id="search" name="search" value="@ViewBag.SearchString" />
     <input type="submit" value="Поиск" />
@@ -77,7 +79,7 @@
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IssueId">Редактировать</a> |
                     <a asp-action="Details" asp-route-id="@item.IssueId">Детальная инфорамция</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IssueId">Удалить</a>
+                    <a asp-action="Delete" asp-route-id="@item.IssueId">Удалить</a> 
                     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                     {
                         <text> | </text>
@@ -86,7 +88,7 @@
                 </td>
             </tr>
         }
-        <p>
+        <p class ="text-center">
             Показать выдачи...
             <a asp-action="Index" asp-route-filter="all">Все</a> |
             <a asp-action="Index" asp-route-filter="confirmed">Подтверждённые</a> |

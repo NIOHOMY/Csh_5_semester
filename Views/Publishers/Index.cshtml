@@ -3,12 +3,14 @@
 @{
     ViewData["Title"] = "Издательства";
 }
-
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
+</head>
 <h1>Издательства</h1>
 @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
 {
-    <p>
-        <a asp-action="Create">Добавить новое</a>
+    <p class="text-center">
+        <a asp-action="Create" class="text-center">Добавить новое</a>
     </p>
 
 }
@@ -34,9 +36,9 @@
                 @Html.DisplayFor(modelItem => item.City)
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.PublisherId">Детальная инфофрмация</a> 
                     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                     {
+                        <a asp-action="Details" asp-route-id="@item.PublisherId">Детальная инфофрмация</a> 
                         <text> | </text>
                         <a asp-action="Edit" asp-route-id="@item.PublisherId">Редактирование</a> 
                         <text> | </text>

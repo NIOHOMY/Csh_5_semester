@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\WebApplication1.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\css\\additional_styles.css",
+      "PackagePath": "staticwebassets\\css\\additional_styles.css"
+    },
+    {
       "Id": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },

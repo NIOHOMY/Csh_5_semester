@@ -3,92 +3,88 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
+</head>
 <h1>Книги</h1>
 
 @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
 {
-    <p>
+    <p class="text-center">
         <a asp-action="Create">Добавить новую книгу</a>
     </p>
 
 }
 
-<form asp-controller="Books" asp-action="Index" method="get">
+<form asp-controller="Books" asp-action="Index" method="get" class="text-center">
     <label for="search">Поиск</label>
     <input type="text" id="search" name="search" value="@ViewBag.SearchString" />
     <input type="submit" value="Поиск" />
+    <p></p>
 </form>
-
-
+<p class="text-center">
+    Показать книги...
+    <a asp-action="Index" asp-route-filter="all">Все</a> |
+    <a asp-action="Index" asp-route-filter="available">Доступные для аренды</a> |
+    <a asp-action="Index" asp-route-filter="archived">Архив</a>
+</p>
+<hr>
 <table class="table">
-    <thead>
+    @* <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstAuthor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.YearOfPublication)
-            </th>
-            <th>
-                
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberOfExamples)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Publisher)
-            </th>
+            <th></th>
+            <th>Информация</th>
             <th></th>
         </tr>
-    </thead>
-<tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstAuthor.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.YearOfPublication)
-            </td>
-                <td>
-                    <img src="@Url.Action("GetImage", "Books", new { id = item.BookId@*, width = 100, height = 100 *@, random = DateTime.Now.Ticks  })" alt="Book Image" style="width: 250px; height: 300px;" />
+    </thead> *@
+    <tbody >
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="padding-left: 10%; text-align: right;">
+                    <img src="@Url.Action("GetImage", "Books", new { id = item.BookId, width = 100, height = 100, random = DateTime.Now.Ticks })" alt="Book Image" style="width: 250px; height: 300px;" />
                 </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfExamples)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Publisher.City)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.BookId">Детальная информация</a> 
-                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-                {
-                    <text> | </text>
-                    <a asp-action="Edit" asp-route-id="@item.BookId">Редактировать</a> 
-                    <text> | </text>
-                    <a asp-action="Delete" asp-route-id="@item.BookId">Удалить</a>
-                }
-            </td>
-        </tr>
-}
-        <p>
-            Показать книги...
-            <a asp-action="Index" asp-route-filter="all">Все</a> |
-            <a asp-action="Index" asp-route-filter="available">Доступные для аренды</a> |
-            <a asp-action="Index" asp-route-filter="archived">Архив</a> 
-        </p>
-</tbody>
+                <td style="padding-left: 10%; text-align: left;">
+                    <table>
+                        <tr>
+                            <td>Название:</td>
+                            <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                        </tr>
+                        <tr>
+                            <td>Автор:</td>
+                            <td>@Html.DisplayFor(modelItem => item.FirstAuthor.Name)</td>
+                        </tr>
+                        <tr>
+                            <td>Год публикации:</td>
+                            <td>@Html.DisplayFor(modelItem => item.YearOfPublication)</td>
+                        </tr>
+                        <tr>
+                            <td>Цена:</td>
+                            <td>@Html.DisplayFor(modelItem => item.Price) руб</td>
+                        </tr>
+                        <tr>
+                            <td class="col-3">Количество экземпляров:</td>
+                            <td>@Html.DisplayFor(modelItem => item.NumberOfExamples) шт</td>
+                        </tr>
+                        <tr>
+                            <td>Издатель:</td>
+                            <td>@Html.DisplayFor(modelItem => item.Publisher.City)</td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.BookId">Детальная информация</a>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@item.BookId">Редактировать</a>
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.BookId">Удалить</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
+
+

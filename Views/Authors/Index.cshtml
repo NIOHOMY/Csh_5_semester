@@ -4,11 +4,13 @@
     ViewData["Title"] = "Авторы";
 }
 
-
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
+</head>
 <h1>Авторы</h1>
 @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
 {
-    <p>
+    <p class ="text-center">
         <a asp-action="Create">Добавить нового автора</a>
     </p>
 }

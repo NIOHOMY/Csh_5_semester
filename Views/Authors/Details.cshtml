@@ -4,33 +4,31 @@
     ViewData["Title"] = "Детальная информация";
 }
 
-@* <h1>Детальная информация</h1>
- *@
-<div>
+<head>
+<link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
+</head>
+<div style="text-align: center;">
     <h4>Автор</h4>
     <hr />
     <dl class="row">
-        @* <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt> *@
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        @* <dt>
-            img
-        <dt> *@
-        <dd>
-            <img src="@Url.Action("GetImage", "Authors", new { id = Model.AuthorId@*, width = 100, height = 100 *@, random = DateTime.Now.Ticks  })" alt="Book Image" style="width: 250px; height: 300px;" />
-        </dd>
-        <dt class="col-sm-2">
-                Информация
-        </dt>
-        <dd class="col-sm-10">
-            <p> @(@Model.Info != null ? @Model.Info : "") </p>
+        <dd class="col" style="display: flex; justify-content: center; align-items: center;">
+            <img src="@Url.Action("GetImage", "Authors", new { id = Model.AuthorId, width = 100, height = 100, random = DateTime.Now.Ticks })" alt="Book Image" style="width: 250px; height: 300px; margin-right: 20px;" />
+            <div>
+                <dt style="text-align: center;">
+                    <h3>@(@Model.Name != null ? @Model.Name : "")</h3>
+                </dt>
+                <dd style="text-align: left; padding-left: 10%; padding-right: 9%;">
+                    <p> @(@Model.Info != null ? @Model.Info : "") </p>
+                </dd>
+            </div>
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.AuthorId">Редактировать</a> |
+<div style="text-align: center;">
     <a asp-action="Index">Назад</a>
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+    {
+        <text> | </text>
+    <a asp-action="Edit" asp-route-id="@Model?.AuthorId">Редактировать</a> 
+    }
+</div>
 </div>

@@ -4,59 +4,82 @@
     ViewData["Title"] = "Детальная информация";
 }
 
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
+</head>
+<style>
+    dl.row dd {
+        text-align: left; padding-left: 10%; padding-right: 9%;
+    }
 
+    dl.row dt {
+        text-align: left; padding-left: 10%; padding-right: 9%;
+    }
+</style>
 <div>
-    <h4>Книга</h4>
+    <h4 style="text-align: center;">Книга</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        @* <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstAuthor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstAuthor.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.YearOfPublication)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.YearOfPublication)
-        </dd>
-        <dd>
-            <img src="@Url.Action("GetImage", "Books", new { id = @Model.BookId@*, width = 100, height = 100 *@, random = DateTime.Now.Ticks  })" alt="Book Image" style="width: 250px; height: 300px;" />
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Info)
-        </dt>
-        <dd class="col-sm-10">
-            <p> @(@Model.Info!=null?@Model.Info:"") </p>
-        </dd>
-        <dt class = "col-sm-2"> 
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NumberOfExamples)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NumberOfExamples)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Publisher)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Publisher.City)
-        </dd>
+        </dt> *@
+        <div style="flex: 1;text-align: right; padding-left: 10%">
+            <img src="@Url.Action("GetImage", "Books", new { id = @Model.BookId, random = DateTime.Now.Ticks })" alt="Book Image" style="width: 250px; height: 300px;" />
+        </div>
+        <div style="flex: 1;  padding-right: 19%;">
+            <dl class="row">
+                <dd class="col-sm-12 fw-bold" style="font-size: 150%; margin-bottom: 5px;">
+                    @Html.DisplayFor(model => model.Title)
+                </dd>
+                <dt class="col-sm-12">
+                    @Html.DisplayNameFor(model => model.FirstAuthor)
+                </dt>
+                <dd class="col-sm-12">
+                    @Html.DisplayFor(model => model.FirstAuthor.Name)
+                </dd>
+                <dt class="col-sm-12">
+                    @Html.DisplayNameFor(model => model.YearOfPublication)
+                </dt>
+                <dd class="col-sm-12">
+                    @Html.DisplayFor(model => model.YearOfPublication)
+                </dd>
+                <dt class="col-sm-12">
+                    @Html.DisplayNameFor(model => model.Publisher)
+                </dt>
+                <dd class="col-sm-12">
+                    @Html.DisplayFor(model => model.Publisher.City) @Html.DisplayFor(model => model.Publisher.NameOfPublisher)
+                </dd>
+            </dl>
+        </div>
+        <div >
+
+            <dt class="text-center" style="margin-top: 20px">
+                @Html.DisplayNameFor(model => model.Info)
+            </dt>
+            <dd>
+                <p> @(@Model.Info!=null?@Model.Info:"") </p>
+            </dd>
+            <dt class="text-center"> 
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+            <dd class="text-center">
+                @Html.DisplayFor(model => model.Price) руб
+            </dd>
+            <dt class="text-center">
+                @Html.DisplayNameFor(model => model.NumberOfExamples)
+            </dt>
+            <dd class="text-center">
+                @Html.DisplayFor(model => model.NumberOfExamples) шт
+            </dd>
+        
+        </div>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.BookId">Редактировать</a> |
+<div class="text-center">
     <a asp-action="Index">Назад</a>
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+    {
+        <text> | </text>
+        <a asp-action="Edit" asp-route-id="@Model?.BookId">Редактировать</a>
+    }
 </div>

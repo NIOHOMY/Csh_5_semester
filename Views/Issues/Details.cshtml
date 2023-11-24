@@ -4,7 +4,9 @@
     ViewData["Title"] = "Дательная информация";
 }
 
-
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
+</head>
 <div>
     <h4>Номер: @Model.IssueId</h4>
     <hr />
@@ -53,7 +55,11 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.IssueId">Редактировать</a> |
+<div style="text-align: center;">
     <a asp-action="Index">Назад</a>
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+    {
+        <text> | </text>
+    <a asp-action="Edit" asp-route-id="@Model.IssueId">Редактировать</a> 
+    }
 </div>

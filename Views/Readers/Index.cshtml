@@ -3,12 +3,14 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
+</head>
 <h1>Читатели</h1>
 @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
 {
-    <p>
-        <a asp-action="Create">Зарегестрировать нового</a>
+    <p class="text-center">
+        <a asp-action="Create" class="text-center">Зарегестрировать нового</a>
     </p>
 
 }
