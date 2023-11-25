@@ -189,7 +189,7 @@ namespace WebApplication1.Controllers
             Issue issue = _databaseManager.GetIssueById(id.Value);
             if (issue == null || (User.IsInRole("User") && issue.isСonfirmed))
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
                 // Добавим список уже выбранных книг для данного выпуска
                 var selectedBooks = _databaseManager.GetIssueBooksByIssueId(id.Value);
