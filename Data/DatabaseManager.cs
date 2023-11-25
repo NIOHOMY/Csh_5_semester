@@ -98,22 +98,49 @@ namespace WebApplication1.Data
 
         public List<Book> SearchBooksByTitleOrFirstAuthor(string searchString)
         {
+
+            try
+            {
             var result = _context.Books
                 .Include(b => b.FirstAuthor)
                 .Where(b => b.Title.ToLower().Contains(searchString.ToLower()) || b.FirstAuthor.Name.ToLower().Contains(searchString.ToLower()))
                 .ToList();
 
             return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при поиске книги по названию и автору:");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine("Произошла ошибка при получении книги по названию и автору:");
+                Debug.WriteLine(ex.Message);
+
+                return null;
+            }
         }
 
         public List<Book> SearchAvailableBooksByTitleOrFirstAuthor(string searchString)
         {
+            try
+            {
             var result = _context.Books
                 .Include(b => b.FirstAuthor)
                 .Where(b => (b.Title.ToLower().Contains(searchString.ToLower()) || b.FirstAuthor.Name.ToLower().Contains(searchString.ToLower())) && b.NumberOfExamples>0)
                 .ToList();
 
             return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении доступных книг по названию или автору:");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine("Произошла ошибка при получении доступных книг по названию или автору:");
+                Debug.WriteLine(ex.Message);
+
+                return null;
+            }
         }
 
 
@@ -137,6 +164,8 @@ namespace WebApplication1.Data
 
         public List<Issue> SearchIssuesByIdOrReader(string searchString)
         {
+            try
+            {
             var result = _context.Issues
                 .Include(b => b.Reader).Include(issue => issue.Books).ThenInclude(b => b.FirstAuthor)
                 .Where(b => b.IssueId.ToString().Contains(searchString) ||
@@ -146,6 +175,17 @@ namespace WebApplication1.Data
                 .ToList();
 
             return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении выдачи по ID или читателю:");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine("Произошла ошибка при получении выдачи по ID или читателю:");
+                Debug.WriteLine(ex.Message);
+
+                return null;
+            }
         }
 
         public Publisher? GetPublisherById(int publisherId)
@@ -210,86 +250,133 @@ namespace WebApplication1.Data
         }
         public void UpdateIssue(int id,Issue issue, int[] selectedBooks, int[] selectedBooksToDelete)
         {
-            var existingIssue = _context.Issues
-                .Include(i => i.Books)
-                .FirstOrDefault(i => i.IssueId == id);
-            if (existingIssue != null)
+            try
             {
-                if (!existingIssue.isСonfirmed)
+                var existingIssue = _context.Issues
+                    .Include(i => i.Books)
+                    .FirstOrDefault(i => i.IssueId == id);
+                if (existingIssue != null)
                 {
-
-                    existingIssue.IssueDate = issue.IssueDate;
-                    existingIssue.ReturnDate = issue.ReturnDate;
-                
-                    existingIssue.ReaderId = issue.ReaderId;
-
-                    var existingBookIds = existingIssue.Books.Select(b => b.BookId).ToList();
-                    if (selectedBooks != null )
+                    if (!existingIssue.isСonfirmed)
                     {
 
-                        var newBookIds = selectedBooks.Except(existingBookIds).ToList();
+                        existingIssue.IssueDate = issue.IssueDate;
+                        existingIssue.ReturnDate = issue.ReturnDate;
+                
+                        existingIssue.ReaderId = issue.ReaderId;
 
-                        foreach (var bookId in newBookIds)
+                        var existingBookIds = existingIssue.Books.Select(b => b.BookId).ToList();
+                        if (selectedBooks != null )
                         {
-                            var bookToAdd = _context.Books.FirstOrDefault(b => b.BookId == bookId);
-                            //DecreaseNumberOfExamples(bookId);
+
+                            var newBookIds = selectedBooks.Except(existingBookIds).ToList();
+
+                            foreach (var bookId in newBookIds)
+                            {
+                                var bookToAdd = _context.Books.FirstOrDefault(b => b.BookId == bookId);
+                                //DecreaseNumberOfExamples(bookId);
+                                var book = _context.Books.FirstOrDefault(b => b.BookId == bookId);
+                                book.NumberOfExamples -= 1;
+                                existingIssue.Books.Add(bookToAdd);
+                                existingIssue.Price += bookToAdd.Price;
+                            }
+
+                        }
+                    }
+                    if (selectedBooksToDelete != null)
+                    {
+                        foreach (var bookId in selectedBooksToDelete)
+                        {
+                            var bookToRemove = existingIssue.Books.FirstOrDefault(b => b.BookId == bookId);
+                            //IncreaseNumberOfExamples(bookId);
                             var book = _context.Books.FirstOrDefault(b => b.BookId == bookId);
-                            book.NumberOfExamples -= 1;
-                            existingIssue.Books.Add(bookToAdd);
-                            existingIssue.Price += bookToAdd.Price;
+                            book.NumberOfExamples += 1;
+                            existingIssue.Books.Remove(bookToRemove);
+                            existingIssue.Price -= existingIssue.isСonfirmed? 0 : bookToRemove.Price;
                         }
 
                     }
+                    existingIssue.isСonfirmed = existingIssue.isСonfirmed? existingIssue.isСonfirmed : issue.isСonfirmed;
                 }
-                if (selectedBooksToDelete != null)
-                {
-                    foreach (var bookId in selectedBooksToDelete)
-                    {
-                        var bookToRemove = existingIssue.Books.FirstOrDefault(b => b.BookId == bookId);
-                        //IncreaseNumberOfExamples(bookId);
-                        var book = _context.Books.FirstOrDefault(b => b.BookId == bookId);
-                        book.NumberOfExamples += 1;
-                        existingIssue.Books.Remove(bookToRemove);
-                        existingIssue.Price -= existingIssue.isСonfirmed? 0 : bookToRemove.Price;
-                    }
 
-                }
-                existingIssue.isСonfirmed = existingIssue.isСonfirmed? existingIssue.isСonfirmed : issue.isСonfirmed;
+                _context.SaveChanges();
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при обновлении выдачи с выбранными книгами для добавления и удаления:");
+                Console.WriteLine(ex.Message);
 
-            _context.SaveChanges();
+                Debug.WriteLine("Произошла ошибка при обновлении выдачи с выбранными книгами для добавления и удаления:");
+                Debug.WriteLine(ex.Message);
+
+            }
         }
         public void UpdateIssueStatus(int id, bool status)
         {
-            var existingIssue = _context.Issues
-                .Include(i => i.Books)
-                .FirstOrDefault(i => i.IssueId == id);
-            if (existingIssue != null)
+            try
             {
-                existingIssue.isСonfirmed = status;
-                _context.SaveChanges();
+                var existingIssue = _context.Issues
+                    .Include(i => i.Books)
+                    .FirstOrDefault(i => i.IssueId == id);
+                if (existingIssue != null)
+                {
+                    existingIssue.isСonfirmed = status;
+                    _context.SaveChanges();
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при обновлении статуса выдачи:");
+                Console.WriteLine(ex.Message);
 
+                Debug.WriteLine("Произошла ошибка при обновлении статуса выдачи:");
+                Debug.WriteLine(ex.Message);
+
+            }
         }
 
 
         public void IncreaseNumberOfExamples(int bookId, int quantity=1)
         {
-            Book? book = _context.Books.Find(bookId);
-            if (book != null)
+            try
             {
-                book.NumberOfExamples += quantity;
-                _context.SaveChanges();
+                Book? book = _context.Books.Find(bookId);
+                if (book != null)
+                {
+                    book.NumberOfExamples += quantity;
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при увеличении количества книг:");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine("Произошла ошибка при увеличении количества книг:");
+                Debug.WriteLine(ex.Message);
+
             }
         }
 
         public void DecreaseNumberOfExamples(int bookId, int quantity=1)
         {
-            Book? book = _context.Books.Find(bookId);
-            if (book != null && book.NumberOfExamples >= quantity)
+            try
             {
-                book.NumberOfExamples -= quantity;
-                _context.SaveChanges();
+                Book? book = _context.Books.Find(bookId);
+                if (book != null && book.NumberOfExamples >= quantity)
+                {
+                    book.NumberOfExamples -= quantity;
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при уменьшении количества книг:");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine("Произошла ошибка при уменьшении количества книг:");
+                Debug.WriteLine(ex.Message);
+
             }
         }
 

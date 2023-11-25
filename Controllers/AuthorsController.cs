@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +29,20 @@ namespace WebApplication1.Controllers
         // GET: 
         public async Task<IActionResult> Index()
         {
-            var authors = _databaseManager.GetAllAuthors();
+                List<Author>? authors = null;
+            try
+            {
+                authors = _databaseManager.GetAllAuthors();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Произошла ошибка в {MethodBase.GetCurrentMethod().Name} ");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine($"Произошла ошибка в {MethodBase.GetCurrentMethod().Name} ");
+                Debug.WriteLine(ex.Message);
+
+            }
             return authors != null ?
                           View(authors) :
                           Problem("Entity set is null.");
@@ -36,18 +51,32 @@ namespace WebApplication1.Controllers
         // GET: 
         public async Task<IActionResult> Details(int? id)
         {
+            Author? author = null;
+            try
+            {
             if (id == null )
             {
                 return NotFound();
             }
 
-            var author = _databaseManager.GetAuthorById(id.Value);
+            author  = _databaseManager.GetAuthorById(id.Value);
             if (author == null)
             {
                 return NotFound();
             }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Произошла ошибка в {MethodBase.GetCurrentMethod().Name} ");
+                Console.WriteLine(ex.Message);
 
-            return View(author);
+                Debug.WriteLine($"Произошла ошибка в {MethodBase.GetCurrentMethod().Name} ");
+                Debug.WriteLine(ex.Message);
+
+            }
+            return author != null ?
+                          View(author) :
+                          Problem("Entity set is null.");
         }
 
         // GET: Authors/Create
@@ -94,24 +123,45 @@ namespace WebApplication1.Controllers
                     }
                 }          
             }
-            return View(author);
+
+            return author != null ?
+                          View(author) :
+                          Problem("Entity set is null.");
+            
         }
 
         // GET: Authors/Edit/5
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
+            Author? author = null;
+            try
+            {
             if (id == null )
             {
                 return NotFound();
             }
 
-            var author = _databaseManager.GetAuthorById(id.Value);
+            author = _databaseManager.GetAuthorById(id.Value);
             if (author == null)
             {
                 return NotFound();
             }
-            return View(author);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Произошла ошибка в {MethodBase.GetCurrentMethod().Name} ");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine($"Произошла ошибка в {MethodBase.GetCurrentMethod().Name} ");
+                Debug.WriteLine(ex.Message);
+
+            }
+
+            return author != null ?
+                          View(author) :
+                          Problem("Entity set is null.");
+           
         }
 
         // POST: 
@@ -167,18 +217,33 @@ namespace WebApplication1.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Delete(int? id)
         {
+            Author? author = null;
+            try
+            {
             if (id == null )
             {
                 return NotFound();
             }
 
-            var author = _databaseManager.GetAuthorById(id.Value);
+            author = _databaseManager.GetAuthorById(id.Value);
             if (author == null)
             {
                 return NotFound();
             }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Произошла ошибка в {MethodBase.GetCurrentMethod().Name} ");
+                Console.WriteLine(ex.Message);
 
-            return View(author);
+                Debug.WriteLine($"Произошла ошибка в {MethodBase.GetCurrentMethod().Name} ");
+                Debug.WriteLine(ex.Message);
+
+            }
+            return author != null ?
+                          View(author) :
+                          Problem("Entity set is null.");
+            
         }
 
         // POST: Authors/Delete/5
@@ -187,12 +252,23 @@ namespace WebApplication1.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            try
+            {
             if (id>=0)
             {
                 _databaseManager.DeleteAuthor(id);
             }
-            
-            
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Произошла ошибка в {MethodBase.GetCurrentMethod().Name} ");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine($"Произошла ошибка в {MethodBase.GetCurrentMethod().Name} ");
+                Debug.WriteLine(ex.Message);
+
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -203,6 +279,8 @@ namespace WebApplication1.Controllers
 
         public IActionResult GetImage(int id)
         {
+            try
+            {
             var author = _databaseManager.GetAuthorById(id);
             if (author != null)
             {
@@ -213,6 +291,16 @@ namespace WebApplication1.Controllers
 
                     return File(author.ImageData, "image/jpeg");
                 }
+            }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Произошла ошибка в {MethodBase.GetCurrentMethod().Name} ");
+                Console.WriteLine(ex.Message);
+
+                Debug.WriteLine($"Произошла ошибка в {MethodBase.GetCurrentMethod().Name} ");
+                Debug.WriteLine(ex.Message);
+
             }
             return File("~/images/basic_authors_imgs/default_images/default-author-image.jpg", "image/jpeg");
         }
