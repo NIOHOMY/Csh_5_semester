@@ -256,7 +256,11 @@ namespace WebApplication1.Controllers
                                 }
                             }
                         }
-
+                        if (User.IsInRole("User"))
+                        {
+                            var reader = _databaseManager.GetReaderByEmail(User.Claims.First().Value);
+                            issue.ReaderId = reader.ReaderId;
+                        }
                         _databaseManager.UpdateIssue(id, issue, selectedBooksToAdd, selectedBooksToDelete);
                         return RedirectToAction(nameof(Index));
                     }

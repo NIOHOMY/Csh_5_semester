@@ -7,19 +7,19 @@
 <body class="text-center">
 
 <h2>@ViewData["Title"]</h2>
+<hr />
 <p>Выберите роль для пользователя с email: @ViewBag.Email</p>
-
 <form asp-action="ChangeUserRolePost" method="post">
     <input type="hidden" name="userEmail" value="@ViewBag.Email" /><br>
     <div class="form-group">
         <label >Текущая роль:</label><br>
         <p>@ViewBag.UserRoles</p>
-    </div>
-    <div class="form-group">
+    
         <label for="newRole">Новая роль:</label>
         <select id="newRole" name="newRole" asp-items="ViewBag.Roles"></select>
-    </div><br>
-    <button type="submit">Сохранить</button>
+    </div>
+<hr />
+        <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>
 
     </body>
