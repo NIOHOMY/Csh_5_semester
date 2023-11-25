@@ -9,6 +9,28 @@
         align-items: center;
     }
 
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        border: none;
+        width: auto;
+        cursor: pointer;
+        border-radius: 10%;
+        border-radius: 11px;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    input {
+        width: 40%;
+        margin-bottom: 10px;
+        padding: 8px;
+        box-sizing: border-box;
+    }
 </style>
 
 <head>
@@ -68,8 +90,8 @@
                     @foreach (var book in ViewBag.SelectedBooks)
                     {
                         <li>
-                            @book.Title 
-                            <button class="removeBookBtn" data-bookid="@book.BookId">Убрать</button>
+                            @book.Title
+                            <button class="removeBookBtn" style="background-color: #FF9100;" data-bookid="@book.BookId">Убрать</button>
                         </li>
                     }
                 </ul>
@@ -166,7 +188,7 @@
                             data: { 'bookId': selectedBookId },
                             success: function (book) {
                                 // Добавляем книгу в список
-                                selectedBooksList.append('<li data-price="' + book.price + '">' + book.title + ' - ' + book.price + ' руб ' + ' <button class="removeBookBtn" data-bookid="' + selectedBookId + '">Убрать</button></li>');
+                                selectedBooksList.append('<li data-price="' + book.price + '">' + book.title + ' - ' + book.price + ' руб ' + ' <button class="removeBookBtn" style="background-color: #FF9100;" data-bookid="' + selectedBookId + '">Убрать</button></li>');
 
                                 // Обновляем общую стоимость
                                 updateTotalPrice();
