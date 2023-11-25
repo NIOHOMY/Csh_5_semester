@@ -34,12 +34,16 @@
                 <label asp-for="ReaderId" class="control-label"></label>
                 <select asp-for="ReaderId" class="form-control" asp-items="ViewBag.ReaderId"></select>
             </div> *@
-            <div class="form-group">
-                <label asp-for="Reader" class="control-label"></label><br>
-                <input type="text" id="searchReaders" class="form-control" placeholder="Начните вводить...">
-                <div id="readerList"></div>
-                <input type="hidden" id="selectedReaderId" name="ReaderId" />
-            </div>
+            @if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <div class="form-group">
+                    <label asp-for="Reader" class="control-label"></label><br>
+                    <input type="text" id="searchReaders" class="form-control" placeholder="Начните вводить...">
+                    <div id="readerList"></div>
+                    <input type="hidden" id="selectedReaderId" name="ReaderId" />
+                </div>
+            }
+
             <div class="form-group">
                 <label>Поиск книг</label><br>
                 <input type="text" id="search" class="form-control" placeholder="Начните вводить...">
@@ -89,17 +93,12 @@
                         $('#bookList').fadeOut();
                     });
 
-                    @{
-                        var isUser = User.IsInRole("User").ToString().ToLower();
-                        var userValue = User.Claims.FirstOrDefault()?.Value;
-                    }
+                    
+
                     $(document).on('keyup', '#searchReaders', function () {
-                            var isUserValue = '@isUser'; 
-                            var userValue = '@userValue';
+                            
                         var query = $(this).val().trim();
-                            if (isUserValue === 'true') {
-                                query = userValue;
-                            }
+                            
                         console.log("Searching for readers: " + query);
                         if (query !== '') {
                             $.ajax({

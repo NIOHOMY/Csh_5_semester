@@ -14,12 +14,13 @@
 <head>
     <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
 </head>
-<h2 class="text-center">Выдача</h2>
+<h2 class="text-center">Выдача @Html.DisplayFor(model => model.IssueId)</h2>
 <hr />
 <div class="row center-content">
-    <div class="col-md-4">
+    <div class="col-md-5">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
             <div class="form-group">
                 <label asp-for="IssueDate" class="control-label"></label><br>
                 <input asp-for="IssueDate" class="form-control" />
@@ -32,9 +33,10 @@
             </div>
             
 
-
             <div class="form-group">
-                <label asp-for="Reader" class="control-label"></label><br>
+                @* <label asp-for="Reader" class="control-label"></label><br> *@
+                <p></p>
+                <p>Читатель</p>
                 <div>
                     @Html.DisplayFor(model => model.Reader.LastName)
                     @Html.DisplayFor(model => model.Reader.FirstName)
@@ -42,6 +44,17 @@
                     @Html.DisplayFor(model => model.Reader.FormattedPhoneNumber)
                 </div>
             </div>
+            @if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <div class="form-group">
+                    <p></p>
+                    <p>Сменить читателя?</p>
+                    <input type="text" id="searchReaders" class="form-control" placeholder="Начните вводить...">
+                    <div id="readerList"></div>
+                    <input type="hidden" id="selectedReaderId" name="ReaderId" value="@Model.Reader.ReaderId" />
+                </div>
+            }
+            
 
             <div class="form-group">
                 <label>Поиск книг</label><br>
@@ -73,7 +86,43 @@
                 $(document).ready(function () {
 
                     var selectedBookIds = [@Html.Raw(Json.Serialize(ViewBag.SelectedBooksIds))];
-                    
+                    var selectedReaderId = @Html.Raw(Json.Serialize(ViewBag.SelectedReaderId));
+
+                    $(document).on('keyup', '#searchReaders', function () {
+
+                        var query = $(this).val().trim();
+
+                        console.log("Searching for readers: " + query);
+                        if (query !== '') {
+                            $.ajax({
+                                url: "/Issues/SearchReaders",
+                                method: "POST",
+                                data: { 'query': query, 'selectedReaderId': selectedReaderId },
+                                success: function (data) {
+                                    console.log(data);
+                                    $('#readerList').empty();
+                                    $.each(data, function (i, reader) {
+                                        $('#readerList').append('<div data-id="' + reader.readerId + '">' + reader.displayText + '</div>');
+                                        console.log(reader.readerId);
+                                    });
+                                    $('#readerList').fadeIn();
+                                }
+                            });
+
+                        } else {
+                            $('#readerList').fadeOut();
+                        }
+                    });
+
+                    $(document).on('click', '#readerList div', function () {
+                        $('#searchReaders').val($(this).text());
+                        selectedReaderId = $(this).data('id');
+                        $('#selectedReaderId').val(selectedReaderId);
+                        console.log(selectedReaderId);
+                        $('#readerList').fadeOut();
+                    });
+
+
 
                     $(document).on('keyup', '#search', function () {
                         var query = $(this).val().trim();
@@ -186,6 +235,9 @@
                     }
 
                 });
+
+
+               
             </script>
 
             <ul id="selectedBooksList"></ul>

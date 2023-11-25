@@ -95,6 +95,7 @@ namespace WebApplication1.Controllers
         }
         public IActionResult Create()
         {
+            
             ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "PhoneNumber");
             ViewData["Books"] = _databaseManager.GetAllAvailableBooks(); // Получаем список всех книг и передаем его в представление
             return View();
@@ -122,7 +123,12 @@ namespace WebApplication1.Controllers
                                 }
                             }
                         }
-                
+
+                    if (User.IsInRole("User"))
+                    {
+                        var reader = _databaseManager.GetReaderByEmail(User.Claims.First().Value);
+                        issue.ReaderId = reader.ReaderId;
+                    }
                     _databaseManager.AddIssue(issue);
                     return RedirectToAction(nameof(Index));
 
@@ -192,7 +198,7 @@ namespace WebApplication1.Controllers
                             Value = r.ReaderId,
                             Text = $"{r.LastName} {r.FirstName} {r.Patronymic} {r.PhoneNumber}"
                         }), "Value", "Text", issue.ReaderId);*/
-            ViewBag.ReaderId = issue.Reader;
+            ViewBag.ReaderId = issue.Reader.ReaderId;
             ViewData["Books"] = _databaseManager.GetAllAvailableBooks();
             ViewBag.SelectedBooks = selectedBooks; // Передача выбранных книг в представление
             string ids = "";

@@ -42,6 +42,21 @@ namespace WebApplication1.Data
                 return null;
             }
         }
+        public Reader? GetReaderByEmail(string readerEmail)
+        {
+            try
+            {
+                return _context.Readers.FirstOrDefault(r => r.Email == readerEmail);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Произошла ошибка при получении читателя из базы данных:");
+                Console.WriteLine(ex.Message);
+                Debug.WriteLine("Произошла ошибка при получении читателя из базы данных:");
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
 
         public List<Book> GetIssueBooksByIssueId(int issueId)
         {
@@ -200,34 +215,34 @@ namespace WebApplication1.Data
                 .FirstOrDefault(i => i.IssueId == id);
             if (existingIssue != null)
             {
-                existingIssue.IssueDate = issue.IssueDate;
-                existingIssue.ReturnDate = issue.ReturnDate;
-                
-                //existingIssue.ReaderId = issue.ReaderId;
-
-                // Получаем список уже существующих книг в выпуске
-                var existingBookIds = existingIssue.Books.Select(b => b.BookId).ToList();
-                if (selectedBooks != null && !existingIssue.isСonfirmed)
+                if (!existingIssue.isСonfirmed)
                 {
 
-                    // Находим новые книги, которые должны быть добавлены
-                    var newBookIds = selectedBooks.Except(existingBookIds).ToList();
+                    existingIssue.IssueDate = issue.IssueDate;
+                    existingIssue.ReturnDate = issue.ReturnDate;
+                
+                    existingIssue.ReaderId = issue.ReaderId;
 
-                    // Добавляем новые книги в выпуск
-                    foreach (var bookId in newBookIds)
+                    var existingBookIds = existingIssue.Books.Select(b => b.BookId).ToList();
+                    if (selectedBooks != null )
                     {
-                        var bookToAdd = _context.Books.FirstOrDefault(b => b.BookId == bookId);
-                        //DecreaseNumberOfExamples(bookId);
-                        var book = _context.Books.FirstOrDefault(b => b.BookId == bookId);
-                        book.NumberOfExamples -= 1;
-                        existingIssue.Books.Add(bookToAdd);
-                        existingIssue.Price += bookToAdd.Price;
-                    }
 
+                        var newBookIds = selectedBooks.Except(existingBookIds).ToList();
+
+                        foreach (var bookId in newBookIds)
+                        {
+                            var bookToAdd = _context.Books.FirstOrDefault(b => b.BookId == bookId);
+                            //DecreaseNumberOfExamples(bookId);
+                            var book = _context.Books.FirstOrDefault(b => b.BookId == bookId);
+                            book.NumberOfExamples -= 1;
+                            existingIssue.Books.Add(bookToAdd);
+                            existingIssue.Price += bookToAdd.Price;
+                        }
+
+                    }
                 }
                 if (selectedBooksToDelete != null)
                 {
-                    // Удаляем книги из выпуска
                     foreach (var bookId in selectedBooksToDelete)
                     {
                         var bookToRemove = existingIssue.Books.FirstOrDefault(b => b.BookId == bookId);
