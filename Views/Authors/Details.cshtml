@@ -12,7 +12,11 @@
     <hr />
     <dl class="row">
         <dd class="col" style="display: flex; justify-content: center; align-items: center;">
-            <img src="@Url.Action("GetImage", "Authors", new { id = Model.AuthorId, width = 100, height = 100, random = DateTime.Now.Ticks })" alt="Book Image" style="width: 250px; height: 300px; margin-right: 20px;" />
+            <img src="@Url.Action("GetImage", "Authors", new { id = Model.AuthorId, width = 100, height = 100, random = DateTime.Now.Ticks })" 
+            alt="Book Image" 
+            class="img-fluid mb-4"
+                 style="width: 290px; height: 350px; max-width: 290px; max-height: 350px;min-width: 290px; min-height: 350px;
+        margin-right: 20px; border-radius: 35%;" />
             <div>
                 <dt style="text-align: center;">
                     <h3>@(@Model.Name != null ? @Model.Name : "")</h3>

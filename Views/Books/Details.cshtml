@@ -24,7 +24,11 @@
             @Html.DisplayNameFor(model => model.Title)
         </dt> *@
         <div style="flex: 1;text-align: right; padding-left: 10%">
-            <img src="@Url.Action("GetImage", "Books", new { id = @Model.BookId, random = DateTime.Now.Ticks })" alt="Book Image" style="width: 250px; height: 300px;" />
+            <img src="@Url.Action("GetImage", "Books", new { id = @Model.BookId, random = DateTime.Now.Ticks })" 
+            alt="Book Image" 
+            class="img-fluid mb-4"
+                 style="width: 250px; height: 350px; max-width: 250px; max-height: 350px;min-width: 250px; min-height: 350px;
+        border-radius: 10%; border-radius: 11px; border: 1px solid  #795548;" />
         </div>
         <div style="flex: 1;  padding-right: 19%;">
             <dl class="row">

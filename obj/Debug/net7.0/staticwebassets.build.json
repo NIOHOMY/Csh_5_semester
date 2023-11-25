@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "vcpzNwJ2ynsGw2XZol18VxmR+J6HUyj8UCkCfz9cOt8=",
+  "Hash": "9R1j1ke10SxVQmzgcaRYY/vOddEMOqypxmuvrZef5YI=",
   "Source": "WebApplication1",
   "BasePath": "_content/WebApplication1",
   "Mode": "Default",
@@ -1222,6 +1222,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\basic_books_imgs\\offense_and_punishment.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\basic_books_imgs\\the_little_prince - Copy.jpg",
+      "SourceId": "WebApplication1",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\",
+      "BasePath": "_content/WebApplication1",
+      "RelativePath": "images/basic_books_imgs/the_little_prince - Copy.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\basic_books_imgs\\the_little_prince - Copy.jpg"
     },
     {
       "Identity": "C:\\Users\\N1o\\0projects\\VS\\Csh\\ConsoleApp1\\wwwroot\\images\\basic_books_imgs\\the_little_prince.jpg",
