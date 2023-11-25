@@ -61,9 +61,9 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> Create([Bind("AuthorId,Name,Info,ImageData")] Author author, IFormFile imageData)
+        public async Task<IActionResult> Create([Bind("AuthorId,Name,Info")] Author author, IFormFile? imageData)
         {
-            if (author != null)
+            if (ModelState.IsValid && author != null)
             {
                 try
                 {
@@ -118,14 +118,14 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> Edit(int id, [Bind("AuthorId,Name,Info,ImageData")] Author author, IFormFile imageData)
+        public async Task<IActionResult> Edit(int id, [Bind("AuthorId,Name,Info,ImageData")] Author author, IFormFile? imageData)
         {
             if (id != author.AuthorId)
             {
                 return NotFound();
             }
 
-            if (author != null)
+            if (ModelState.IsValid && author != null)
             {
                 try
                 {

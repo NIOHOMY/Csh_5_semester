@@ -63,7 +63,7 @@ namespace WebApplication1.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create([Bind("PublisherId,NameOfPublisher,City")] Publisher publisher)
         {
-            if (publisher != null)
+            if (ModelState.IsValid && publisher != null)
             {
                 _databaseManager.AddPublisher(publisher);
                 return RedirectToAction(nameof(Index));
@@ -99,7 +99,7 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
 
-            if (publisher != null)
+            if (ModelState.IsValid && publisher != null)
             {
                 try
                 {

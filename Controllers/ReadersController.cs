@@ -98,7 +98,7 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
 
-            if (reader != null)
+            if (ModelState.IsValid && reader != null)
             {
                 try
                 {

@@ -31,7 +31,9 @@
             @Html.DisplayFor(model => model.YearOfPublication)
         </dd>
         <dd >
-            <img src="@Url.Action("GetImage", "Books", new { id = @Model.BookId@*, width = 100, height = 100 *@, random = DateTime.Now.Ticks  })" alt="Book Image" style="width: 250px; height: 300px;" />
+            <img src="@Url.Action("GetImage", "Books", new { id = @Model.BookId@*, width = 100, height = 100 *@, random = DateTime.Now.Ticks  })"
+                 alt="Book Image" style="width: 250px; height: 350px; max-width: 250px; max-height: 350px;min-width: 250px; min-height: 350px;
+        border-radius: 10%; border-radius: 11px; border: 1px solid  #795548;" />
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
