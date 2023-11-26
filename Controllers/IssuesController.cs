@@ -191,7 +191,6 @@ namespace WebApplication1.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-                // Добавим список уже выбранных книг для данного выпуска
                 var selectedBooks = _databaseManager.GetIssueBooksByIssueId(id.Value);
             /*ViewBag.ReaderId = new SelectList(_databaseManager.GetAllReaders()
                         .Select(r => new {
@@ -200,14 +199,14 @@ namespace WebApplication1.Controllers
                         }), "Value", "Text", issue.ReaderId);*/
             ViewBag.ReaderId = issue.Reader.ReaderId;
             ViewData["Books"] = _databaseManager.GetAllAvailableBooks();
-            ViewBag.SelectedBooks = selectedBooks; // Передача выбранных книг в представление
+            ViewBag.SelectedBooks = selectedBooks; 
             string ids = "";
             foreach (var book in selectedBooks)
             {
                 ids += book.BookId.ToString() + ",";
             }
-            ids = ids.TrimEnd(','); // Удаление последней запятой
-            ViewBag.SelectedBooksIds = ids; // Передача выбранных книг в представление
+            ids = ids.TrimEnd(','); 
+            ViewBag.SelectedBooksIds = ids; 
 
             return View(issue);
         }
@@ -280,7 +279,7 @@ namespace WebApplication1.Controllers
             }
 
             ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "PhoneNumber", issue.ReaderId);
-            ViewData["Books"] = _databaseManager.GetAllAvailableBooks(); // Предполагая, что у вас есть метод для получения всех книг
+            ViewData["Books"] = _databaseManager.GetAllAvailableBooks(); 
             ViewBag.SelectedBooks = _databaseManager.GetIssueBooksByIssueId(id);
             var selectedBookss = _databaseManager.GetIssueBooksByIssueId(id);
             string ids = "";
@@ -288,8 +287,8 @@ namespace WebApplication1.Controllers
             {
                 ids += book.BookId.ToString() + ",";
             }
-            ids = ids.TrimEnd(','); // Удаление последней запятой
-            ViewBag.SelectedBooksIds = ids; // Передача выбранных книг в представление
+            ids = ids.TrimEnd(','); 
+            ViewBag.SelectedBooksIds = ids; 
             return View(issue);
         }
 
@@ -306,7 +305,6 @@ namespace WebApplication1.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Обновление статуса в базе данных
                 _databaseManager.UpdateIssueStatus(id, isСonfirmed);
                 return RedirectToAction(nameof(Index));
             }

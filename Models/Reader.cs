@@ -46,16 +46,16 @@ namespace WebApplication1.Models
                     return string.Empty;
                 }
 
-                // Преобразование в числовой формат
                 var numericPhone = new string(PhoneNumber.Where(char.IsDigit).ToArray());
 
-                // Проверка на длину
                 if (numericPhone.Length != 11)
                 {
-                    return PhoneNumber; // Если не удалось распознать, вернуть исходный номер
+                    return PhoneNumber; 
                 }
 
-                // Форматирование по заданному шаблону
+                if (numericPhone.Substring(0, 1) == "8")
+                    numericPhone = "7" + numericPhone.Substring(1);
+
                 return $"+{numericPhone.Substring(0, 1)} ({numericPhone.Substring(1, 3)}) {numericPhone.Substring(4, 3)}-{numericPhone.Substring(7, 2)}-{numericPhone.Substring(9, 2)}";
             }
         }
