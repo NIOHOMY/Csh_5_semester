@@ -106,33 +106,31 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> Create([Bind("IssueId,IssueDate,ReturnDate,ReaderId")] Issue issue, string selectedBookIds)
         {
 
-            if (issue != null)
+            if (issue != null && selectedBookIds != null)
             {
-                if (selectedBookIds != null)
-                {
-                    var bookIds = selectedBookIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                var bookIds = selectedBookIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
                 
-                        foreach (var bookId in bookIds)
+                    foreach (var bookId in bookIds)
+                    {
+                        if (int.TryParse(bookId, out int id))
                         {
-                            if (int.TryParse(bookId, out int id))
+                            var book = _databaseManager.GetBookById(id);
+                            if (book != null)
                             {
-                                var book = _databaseManager.GetBookById(id);
-                                if (book != null)
-                                {
-                                    issue.Books.Add(book);
-                                }
+                                issue.Books.Add(book);
                             }
                         }
-
-                    if (User.IsInRole("User"))
-                    {
-                        var reader = _databaseManager.GetReaderByEmail(User.Claims.First().Value);
-                        issue.ReaderId = reader.ReaderId;
                     }
-                    _databaseManager.AddIssue(issue);
-                    return RedirectToAction(nameof(Index));
 
+                if (User.IsInRole("User"))
+                {
+                    var reader = _databaseManager.GetReaderByEmail(User.Claims.First().Value);
+                    issue.ReaderId = reader.ReaderId;
                 }
+                _databaseManager.AddIssue(issue);
+                return RedirectToAction(nameof(Index));
+
+                
             }
             ViewData["ReaderId"] = new SelectList(_databaseManager.GetAllReaders(), "ReaderId", "PhoneNumber", issue.ReaderId);
             ViewData["Books"] = _databaseManager.GetAllAvailableBooks();
@@ -321,10 +319,11 @@ namespace WebApplication1.Controllers
             }
 
             Issue? issue = _databaseManager.GetIssueById(id.Value);
-            if (issue == null)
+            if (issue == null || (User.IsInRole("User") && issue.isСonfirmed))
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
+
 
 
             return View(issue);

@@ -233,13 +233,15 @@ namespace WebApplication1.Data
 
                 if (existingIssue != null)
                 {
-                    existingIssue.IssueDate = updatedIssue.IssueDate;
-                    existingIssue.ReturnDate = updatedIssue.ReturnDate;
-                    existingIssue.isСonfirmed = updatedIssue.isСonfirmed;
-                    existingIssue.ReaderId = updatedIssue.ReaderId;
-                    // Обновление списка книг можно выполнить в соответствии с требованиями вашей системы
+                    if (!existingIssue.isСonfirmed)
+                    {
+                        existingIssue.IssueDate = updatedIssue.IssueDate;
+                        existingIssue.ReturnDate = updatedIssue.ReturnDate;
+                        existingIssue.isСonfirmed = updatedIssue.isСonfirmed;
+                        existingIssue.ReaderId = updatedIssue.ReaderId;
 
-                    _context.SaveChanges();
+                        _context.SaveChanges();
+                    }
                 }
             }
             catch (Exception ex)

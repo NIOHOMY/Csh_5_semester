@@ -7,21 +7,21 @@
 <head>
     <link rel="stylesheet" type="text/css" href="~/css/additional_styles.css">
 </head>
-<h3>Вы уверены что хотите удалить выдачу?</h3>
-<div>
+<h3 class="text-center">Вы уверены что хотите удалить выдачу?</h3>
+<div class="text-center">
     <h4>Выдача</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-12">
             Выдана
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-10" style="margin-left: 8%">
             @Html.DisplayFor(model => model.IssueDate)
         </dd>
-        <dt class="col-sm-12">
+        <dt class="col-sm-12" >
             Крайняя дата возврата книг
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-10" style="margin-left: 8%">
             @Html.DisplayFor(model => model.ReturnDate)
         </dd>
         <dd>
@@ -30,7 +30,7 @@
         <dt class="col-sm-12">
             Читатель
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-10" style="margin-left: 8%">
             <p>@Model.Reader.FirstName @Model.Reader.LastName</p>
             <p>@Model.Reader.Patronymic</p>
             <p>@Model.Reader.Address</p>
@@ -39,7 +39,7 @@
         <dt class="col-sm-12">
             Книги
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-10" style="margin-left: 8%">
             @foreach (var book in Model.Books)
             {
                 <p>@book.Title - @(book.FirstAuthor != null ? book.FirstAuthor.Name : "Неизвестный автор")</p>
